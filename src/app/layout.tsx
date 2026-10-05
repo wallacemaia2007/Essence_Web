@@ -6,13 +6,7 @@ import { Bodoni_Moda, Geist_Mono } from "next/font/google";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/Header";
 import { Providers } from "@/components/providers";
-import {
-  baseUrl,
-  ogImage,
-  pages,
-  siteDescription,
-  siteName,
-} from "@/lib/seo";
+import { baseUrl, ogImage, pages, siteDescription, siteName } from "@/lib/seo";
 
 const bodoniModa = Bodoni_Moda({
   variable: "--font-bodoni-moda",

@@ -1,11 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import {
-  Container,
-  Crest,
-  ThemedSection,
-} from "@/components/common";
+import { Container, Crest, ThemedSection } from "@/components/common";
 import { routes } from "@/constants/routes";
 
 type PageHeaderProps = {
@@ -32,10 +28,7 @@ export function PageHeader({
           aria-label="Breadcrumb"
           className="text-muted-foreground mt-6 flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase"
         >
-          <Link
-            href={routes.home}
-            className="hover:text-primary transition"
-          >
+          <Link href={routes.home} className="hover:text-primary transition">
             Home
           </Link>
           <span aria-hidden="true">/</span>

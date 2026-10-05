@@ -2,11 +2,7 @@
 
 import Image from "next/image";
 
-import {
-  Container,
-  SocialLinks,
-  ThemedSection,
-} from "@/components/common";
+import { Container, SocialLinks, ThemedSection } from "@/components/common";
 import { navLinks, routes } from "@/constants/routes";
 import { footerData } from "@/data/footer";
 import { socialLinks } from "@/data/social";

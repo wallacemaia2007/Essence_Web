@@ -179,7 +179,7 @@ export function LivroEstante({
       >
         <span
           aria-hidden
-          className="absolute inset-x-0 top-0 h-[3px] bg-primary"
+          className="bg-primary absolute inset-x-0 top-0 h-[3px]"
         />
         {livro.titulo}
       </span>

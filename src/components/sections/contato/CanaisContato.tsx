@@ -59,10 +59,7 @@ export function CanaisContato() {
 
       <div className="bg-card rounded-lg border p-5 shadow-sm md:p-6">
         <div className="flex items-center gap-3">
-          <CheckCircle2
-            className="text-primary size-5"
-            aria-hidden="true"
-          />
+          <CheckCircle2 className="text-primary size-5" aria-hidden="true" />
           <h2 className="text-xl leading-tight font-semibold">
             Disponível para projetos
           </h2>

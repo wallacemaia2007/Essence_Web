@@ -57,9 +57,8 @@ export function MobileSidebar({
     const returnFocusElement = returnFocusRef.current;
     document.body.style.overflow = "hidden";
 
-    const focusable = panelRef.current?.querySelectorAll<HTMLElement>(
-      FOCUSABLE_SELECTOR,
-    );
+    const focusable =
+      panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
     focusable?.[0]?.focus();
 
     return () => {
@@ -165,7 +164,7 @@ export function MobileSidebar({
         aria-modal="true"
         aria-label="Menu principal"
         className={cn(
-          "themed-section fixed top-0 right-0 flex h-dvh w-[min(22rem,calc(100vw-2rem))] flex-col border-l bg-background px-5 py-5 text-foreground shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-opacity",
+          "themed-section bg-background text-foreground fixed top-0 right-0 flex h-dvh w-[min(22rem,calc(100vw-2rem))] flex-col border-l px-5 py-5 shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-opacity",
           isOpen
             ? "translate-x-0 opacity-100"
             : "translate-x-full opacity-0 motion-reduce:translate-x-0",
@@ -204,7 +203,7 @@ export function MobileSidebar({
         <SamePageScrollLink
           href={routes.contato}
           onNavigate={onClose}
-          className="bg-primary text-primary-foreground focus-visible:ring-ring/50 mt-auto inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold transition hover:bg-primary/85 focus-visible:ring-3 focus-visible:outline-none"
+          className="bg-primary text-primary-foreground focus-visible:ring-ring/50 hover:bg-primary/85 mt-auto inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-semibold transition focus-visible:ring-3 focus-visible:outline-none"
         >
           Contato
         </SamePageScrollLink>

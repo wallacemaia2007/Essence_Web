@@ -3,8 +3,7 @@ import { forwardRef } from "react";
 
 import { cn } from "@/lib/utils";
 
-export interface ThemedSectionProps
-  extends ComponentPropsWithoutRef<"section"> {
+export interface ThemedSectionProps extends ComponentPropsWithoutRef<"section"> {
   children: ReactNode;
 }
 

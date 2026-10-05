@@ -24,7 +24,7 @@ export function SectionTitle({
       <h2 className="font-heading mt-2 text-3xl leading-tight uppercase md:text-4xl">
         {title}
       </h2>
-      <div className="mt-3 h-px w-32 bg-primary" />
+      <div className="bg-primary mt-3 h-px w-32" />
       {description ? (
         <p className="text-muted-foreground mt-3 max-w-2xl">{description}</p>
       ) : null}

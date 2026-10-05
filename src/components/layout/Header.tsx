@@ -42,25 +42,24 @@ export function Header() {
     }
   }, []);
 
-  const onEdgeTouchEnd = useCallback(
-    (e: TouchEvent) => {
-      if (!touchStart.current) return;
-      const dx = e.changedTouches[0].clientX - touchStart.current.x;
-      const dy = e.changedTouches[0].clientY - touchStart.current.y;
-      touchStart.current = null;
+  const onEdgeTouchEnd = useCallback((e: TouchEvent) => {
+    if (!touchStart.current) return;
+    const dx = e.changedTouches[0].clientX - touchStart.current.x;
+    const dy = e.changedTouches[0].clientY - touchStart.current.y;
+    touchStart.current = null;
 
-      if (Math.abs(dx) < Math.abs(dy)) return;
-      if (dx > -50) return;
+    if (Math.abs(dx) < Math.abs(dy)) return;
+    if (dx > -50) return;
 
-      setIsSidebarOpen(true);
-    },
-    [],
-  );
+    setIsSidebarOpen(true);
+  }, []);
 
   useEffect(() => {
     if (isSidebarOpen) return;
 
-    document.addEventListener("touchstart", onEdgeTouchStart, { passive: true });
+    document.addEventListener("touchstart", onEdgeTouchStart, {
+      passive: true,
+    });
     document.addEventListener("touchend", onEdgeTouchEnd, { passive: true });
 
     return () => {
@@ -91,7 +90,10 @@ export function Header() {
             Essence Web
           </SamePageScrollLink>
 
-          <NavLinks className="hidden items-center gap-4 lg:flex" linkClassName="text-sm" />
+          <NavLinks
+            className="hidden items-center gap-4 lg:flex"
+            linkClassName="text-sm"
+          />
 
           <div className="flex items-center gap-2">
             <SamePageScrollLink
