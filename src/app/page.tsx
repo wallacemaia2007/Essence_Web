@@ -2,13 +2,15 @@ import { FaqSection, ImageBanner, ThemedSection } from "@/components/common";
 import { HomeAbout } from "@/components/sections/home/home-about";
 import { HomeConjuntos } from "@/components/sections/home/home-conjuntos";
 import { HomeHero } from "@/components/sections/home/home-hero";
+import { HomeNovidades } from "@/components/sections/home/home-novidades";
 
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
       <HomeHero />
-      <HomeAbout />
+      <HomeNovidades />
       <HomeConjuntos />
+      <HomeAbout />
       <ImageBanner
         imageSrc="/images/hero/hero-essence-poster.webp"
         imageAlt=""
