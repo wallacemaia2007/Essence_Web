@@ -5,6 +5,7 @@ export const VITRINE_INTERVALO_MS = 5_000;
 export type ProdutoVitrine = {
   id: string;
   nome: string;
+  colecao: string;
   /** URL local em `public/`; nula até a foto real ser adicionada. */
   imagem: string | null;
   /** Segunda foto do mesmo produto, exibida suavemente no hover. */
@@ -28,6 +29,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] = [
   {
     id: "produto-01",
     nome: "Nome da peça 01",
+    colecao: "Vestidos",
     imagem: null,
     imagemHover: null,
     alt: "Foto da peça 01",
@@ -37,6 +39,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] = [
   {
     id: "produto-02",
     nome: "Nome da peça 02",
+    colecao: "Conjuntos Verão",
     imagem: null,
     imagemHover: null,
     alt: "Foto da peça 02",
@@ -46,6 +49,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] = [
   {
     id: "produto-03",
     nome: "Nome da peça 03",
+    colecao: "Conjuntos Inverno",
     imagem: null,
     imagemHover: null,
     alt: "Foto da peça 03",
@@ -55,6 +59,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] = [
   {
     id: "produto-04",
     nome: "Nome da peça 04",
+    colecao: "Alfaiataria",
     imagem: null,
     imagemHover: null,
     alt: "Foto da peça 04",
@@ -64,6 +69,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] = [
   {
     id: "produto-05",
     nome: "Nome da peça 05",
+    colecao: "Festa",
     imagem: null,
     imagemHover: null,
     alt: "Foto da peça 05",
@@ -73,6 +79,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] = [
   {
     id: "produto-06",
     nome: "Nome da peça 06",
+    colecao: "Casual",
     imagem: null,
     imagemHover: null,
     alt: "Foto da peça 06",

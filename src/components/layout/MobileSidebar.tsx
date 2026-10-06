@@ -177,11 +177,6 @@ export function MobileSidebar({
             onNavigate={onClose}
             className="font-heading flex items-center gap-2 text-xl leading-none tracking-wide uppercase"
           >
-            <Image
-              src={logoImg}
-              alt="Essence Passos"
-              className="h-8 w-8 object-contain"
-            />
             Essence Passos
           </SamePageScrollLink>
           <Button

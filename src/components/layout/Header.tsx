@@ -37,8 +37,10 @@ export function Header() {
   // e permanece visível enquanto o hero ocupa o topo. Fora do hero vale o
   // padrão: some ao descer e reaparece ao subir. Ele permanece aberto
   // enquanto um painel está ativo.
+  const isHome = pathname === "/";
+  const isAtHeroTop = isHome && isAtTop;
   const isHidden =
-    (isAtTop || (hasPassedHero && direction !== "up")) &&
+    (isAtHeroTop || (hasPassedHero && !isAtTop && direction !== "up")) &&
     !isSidebarOpen &&
     !isSearchOpen;
   const headerTheme = hasPassedHero ? "default" : "intro";
@@ -114,12 +116,6 @@ export function Header() {
             aria-label="Essence Passos — ir para o início"
             className="font-heading focus-visible:ring-ring/50 flex items-center gap-2 rounded-full text-base leading-none tracking-wide uppercase transition-transform duration-300 focus-visible:ring-3 focus-visible:outline-none active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
           >
-            <Image
-              src={logoImg}
-              alt=""
-              className="size-9 object-contain"
-              priority
-            />
             Essence Passos
           </SamePageScrollLink>
 
