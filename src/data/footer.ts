@@ -1,4 +1,4 @@
-import { routes } from "@/constants/routes";
+import { anchors, routes } from "@/constants/routes";
 import { contato } from "@/data/contato";
 
 export type FooterLink = {
@@ -48,7 +48,7 @@ export const footerData = {
         { label: "Trocas e devoluções", href: PENDING },
         { label: "Entregas e prazos", href: PENDING },
         { label: "Tabela de medidas", href: PENDING },
-        { label: "Perguntas frequentes", href: PENDING },
+        { label: "Perguntas frequentes", href: anchors.faq },
         { label: "Contato", href: routes.contato },
       ],
     },
@@ -83,7 +83,7 @@ export const footerData = {
 
   creditos: {
     prefixo: "Desenvolvido por",
-    nome: "MaiaWall",
+    nome: "Maiawall",
     href: "https://maiawall.com",
   },
 } as const;

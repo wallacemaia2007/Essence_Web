@@ -4,6 +4,11 @@ export const routes = {
   contato: "/contato",
 } as const;
 
+/** Âncoras de seções da home. */
+export const anchors = {
+  faq: `${routes.home}#faq`,
+} as const;
+
 export const navLinks = [
   { label: "Sobre", href: routes.sobre },
   { label: "Contato", href: routes.contato },

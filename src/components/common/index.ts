@@ -2,6 +2,7 @@ export { AnimatedText } from "./animated-text";
 export { Badge } from "./badge";
 export { Container } from "./container";
 export { Crest } from "./crest";
+export { FaqSection } from "./faq-section";
 export { ImageBanner } from "./image-banner";
 export { LinearProjectShowcase } from "./linear-project-showcase";
 export { LivroEstante } from "./LivroEstante";

@@ -1,4 +1,4 @@
-import { ImageBanner, ThemedSection } from "@/components/common";
+import { FaqSection, ImageBanner, ThemedSection } from "@/components/common";
 import { HomeAbout } from "@/components/sections/home/home-about";
 import { HomeHero } from "@/components/sections/home/home-hero";
 
@@ -62,6 +62,7 @@ export default function Home() {
         overlay="soft"
         objectPosition="center"
       />
+      <FaqSection />
       <ThemedSection className="py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-4 text-center">
           <h2 className="font-heading text-3xl tracking-wide uppercase md:text-4xl">
