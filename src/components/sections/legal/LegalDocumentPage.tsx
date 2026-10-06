@@ -76,10 +76,7 @@ export function LegalDocumentPage({ document }: { document: LegalDocument }) {
 
   return (
     <main className="flex flex-1 flex-col">
-      <ThemedSection
-        className="min-h-[70vh] bg-white py-12 text-[#231f1b] sm:py-16 lg:py-20"
-        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
-      >
+      <ThemedSection className="min-h-[70vh] bg-white py-12 text-[#231f1b] sm:py-16 lg:py-20">
         <Container className="max-w-7xl px-5 sm:px-7 lg:px-10">
           <div className="grid gap-8 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-16 xl:gap-20">
             <aside className="lg:sticky lg:top-24 lg:self-start">
