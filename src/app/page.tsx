@@ -1,12 +1,10 @@
-import { PageHero, ThemedSection } from "@/components/common";
+import { ThemedSection } from "@/components/common";
+import { HomeHero } from "@/components/sections/home/home-hero";
 
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
-      <PageHero
-        title="Essence Web Template"
-        description="Um template moderno Next.js 15+ com Tailwind CSS v4, tipografia personalizada, design system monocromático e arquitetura escalável."
-      />
+      <HomeHero />
       <ThemedSection className="py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid gap-8 md:grid-cols-3">

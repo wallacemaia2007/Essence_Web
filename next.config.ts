@@ -32,6 +32,33 @@ const nextConfig: NextConfig = {
     return [{ source: "/palestras", destination: "/midia", permanent: true }];
   },
 
+  // Arquivos de /public vêm com max-age=0, o que faria o vídeo do hero ser
+  // baixado de novo a cada visita. Vídeo e poster recebem cache longo: o nome
+  // do arquivo carrega o "conteúdo" (hero-essence.mp4), então só mude ao
+  // substituir o arquivo.
+  async headers() {
+    return [
+      {
+        source: "/videos/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/images/hero/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
+
   images: {
     remotePatterns: [{ protocol: "https", hostname: "img.youtube.com" }],
   },
