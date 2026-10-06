@@ -2,12 +2,14 @@ export const routes = {
   home: "/",
   sobre: "/sobre",
   contato: "/contato",
+  colecao: "/colecao",
 } as const;
 
 /** Âncoras de seções da home. */
 export const anchors = {
   hero: `${routes.home}#hero`,
   novidades: `${routes.home}#novidades`,
+  vitrine: `${routes.home}#vitrine`,
   instagram: `${routes.home}#redes-sociais`,
   conjuntos: `${routes.home}#conjuntos`,
   sobre: `${routes.home}#sobre-a-loja`,
@@ -17,6 +19,7 @@ export const anchors = {
 
 export const navLinks = [
   { label: "Novidades", href: anchors.novidades },
+  { label: "Vitrine", href: anchors.vitrine },
   { label: "Instagram", href: anchors.instagram },
   { label: "Looks", href: anchors.conjuntos },
   { label: "Sobre", href: anchors.sobre },
