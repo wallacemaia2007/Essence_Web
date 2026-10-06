@@ -21,6 +21,7 @@ const PENDING = "#";
 
 export const footerData = {
   marca: "Essence",
+  localidade: "Passos",
   descricaoBreve: "Moda que expressa quem você é.",
 
   newsletter: {

@@ -79,7 +79,7 @@ export function FooterNewsletter() {
             placeholder={footerData.newsletter.placeholder}
             aria-invalid={isError}
             aria-describedby={messageId}
-            className="border-border placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary/30 aria-invalid:border-destructive h-11 w-full rounded-sm border-b bg-transparent px-1 text-sm transition outline-none focus-visible:ring-3"
+            className="placeholder:text-muted-foreground aria-invalid:border-destructive h-11 w-full rounded-sm border-b bg-transparent px-1 text-sm transition outline-none"
             {...register("email", { onChange: () => setStatus("idle") })}
           />
         </div>

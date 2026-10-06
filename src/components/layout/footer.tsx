@@ -20,16 +20,29 @@ export function Footer() {
     <footer>
       <ThemedSection className="relative isolate overflow-hidden border-t pt-8 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] md:pt-12">
         <Container className="max-w-7xl">
-          <div className="grid gap-8 pb-8 md:pb-10 lg:grid-cols-2 lg:items-start lg:gap-x-16">
-            <div>
-              <SamePageScrollLink
-                href={routes.home}
-                className="font-heading hover:text-primary focus-visible:ring-ring/50 inline-block max-w-md rounded-sm text-3xl leading-none tracking-wide uppercase transition focus-visible:ring-3 focus-visible:outline-none sm:text-4xl"
-              >
-                {footerData.marca}
-              </SamePageScrollLink>
+          <div className="grid gap-8 pb-8 md:pb-10 lg:grid-cols-2 lg:items-center lg:gap-x-16">
+            <div className="text-center">
+              <div className="mx-auto flex w-fit flex-col items-stretch">
+                <SamePageScrollLink
+                  href={routes.home}
+                  className="font-heading hover:text-primary focus-visible:ring-ring/50 block rounded-sm text-center text-3xl leading-none tracking-wide uppercase transition focus-visible:ring-3 focus-visible:outline-none sm:text-4xl"
+                >
+                  {footerData.marca}
+                </SamePageScrollLink>
 
-              <p className="text-muted-foreground mt-3 max-w-sm text-base leading-7">
+                <p
+                  aria-label={footerData.localidade}
+                  className="font-heading text-foreground mt-2 flex justify-between text-[0.65rem] leading-none uppercase sm:text-xs"
+                >
+                  {Array.from(footerData.localidade).map((letter, index) => (
+                    <span key={index} aria-hidden="true">
+                      {letter}
+                    </span>
+                  ))}
+                </p>
+              </div>
+
+              <p className="text-muted-foreground mx-auto mt-3 max-w-sm text-center text-base leading-7">
                 {footerData.descricaoBreve}
               </p>
             </div>
