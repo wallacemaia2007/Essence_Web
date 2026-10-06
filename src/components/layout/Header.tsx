@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
 import { useHasPassedHero } from "@/hooks/useHasPassedHero";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
-import logoImg from "../../../public/images/logo.svg";
+import logoImg from "../../../public/images/logo.png";
 
 import { MobileSidebar } from "./MobileSidebar";
 import { NavLinks } from "./NavLinks";

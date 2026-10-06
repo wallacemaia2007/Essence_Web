@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import logoImg from "../../../public/images/logo.svg";
+import logoImg from "../../../public/images/logo.png";
 import { cn } from "@/lib/utils";
 
 type CrestProps = {

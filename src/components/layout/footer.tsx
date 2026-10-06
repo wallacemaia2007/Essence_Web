@@ -7,7 +7,7 @@ import { routes } from "@/constants/routes";
 import { footerData, type FooterLink } from "@/data/footer";
 import { socialLinks } from "@/data/social";
 
-import logoImg from "../../../public/images/logo.svg";
+import logoImg from "../../../public/images/logo.png";
 import { FooterColumn } from "./FooterColumn";
 import { FooterNewsletter } from "./FooterNewsletter";
 import { SamePageScrollLink } from "./SamePageScrollLink";

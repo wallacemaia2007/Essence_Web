@@ -8,7 +8,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
 import { cn } from "@/lib/utils";
-import logoImg from "../../../public/images/logo.svg";
+import logoImg from "../../../public/images/logo.png";
 
 import { NavLinks } from "./NavLinks";
 import { SamePageScrollLink } from "./SamePageScrollLink";
