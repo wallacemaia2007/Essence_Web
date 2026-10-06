@@ -2,8 +2,8 @@
 
 import { useLayoutEffect, useState } from "react";
 
-// Só o hero full-bleed da home recebe `data-page-hero`. Páginas internas não
-// marcam nenhum elemento, então o header nunca entra no estado "intro".
+// Páginas com um hero de entrada (como a home e as coleções) marcam o elemento
+// com `data-page-hero`; páginas sem esse marcador usam o header padrão.
 const HERO_SELECTOR = "#site-content [data-page-hero]";
 
 function readCurrentHeaderHeight(fallbackHeight: number): number {

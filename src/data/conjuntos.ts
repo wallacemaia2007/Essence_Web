@@ -1,4 +1,4 @@
-import { externalLinks } from "@/constants/routes";
+import { externalLinks, routes } from "@/constants/routes";
 
 export type Conjunto = {
   /** Identificador único e estável do banner. */
@@ -41,6 +41,7 @@ export const conjuntosData = {
       descricao: "Leves e fluidos, prontos para qualquer ocasião.",
       image: "/images/conjuntos/conjunto-vestidos.webp",
       alt: "Vestidos da Essence",
+      href: `${routes.colecao}/vestidos`,
     },
     {
       id: "conjuntos-verao",
@@ -48,6 +49,7 @@ export const conjuntosData = {
       descricao: "Tecidos frescos para os dias quentes.",
       image: "/images/conjuntos/conjunto-verao.webp",
       alt: "Conjuntos de verão da Essence",
+      href: `${routes.colecao}/conjuntos-verao`,
     },
     {
       id: "conjuntos-inverno",
@@ -55,6 +57,7 @@ export const conjuntosData = {
       descricao: "Aconchego com estilo nos dias frios.",
       image: "/images/conjuntos/conjunto-inverno.webp",
       alt: "Conjuntos de inverno da Essence",
+      href: `${routes.colecao}/conjuntos-inverno`,
     },
     {
       id: "alfaiataria",
@@ -62,6 +65,7 @@ export const conjuntosData = {
       descricao: "Cortes precisos para o trabalho e além.",
       image: "/images/conjuntos/conjunto-alfaiataria.webp",
       alt: "Conjuntos de alfaiataria da Essence",
+      href: `${routes.colecao}/alfaiataria`,
     },
     {
       id: "festa",
@@ -69,6 +73,7 @@ export const conjuntosData = {
       descricao: "Peças para brilhar nas ocasiões especiais.",
       image: "/images/conjuntos/conjunto-festa.webp",
       alt: "Looks de festa da Essence",
+      href: `${routes.colecao}/festa`,
     },
     {
       id: "casual",
@@ -76,6 +81,7 @@ export const conjuntosData = {
       descricao: "Conforto e praticidade no dia a dia.",
       image: "/images/conjuntos/conjunto-casual.webp",
       alt: "Conjuntos casuais da Essence",
+      href: `${routes.colecao}/casual`,
     },
   ] satisfies Conjunto[],
 } as const;

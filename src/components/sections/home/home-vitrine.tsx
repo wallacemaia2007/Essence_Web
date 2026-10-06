@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { Container, ThemedSection } from "@/components/common";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,7 @@ import {
   VITRINE_MAX_PRODUTOS,
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useCarouselSlides } from "@/hooks/useCarouselSlides";
 import { cn } from "@/lib/utils";
 
 function formatarPreco(preco: number) {
@@ -31,19 +30,9 @@ function formatarPreco(preco: number) {
   }).format(preco);
 }
 
-function dividirEmSlides(produtos: readonly ProdutoVitrine[]) {
-  const slides: ProdutoVitrine[][] = [];
-
-  for (
-    let index = 0;
-    index < produtos.length;
-    index += VITRINE_PRODUTOS_POR_SLIDE
-  ) {
-    slides.push(produtos.slice(index, index + VITRINE_PRODUTOS_POR_SLIDE));
-  }
-
-  return slides;
-}
+const produtosEmDestaque = produtosVitrine
+  .filter((produto) => produto.featured)
+  .slice(0, VITRINE_MAX_PRODUTOS);
 
 function ProductCard({ produto }: { produto: ProdutoVitrine }) {
   return (
@@ -129,48 +118,38 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
 }
 
 export function HomeVitrine() {
-  const reduzirMovimento = useReducedMotion();
-  const produtosEmDestaque = produtosVitrine
-    .filter((produto) => produto.featured)
-    .slice(0, VITRINE_MAX_PRODUTOS);
-  const slides = dividirEmSlides(produtosEmDestaque);
-  const [slideAtual, setSlideAtual] = useState(0);
-  const [pausado, setPausado] = useState(false);
-
-  useEffect(() => {
-    if (slides.length < 2 || reduzirMovimento || pausado) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setSlideAtual((atual) => (atual + 1) % slides.length);
-    }, VITRINE_INTERVALO_MS);
-
-    return () => window.clearInterval(intervalId);
-  }, [pausado, reduzirMovimento, slideAtual, slides.length]);
+  const {
+    slides,
+    slideAtual,
+    irParaSlide,
+    pausarPorHover,
+    retomarPorHover,
+    pausarPorFoco,
+    retomarPorFoco,
+  } = useCarouselSlides(
+    produtosEmDestaque,
+    VITRINE_PRODUTOS_POR_SLIDE,
+    VITRINE_INTERVALO_MS,
+  );
 
   if (produtosEmDestaque.length === 0) {
     return null;
   }
-
-  const irParaSlide = (proximo: number) => {
-    setSlideAtual((proximo + slides.length) % slides.length);
-  };
 
   return (
     <ThemedSection
       id="vitrine"
       aria-labelledby="vitrine-title"
       className="bg-white py-14 text-[#231f1b] sm:py-16 md:py-24"
-      onMouseEnter={() => setPausado(true)}
-      onMouseLeave={() => setPausado(false)}
-      onFocusCapture={() => setPausado(true)}
+      onMouseEnter={pausarPorHover}
+      onMouseLeave={retomarPorHover}
+      onFocusCapture={pausarPorFoco}
       onBlurCapture={(event) => {
         if (
           !(event.relatedTarget instanceof Node) ||
           !event.currentTarget.contains(event.relatedTarget)
         ) {
-          setPausado(false);
+          retomarPorFoco();
         }
       }}
     >

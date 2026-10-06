@@ -1,7 +1,6 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -10,7 +9,6 @@ import { anchors, routes } from "@/constants/routes";
 import { useHasPassedHero } from "@/hooks/useHasPassedHero";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 
-import logoImg from "../../../public/images/logo.png";
 import { MobileHeader } from "./MobileHeader";
 import { MobileSidebar } from "./MobileSidebar";
 import { NavLinks } from "./NavLinks";
@@ -37,8 +35,7 @@ export function Header() {
   // e permanece visível enquanto o hero ocupa o topo. Fora do hero vale o
   // padrão: some ao descer e reaparece ao subir. Ele permanece aberto
   // enquanto um painel está ativo.
-  const isHome = pathname === "/";
-  const isAtHeroTop = isHome && isAtTop;
+  const isAtHeroTop = !hasPassedHero && isAtTop;
   const isHidden =
     (isAtHeroTop || (hasPassedHero && !isAtTop && direction !== "up")) &&
     !isSidebarOpen &&

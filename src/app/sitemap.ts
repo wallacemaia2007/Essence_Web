@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { routes } from "@/constants/routes";
+import { conjuntosData } from "@/data/conjuntos";
 import { absoluteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,6 +12,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    ...conjuntosData.itens.map((conjunto) => ({
+      url: absoluteUrl(`${routes.colecao}/${conjunto.id}`),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
     { url: absoluteUrl("/sobre"), changeFrequency: "monthly", priority: 0.8 },
     { url: absoluteUrl("/contato"), changeFrequency: "monthly", priority: 0.6 },
     {
