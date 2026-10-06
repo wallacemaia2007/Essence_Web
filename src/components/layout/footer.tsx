@@ -1,13 +1,10 @@
 "use client";
 
-import Image from "next/image";
-
 import { Container, SocialLinks, ThemedSection } from "@/components/common";
 import { routes } from "@/constants/routes";
 import { footerData, type FooterLink } from "@/data/footer";
 import { socialLinks } from "@/data/social";
 
-import logoImg from "../../../public/images/logo.png";
 import { FooterColumn } from "./FooterColumn";
 import { FooterNewsletter } from "./FooterNewsletter";
 import { SamePageScrollLink } from "./SamePageScrollLink";
@@ -21,24 +18,18 @@ export function Footer() {
 
   return (
     <footer>
-      <ThemedSection className="relative isolate overflow-hidden border-t pt-12 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] md:pt-16">
+      <ThemedSection className="relative isolate overflow-hidden border-t pt-8 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] md:pt-12">
         <Container className="max-w-7xl">
-          {/* 1. Marca + newsletter */}
-          <div className="grid gap-10 pb-10 md:pb-14 lg:grid-cols-2 lg:items-end lg:gap-16">
-            <div className="max-w-md">
-              <Image
-                src={logoImg}
-                alt=""
-                aria-hidden="true"
-                className="mb-5 h-11 w-11 object-contain"
-              />
+          <div className="grid gap-8 pb-8 md:pb-10 lg:grid-cols-2 lg:items-start lg:gap-x-16">
+            <div>
               <SamePageScrollLink
                 href={routes.home}
-                className="font-heading hover:text-primary focus-visible:ring-ring/50 rounded-sm text-3xl leading-none tracking-wide uppercase transition focus-visible:ring-3 focus-visible:outline-none sm:text-4xl"
+                className="font-heading hover:text-primary focus-visible:ring-ring/50 inline-block max-w-md rounded-sm text-3xl leading-none tracking-wide uppercase transition focus-visible:ring-3 focus-visible:outline-none sm:text-4xl"
               >
                 {footerData.marca}
               </SamePageScrollLink>
-              <p className="text-muted-foreground mt-5 max-w-sm text-base leading-7">
+
+              <p className="text-muted-foreground mt-3 max-w-sm text-base leading-7">
                 {footerData.descricaoBreve}
               </p>
             </div>
