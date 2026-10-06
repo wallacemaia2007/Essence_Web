@@ -1,26 +1,28 @@
 "use client";
 
-import { Menu } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Container } from "@/components/common";
-import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
 import { useHasPassedHero } from "@/hooks/useHasPassedHero";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
-import logoImg from "../../../public/images/logo.png";
 
+import logoImg from "../../../public/images/logo.png";
+import { MobileHeader } from "./MobileHeader";
 import { MobileSidebar } from "./MobileSidebar";
 import { NavLinks } from "./NavLinks";
 import { SamePageScrollLink } from "./SamePageScrollLink";
+import { SiteSearchDialog } from "./SiteSearchDialog";
 
 const HEADER_HEIGHT = 64;
 
 export function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const { hasMeasured, hasPassedHero } = useHasPassedHero(
     HEADER_HEIGHT,
@@ -34,9 +36,10 @@ export function Header() {
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
+  // Gesto de borda ESQUERDA: arrastar para a direita abre a sidebar.
   const onEdgeTouchStart = useCallback((e: TouchEvent) => {
     const x = e.touches[0].clientX;
-    if (x >= window.innerWidth - 30) {
+    if (x <= 30) {
       touchStart.current = { x, y: e.touches[0].clientY };
     }
   }, []);
@@ -48,13 +51,13 @@ export function Header() {
     touchStart.current = null;
 
     if (Math.abs(dx) < Math.abs(dy)) return;
-    if (dx > -50) return;
+    if (dx < 50) return;
 
     setIsSidebarOpen(true);
   }, []);
 
   useEffect(() => {
-    if (isSidebarOpen) return;
+    if (isSidebarOpen || isSearchOpen) return;
 
     document.addEventListener("touchstart", onEdgeTouchStart, {
       passive: true,
@@ -65,7 +68,25 @@ export function Header() {
       document.removeEventListener("touchstart", onEdgeTouchStart);
       document.removeEventListener("touchend", onEdgeTouchEnd);
     };
-  }, [isSidebarOpen, onEdgeTouchStart, onEdgeTouchEnd]);
+  }, [isSidebarOpen, isSearchOpen, onEdgeTouchStart, onEdgeTouchEnd]);
+
+  const openSidebar = useCallback(() => {
+    setIsSearchOpen(false);
+    setIsSidebarOpen(true);
+  }, []);
+
+  const closeSidebar = useCallback(() => {
+    setIsSidebarOpen(false);
+  }, []);
+
+  const openSearch = useCallback(() => {
+    setIsSidebarOpen(false);
+    setIsSearchOpen(true);
+  }, []);
+
+  const closeSearch = useCallback(() => {
+    setIsSearchOpen(false);
+  }, []);
 
   return (
     <>
@@ -74,10 +95,11 @@ export function Header() {
         data-variant={hasPassedHero ? "site" : "intro"}
         data-state={isHidden ? "hidden" : "visible"}
         data-hero-state={hasMeasured ? "measured" : "pending"}
-        inert={isHidden && !isSidebarOpen ? true : undefined}
+        inert={isHidden && !isSidebarOpen && !isSearchOpen ? true : undefined}
         className="header-glass text-foreground fixed inset-x-0 top-0 z-[90] border-b backdrop-blur-md"
       >
-        <Container className="flex min-h-16 items-center justify-between gap-6">
+        {/* Desktop: composição atual preservada */}
+        <Container className="hidden min-h-16 items-center justify-between gap-6 lg:flex">
           <SamePageScrollLink
             href={routes.home}
             className="font-heading hover:text-primary focus-visible:ring-ring/50 flex items-center gap-2 text-xl leading-none tracking-wide uppercase transition-colors focus-visible:ring-3 focus-visible:outline-none"
@@ -103,31 +125,35 @@ export function Header() {
             >
               Contato
             </SamePageScrollLink>
-
-            <Button
-              ref={menuButtonRef}
-              type="button"
-              variant="ghost"
-              size="icon-lg"
-              aria-label={isSidebarOpen ? "Fechar menu" : "Abrir menu"}
-              aria-controls="mobile-sidebar"
-              aria-expanded={isSidebarOpen}
-              onClick={() => setIsSidebarOpen((prev) => !prev)}
-              className="lg:hidden"
-            >
-              <Menu aria-hidden="true" />
-            </Button>
           </div>
         </Container>
+
+        {/* Mobile: barra branca com logo centralizada */}
+        <div className="lg:hidden">
+          <MobileHeader
+            onOpenMenu={openSidebar}
+            onOpenSearch={openSearch}
+            isMenuOpen={isSidebarOpen}
+            menuButtonRef={menuButtonRef}
+            searchButtonRef={searchButtonRef}
+          />
+        </div>
       </header>
 
       <div id="mobile-sidebar">
         <MobileSidebar
           isOpen={isSidebarOpen}
-          onClose={() => setIsSidebarOpen(false)}
+          onClose={closeSidebar}
           returnFocusRef={menuButtonRef}
         />
       </div>
+
+      <SiteSearchDialog
+        key={isSearchOpen ? "site-search-open" : "site-search-closed"}
+        isOpen={isSearchOpen}
+        onClose={closeSearch}
+        returnFocusRef={searchButtonRef}
+      />
     </>
   );
 }
