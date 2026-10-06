@@ -1,3 +1,4 @@
+import { externalLinks } from "@/constants/routes";
 import type { SocialLink } from "@/types/portfolio";
 
 import { contato } from "./contato";
@@ -9,7 +10,7 @@ import { contato } from "./contato";
 export const socialLinks = [
   {
     platform: "instagram",
-    href: "https://instagram.com",
+    href: externalLinks.instagram,
     label: "Instagram",
   },
   {

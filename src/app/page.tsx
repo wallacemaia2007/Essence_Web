@@ -1,5 +1,6 @@
 import { FaqSection, ImageBanner, ThemedSection } from "@/components/common";
 import { HomeAbout } from "@/components/sections/home/home-about";
+import { HomeConjuntos } from "@/components/sections/home/home-conjuntos";
 import { HomeHero } from "@/components/sections/home/home-hero";
 
 export default function Home() {
@@ -7,50 +8,7 @@ export default function Home() {
     <main className="flex flex-1 flex-col">
       <HomeHero />
       <HomeAbout />
-      <ThemedSection className="py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-4">
-          <div className="grid gap-8 md:grid-cols-3">
-            <section className="bg-card rounded-lg border p-6">
-              <h2 className="font-heading text-2xl tracking-wide uppercase">
-                Stack Tecnológica
-              </h2>
-              <ul className="text-muted-foreground mt-4 space-y-2">
-                <li>Next.js 15+ (App Router)</li>
-                <li>React 19</li>
-                <li>Tailwind CSS v4</li>
-                <li>TypeScript</li>
-              </ul>
-            </section>
-            <section className="bg-card rounded-lg border p-6">
-              <h2 className="font-heading text-2xl tracking-wide uppercase">
-                Recursos Inclusos
-              </h2>
-              <ul className="text-muted-foreground mt-4 space-y-2">
-                <li>Design system monocromático (preto/branco)</li>
-                <li>Suporte a modo claro/escuro</li>
-                <li>Tipografia personalizada (Google Fonts)</li>
-                <li>Componentes UI (shadcn/ui)</li>
-                <li>Animações com GSAP</li>
-                <li>Formulário de contato</li>
-                <li>SEO otimizado (sitemap, robots, OG)</li>
-              </ul>
-            </section>
-            <section className="bg-card rounded-lg border p-6">
-              <h2 className="font-heading text-2xl tracking-wide uppercase">
-                Estrutura de Pastas
-              </h2>
-              <ul className="text-muted-foreground mt-4 space-y-2 font-mono text-sm">
-                <li>src/app/(rotas)</li>
-                <li>src/components/(ui, layout, sections, common)</li>
-                <li>src/data/(dados tipados)</li>
-                <li>src/lib/(utilitários, SEO)</li>
-                <li>src/hooks/(hooks personalizados)</li>
-                <li>src/constants/(rotas, config)</li>
-              </ul>
-            </section>
-          </div>
-        </div>
-      </ThemedSection>
+      <HomeConjuntos />
       <ImageBanner
         imageSrc="/images/hero/hero-essence-poster.webp"
         imageAlt=""

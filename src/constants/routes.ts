@@ -16,4 +16,5 @@ export const navLinks = [
 
 export const externalLinks = {
   github: "https://github.com",
+  instagram: "https://www.instagram.com/essencepassos/",
 } as const;
