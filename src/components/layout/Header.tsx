@@ -33,11 +33,14 @@ export function Header() {
     threshold: 9,
     topOffset: 80,
   });
-  // A cápsula só aparece quando a rolagem é para cima, fora do topo:
-  // no topo da página (hero) e ao descer ela fica recolhida.
-  // Ela permanece aberta enquanto um painel está ativo.
+  // No topo do hero o header fica recolhido; ao descer um pouco ele aparece
+  // e permanece visível enquanto o hero ocupa o topo. Fora do hero vale o
+  // padrão: some ao descer e reaparece ao subir. Ele permanece aberto
+  // enquanto um painel está ativo.
   const isHidden =
-    (isAtTop || direction === "down") && !isSidebarOpen && !isSearchOpen;
+    (isAtTop || (hasPassedHero && direction !== "up")) &&
+    !isSidebarOpen &&
+    !isSearchOpen;
   const headerTheme = hasPassedHero ? "default" : "intro";
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);

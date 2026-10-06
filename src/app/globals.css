@@ -307,8 +307,9 @@
     color-scheme: dark;
   }
 
-  /* Cápsula flutuante: fica recolhida no topo e ao rolar para baixo;
-     reaparece apenas quando a rolagem é para cima, fora do topo. */
+  /* Cápsula flutuante: recolhida no topo do hero; ao descer um pouco ela
+     aparece e fica visível enquanto o hero ocupa o topo; fora do hero vale
+     o padrão — some ao descer e reaparece ao subir. */
   .header-glass[data-state="visible"] {
     opacity: 1;
     transform: translate3d(0, 0, 0);
