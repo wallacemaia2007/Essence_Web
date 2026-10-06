@@ -307,7 +307,8 @@
     color-scheme: dark;
   }
 
-  /* Cápsula flutuante: recolhe ao rolar para baixo e reaparece ao subir. */
+  /* Cápsula flutuante: fica recolhida no topo e ao rolar para baixo;
+     reaparece apenas quando a rolagem é para cima, fora do topo. */
   .header-glass[data-state="visible"] {
     opacity: 1;
     transform: translate3d(0, 0, 0);
@@ -320,7 +321,8 @@
     pointer-events: none;
   }
 
-  /* Sobre o hero, a cápsula continua visível e legível graças ao vidro fosco. */
+  /* Sobre o hero, quando a cápsula está visível, ela segue legível
+     graças ao vidro fosco. */
   .header-glass[data-variant="intro"] {
     color-scheme: light;
     background: transparent !important;

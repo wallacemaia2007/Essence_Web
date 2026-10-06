@@ -29,10 +29,15 @@ export function Header() {
     HEADER_HEIGHT,
     pathname,
   );
-  const { direction } = useScrollDirection({ threshold: 9, topOffset: 80 });
-  // A cápsula fica acessível sobre o hero; ao descer recolhe e ao subir
-  // reaparece. Ela permanece aberta enquanto um painel está ativo.
-  const isHidden = direction === "down" && !isSidebarOpen && !isSearchOpen;
+  const { direction, isAtTop } = useScrollDirection({
+    threshold: 9,
+    topOffset: 80,
+  });
+  // A cápsula só aparece quando a rolagem é para cima, fora do topo:
+  // no topo da página (hero) e ao descer ela fica recolhida.
+  // Ela permanece aberta enquanto um painel está ativo.
+  const isHidden =
+    (isAtTop || direction === "down") && !isSidebarOpen && !isSearchOpen;
   const headerTheme = hasPassedHero ? "default" : "intro";
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);
