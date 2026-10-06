@@ -6,8 +6,8 @@ import type { Conjunto } from "@/data/conjuntos";
 import { conjuntosData } from "@/data/conjuntos";
 import { produtosVitrine } from "@/data/vitrine";
 
+import { ColecaoProdutosPaginados } from "./ColecaoProdutosPaginados";
 import { OutrosConjuntosCarrossel } from "./OutrosConjuntosCarrossel";
-import { ProdutoColecaoCard } from "./ProdutoColecaoCard";
 
 function slugificarColecao(valor: string) {
   return valor
@@ -16,59 +16,6 @@ function slugificarColecao(valor: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-}
-
-type PrateleiraProps = {
-  id: string;
-  eyebrow: string;
-  titulo: string;
-  descricao: string;
-  produtos: typeof produtosVitrine;
-  mensagemVazia: string;
-  className?: string;
-};
-
-function Prateleira({
-  id,
-  eyebrow,
-  titulo,
-  descricao,
-  produtos,
-  mensagemVazia,
-  className,
-}: PrateleiraProps) {
-  return (
-    <section aria-labelledby={`${id}-titulo`} className={className}>
-      <div className="mb-7 max-w-2xl md:mb-9">
-        <p className="text-xs font-semibold tracking-[0.24em] text-[#74685f] uppercase">
-          {eyebrow}
-        </p>
-        <h2
-          id={`${id}-titulo`}
-          className="font-heading mt-3 text-2xl leading-tight tracking-wide text-[#231f1b] uppercase sm:text-3xl md:text-4xl"
-        >
-          {titulo}
-        </h2>
-        <p className="mt-3 text-sm leading-6 text-[#655e57] sm:text-base">
-          {descricao}
-        </p>
-      </div>
-
-      {produtos.length > 0 ? (
-        <ul className="grid grid-cols-2 gap-x-3 gap-y-8 sm:gap-x-5 md:grid-cols-3 md:gap-x-6 md:gap-y-10">
-          {produtos.map((produto, index) => (
-            <li key={produto.id} className="min-w-0 before:hidden">
-              <ProdutoColecaoCard produto={produto} priority={index === 0} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="border-y border-[#e5e1dd] py-6 text-sm leading-6 text-[#655e57]">
-          {mensagemVazia}
-        </p>
-      )}
-    </section>
-  );
 }
 
 function BannerOutraColecao({ conjunto }: { conjunto: Conjunto }) {
@@ -174,23 +121,11 @@ export function ColecaoDetalhe({ colecao }: { colecao: Conjunto }) {
         className="bg-white py-12 text-[#231f1b] md:py-16"
       >
         <Container className="max-w-7xl">
-          <Prateleira
-            id="destaques-colecao"
-            eyebrow="Escolhas da Essence"
-            titulo="Destaques da coleção"
-            descricao={`Peças selecionadas de ${colecao.titulo} para você conhecer primeiro.`}
-            produtos={produtosDestaque}
-            mensagemVazia="Os destaques desta coleção serão selecionados em breve."
-            className="pb-12 md:pb-16"
-          />
-          <Prateleira
-            id="pecas-colecao"
-            eyebrow="Explore a seleção"
-            titulo="Todas as peças da coleção"
-            descricao={`Veja as outras roupas disponíveis em ${colecao.titulo}.`}
-            produtos={produtosRestantes}
-            mensagemVazia="As demais peças desta coleção serão adicionadas em breve."
-            className="border-t border-[#e5e1dd] pt-12 md:pt-16"
+          <ColecaoProdutosPaginados
+            key={colecao.id}
+            tituloColecao={colecao.titulo}
+            produtosDestaque={produtosDestaque}
+            produtosRestantes={produtosRestantes}
           />
         </Container>
       </ThemedSection>
