@@ -27,6 +27,11 @@ export const siteSearchIndex: readonly SiteSearchEntry[] = [
     href: routes.contato,
   },
   {
+    label: "Favoritos",
+    description: "Peças que você marcou com o coração",
+    href: routes.favoritos,
+  },
+  {
     label: "Localização",
     description: "Loja física em Passos — MG",
     href: `${routes.home}#localizacao`,
@@ -70,8 +75,6 @@ export function searchSite(query: string): SiteSearchEntry[] {
       "pt-BR",
     );
 
-    return normalized
-      .split(/\s+/)
-      .every((term) => haystack.includes(term));
+    return normalized.split(/\s+/).every((term) => haystack.includes(term));
   });
 }

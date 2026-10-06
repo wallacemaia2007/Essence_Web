@@ -4,33 +4,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Container, ThemedSection } from "@/components/common";
 import { Button } from "@/components/ui/button";
-import { conjuntosData } from "@/data/conjuntos";
 import {
   type ProdutoVitrine,
   VITRINE_INTERVALO_MS,
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
+import { caminhoDaColecao } from "@/lib/colecao";
 import { cn } from "@/lib/utils";
 
 import { ProdutoColecaoCard } from "./ProdutoColecaoCard";
-
-function slugificarColecao(valor: string) {
-  return valor
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-function caminhoDaColecao(nome: string) {
-  const conjunto = conjuntosData.itens.find(
-    (item) => item.id === slugificarColecao(nome),
-  );
-
-  return conjunto?.href ?? (conjunto ? `/colecao/${conjunto.id}` : undefined);
-}
 
 export function OutrosConjuntosCarrossel({
   produtos,

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 
 import { Container, ThemedSection } from "@/components/common";
+import { FavoritoButton } from "@/components/common/favorito-button";
 import { produtosVitrine, type ProdutoVitrine } from "@/data/vitrine";
 
 import {
@@ -86,15 +87,19 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
         </span>
       </div>
 
-      <div className="mt-3">
-        <h2 className="text-left text-sm leading-5 text-[#231f1b] sm:text-base">
-          {produto.nome}
-        </h2>
-        <p className="mt-1 text-left text-xs text-[#51483f] sm:text-sm">
-          {produto.preco != null
-            ? formatarPreco(produto.preco)
-            : "Preço a cadastrar"}
-        </p>
+      <div className="mt-3 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-left text-sm leading-5 text-[#231f1b] sm:text-base">
+            {produto.nome}
+          </h2>
+          <p className="mt-1 text-left text-xs text-[#51483f] sm:text-sm">
+            {produto.preco != null
+              ? formatarPreco(produto.preco)
+              : "Preço a cadastrar"}
+          </p>
+        </div>
+
+        <FavoritoButton produto={produto} />
       </div>
     </article>
   );

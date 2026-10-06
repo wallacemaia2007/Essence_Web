@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Menu, Search, ShoppingBag, User } from "lucide-react";
 import Image from "next/image";
 import type { RefObject } from "react";
 import { toast } from "sonner";
@@ -9,6 +9,7 @@ import { routes } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 import brandLogoImg from "../../../public/images/logo_16-9.png";
+import { FavoritosLink } from "./FavoritosLink";
 import { SamePageScrollLink } from "./SamePageScrollLink";
 
 type MobileHeaderProps = {
@@ -26,17 +27,12 @@ type MobileHeaderProps = {
  * `SamePageScrollLink`/`Link` apontando para a rota real em
  * `src/constants/routes.ts` (não usar href "#").
  */
-type PendingHeaderAction = "favoritos" | "conta" | "sacola";
+type PendingHeaderAction = "conta" | "sacola";
 
 const PENDING_ACTION_COPY: Record<
   PendingHeaderAction,
   { title: string; integration: string }
 > = {
-  favoritos: {
-    title: "Favoritos ainda não estão disponíveis nesta versão.",
-    integration:
-      "Integração pendente: criar rota /favoritos e estado global de favoritos.",
-  },
   conta: {
     title: "Área da conta ainda não está disponível nesta versão.",
     integration: "Integração pendente: criar rota /conta (login e perfil).",
@@ -125,15 +121,7 @@ export function MobileHeader({
 
       {/* Direita: favoritos, conta e sacola */}
       <div className="header-mobile-cluster relative z-[1] flex items-center">
-        <button
-          type="button"
-          aria-label="Abrir favoritos"
-          data-pending-integration="favoritos"
-          onClick={() => notifyPendingIntegration("favoritos")}
-          className={actionClassName}
-        >
-          <Heart aria-hidden="true" className="size-5" strokeWidth={1.75} />
-        </button>
+        <FavoritosLink className={actionClassName} />
 
         <button
           type="button"

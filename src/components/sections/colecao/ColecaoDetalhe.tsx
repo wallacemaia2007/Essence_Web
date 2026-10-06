@@ -5,18 +5,10 @@ import { Container, ThemedSection } from "@/components/common";
 import type { Conjunto } from "@/data/conjuntos";
 import { conjuntosData } from "@/data/conjuntos";
 import { produtosVitrine } from "@/data/vitrine";
+import { slugificarColecao } from "@/lib/colecao";
 
 import { ColecaoProdutosPaginados } from "./ColecaoProdutosPaginados";
 import { OutrosConjuntosCarrossel } from "./OutrosConjuntosCarrossel";
-
-function slugificarColecao(valor: string) {
-  return valor
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
-}
 
 function BannerOutraColecao({ conjunto }: { conjunto: Conjunto }) {
   const href = conjunto.href ?? `/colecao/${conjunto.id}`;

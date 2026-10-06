@@ -1,16 +1,11 @@
 "use client";
 
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Heart,
-  ImagePlus,
-} from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, ImagePlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Container, ThemedSection } from "@/components/common";
+import { FavoritoButton } from "@/components/common/favorito-button";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
 import {
@@ -98,19 +93,7 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
             </p>
           </div>
 
-          <button
-            type="button"
-            disabled
-            title="Favoritos em breve"
-            aria-label={`Adicionar ${produto.nome} aos favoritos — função em breve`}
-            className="inline-flex size-8 shrink-0 items-center justify-center text-[#51483f] opacity-80 disabled:cursor-not-allowed"
-          >
-            <Heart
-              className="size-[1.15rem]"
-              strokeWidth={1.35}
-              aria-hidden="true"
-            />
-          </button>
+          <FavoritoButton produto={produto} />
         </div>
       </article>
     </li>

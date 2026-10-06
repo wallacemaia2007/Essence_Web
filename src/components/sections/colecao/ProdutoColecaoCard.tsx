@@ -1,7 +1,8 @@
-import { Heart, ImagePlus } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { FavoritoButton } from "@/components/common/favorito-button";
 import type { ProdutoVitrine } from "@/data/vitrine";
 
 type ProdutoColecaoCardProps = {
@@ -99,19 +100,7 @@ export function ProdutoColecaoCard({
           </p>
         </div>
 
-        <button
-          type="button"
-          disabled
-          title="Favoritos em breve"
-          aria-label={`Adicionar ${produto.nome} aos favoritos — função em breve`}
-          className="inline-flex size-8 shrink-0 items-center justify-center text-[#51483f] opacity-80 disabled:cursor-not-allowed"
-        >
-          <Heart
-            className="size-[1.15rem]"
-            strokeWidth={1.35}
-            aria-hidden="true"
-          />
-        </button>
+        <FavoritoButton produto={produto} />
       </div>
     </article>
   );

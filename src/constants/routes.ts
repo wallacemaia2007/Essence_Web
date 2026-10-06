@@ -3,6 +3,7 @@ export const routes = {
   sobre: "/sobre",
   contato: "/contato",
   colecao: "/colecao",
+  favoritos: "/favoritos",
   politicaPrivacidade: "/politica-de-privacidade",
   termosUso: "/termos-de-uso",
 } as const;
