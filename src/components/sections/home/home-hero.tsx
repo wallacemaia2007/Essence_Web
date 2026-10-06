@@ -165,6 +165,7 @@ export function HomeHero({
   return (
     <section
       id="hero"
+      data-page-hero
       aria-labelledby={headingId}
       className={cn("hero", className)}
     >

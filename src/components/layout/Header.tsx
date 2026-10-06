@@ -8,7 +8,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { Container } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
-import { useHasPassedIntroSection } from "@/hooks/useHasPassedIntroSection";
+import { useHasPassedHero } from "@/hooks/useHasPassedHero";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 import logoImg from "../../../public/images/logo.svg";
 
@@ -17,21 +17,20 @@ import { NavLinks } from "./NavLinks";
 import { SamePageScrollLink } from "./SamePageScrollLink";
 
 const HEADER_HEIGHT = 64;
-const HIDE_AFTER_SCROLL_Y = 360;
 
 export function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
-  const hasPassedIntro = useHasPassedIntroSection(HEADER_HEIGHT, pathname);
-  const { direction, isAtTop, scrollY } = useScrollDirection({
-    threshold: 9,
-    topOffset: 80,
-  });
-  const canHide = hasPassedIntro && scrollY >= HIDE_AFTER_SCROLL_Y;
-  const isHidden =
-    direction === "down" && canHide && !isAtTop && !isSidebarOpen;
-  const headerTheme = hasPassedIntro ? "default" : "intro";
+  const { hasMeasured, hasPassedHero } = useHasPassedHero(
+    HEADER_HEIGHT,
+    pathname,
+  );
+  const { direction } = useScrollDirection({ threshold: 9, topOffset: 80 });
+  // No hero o header não existe. Fora dele só volta ao rolar para cima: ao
+  // descer, sai de cena.
+  const isHidden = !hasPassedHero || direction === "down";
+  const headerTheme = hasPassedHero ? "default" : "intro";
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
@@ -72,8 +71,10 @@ export function Header() {
     <>
       <header
         data-header-theme={headerTheme}
-        data-variant={hasPassedIntro ? "site" : "intro"}
+        data-variant={hasPassedHero ? "site" : "intro"}
         data-state={isHidden ? "hidden" : "visible"}
+        data-hero-state={hasMeasured ? "measured" : "pending"}
+        inert={isHidden && !isSidebarOpen ? true : undefined}
         className="header-glass text-foreground fixed inset-x-0 top-0 z-[90] border-b backdrop-blur-md"
       >
         <Container className="flex min-h-16 items-center justify-between gap-6">

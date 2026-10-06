@@ -236,8 +236,9 @@
     border-color: color-mix(in srgb, var(--border), transparent 52%);
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition-property: background-color, border-color, backdrop-filter;
-    transition-duration: 520ms;
+    transition-property: opacity, transform, background-color, border-color,
+      backdrop-filter;
+    transition-duration: 320ms, 320ms, 520ms, 520ms, 520ms;
     transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform, opacity;
   }
@@ -246,40 +247,21 @@
     color-scheme: dark;
   }
 
+  /* some ao rolar para baixo, volta ao rolar para cima */
   .header-glass[data-variant="site"][data-state="visible"] {
-    animation: header-slide-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
     pointer-events: auto;
   }
 
   .header-glass[data-variant="site"][data-state="hidden"] {
-    animation: header-slide-out 360ms cubic-bezier(0.55, 0, 1, 0.45) both;
+    opacity: 0;
+    transform: translate3d(0, calc(-100% - 1px), 0);
     pointer-events: none;
   }
 
-  .header-glass[data-variant="intro"] {
-    background: transparent;
-    border-color: transparent;
-    backdrop-filter: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .header-glass {
-      transition-property: opacity, background-color, border-color;
-      transition-duration: 120ms;
-      will-change: auto;
-    }
-
-    .header-glass[data-variant="site"][data-state="visible"],
-    .header-glass[data-variant="site"][data-state="hidden"] {
-      animation: none;
-    }
-
-    .header-glass[data-variant="site"][data-state="hidden"] {
-      opacity: 0;
-      transform: translate3d(0, 0, 0);
-    }
-  }
-
+  /* Sobre o hero da home o header não existe: sem fundo, sem blur, fora do
+     canvas e inalcançável. O `inert` no elemento cuida do teclado/leitor. */
   .header-glass[data-variant="intro"] {
     color-scheme: light;
     background: transparent !important;
@@ -287,37 +269,36 @@
     border-color: transparent !important;
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
+    opacity: 0;
+    transform: translate3d(0, calc(-100% - 1px), 0);
+    pointer-events: none;
   }
 
   .dark .header-glass[data-variant="intro"] {
     color-scheme: dark;
   }
 
-  @keyframes header-slide-in {
-    from {
-      opacity: 0;
-      transform: translate3d(0, calc(-100% - 1px), 0);
-    }
-
-    70% {
-      opacity: 1;
-    }
-
-    to {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
-    }
+  /* Primeiro paint, antes da hidratação: se a página tem hero, o header já
+     nasce oculto. Depois que o JS mede a geometria quem manda é o
+     data-variant. Páginas sem hero (Sobre, Contato) seguem visíveis no SSR. */
+  body:has(#site-content [data-page-hero])
+    .header-glass[data-hero-state="pending"] {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(0, calc(-100% - 1px), 0);
+    pointer-events: none;
   }
 
-  @keyframes header-slide-out {
-    from {
-      opacity: 1;
-      transform: translate3d(0, 0, 0);
+  @media (prefers-reduced-motion: reduce) {
+    .header-glass {
+      transition-duration: 120ms, 120ms, 120ms, 120ms, 120ms;
+      will-change: auto;
     }
 
-    to {
+    .header-glass[data-variant="site"][data-state="hidden"],
+    .header-glass[data-variant="intro"] {
       opacity: 0;
-      transform: translate3d(0, calc(-100% - 1px), 0);
+      transform: translate3d(0, 0, 0);
     }
   }
 

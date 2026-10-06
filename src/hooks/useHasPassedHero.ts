@@ -2,7 +2,9 @@
 
 import { useLayoutEffect, useState } from "react";
 
-const INTRO_SECTION_SELECTOR = "#site-content .themed-section[data-theme]";
+// Só o hero full-bleed da home recebe `data-page-hero`. Páginas internas não
+// marcam nenhum elemento, então o header nunca entra no estado "intro".
+const HERO_SELECTOR = "#site-content [data-page-hero]";
 
 function readCurrentHeaderHeight(fallbackHeight: number): number {
   const header = document.querySelector<HTMLElement>("[data-header-theme]");
@@ -10,23 +12,31 @@ function readCurrentHeaderHeight(fallbackHeight: number): number {
   return header?.getBoundingClientRect().height ?? fallbackHeight;
 }
 
-function hasPassedIntroSection(headerHeight: number): boolean {
-  const introSection = document.querySelector<HTMLElement>(
-    INTRO_SECTION_SELECTOR,
-  );
+function isPastHero(headerHeight: number): boolean {
+  const hero = document.querySelector<HTMLElement>(HERO_SELECTOR);
 
-  if (!introSection) {
-    return false;
+  // Sem hero de entrada: o header nasce visível (fundo translúcido).
+  if (!hero) {
+    return true;
   }
 
-  return introSection.getBoundingClientRect().bottom <= headerHeight;
+  return hero.getBoundingClientRect().bottom <= headerHeight;
 }
 
-export function useHasPassedIntroSection(
+export type HeroScrollState = {
+  // Verdadeiro depois que a geometria foi lida ao menos uma vez. Antes disso
+  // quem decide é o CSS (`data-hero-state="pending"`), para o primeiro paint
+  // não piscar.
+  hasMeasured: boolean;
+  hasPassedHero: boolean;
+};
+
+export function useHasPassedHero(
   headerHeight = 64,
   resetKey?: string | null,
-): boolean {
-  const [hasPassedIntro, setHasPassedIntro] = useState(false);
+): HeroScrollState {
+  const [hasPassedHero, setHasPassedHero] = useState(true);
+  const [hasMeasured, setHasMeasured] = useState(false);
 
   useLayoutEffect(() => {
     let frameId: number | null = null;
@@ -34,7 +44,8 @@ export function useHasPassedIntroSection(
     const updateFromGeometry = () => {
       frameId = null;
       const measuredHeaderHeight = readCurrentHeaderHeight(headerHeight);
-      setHasPassedIntro(hasPassedIntroSection(measuredHeaderHeight));
+      setHasPassedHero(isPastHero(measuredHeaderHeight));
+      setHasMeasured(true);
     };
 
     const scheduleGeometryUpdate = () => {
@@ -58,5 +69,5 @@ export function useHasPassedIntroSection(
     };
   }, [headerHeight, resetKey]);
 
-  return hasPassedIntro;
+  return { hasMeasured, hasPassedHero };
 }
