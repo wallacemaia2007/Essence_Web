@@ -1,5 +1,6 @@
 import { anchors, routes } from "@/constants/routes";
 import { contato } from "@/data/contato";
+import { localizacaoLoja } from "@/data/localizacao";
 
 export type FooterLink = {
   label: string;
@@ -63,10 +64,10 @@ export const footerData = {
     },
   ] satisfies FooterLinkGroup[],
 
-  /** PLACEHOLDER: dados de contato fictícios, troque pelos reais. */
+  /** O endereço foi confirmado; email e telefone continuam configuráveis. */
   contato: {
     titulo: "Contato",
-    endereco: ["Rua Exemplo, 123 — Centro", "São Paulo — SP"],
+    endereco: localizacaoLoja.endereco,
     email: contato.email,
     telefone: "(11) 99999-9999",
     whatsapp: `https://wa.me/${contato.whatsapp}`,
