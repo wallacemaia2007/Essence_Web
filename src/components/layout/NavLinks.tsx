@@ -32,7 +32,7 @@ export function NavLinks({
             aria-current={isActive ? "page" : undefined}
             onNavigate={onNavigate}
             className={cn(
-              "nav-link-animated focus-visible:ring-ring/50 inline-flex items-center rounded-full px-2.5 py-2 text-sm font-medium text-[#655e57] hover:text-[#231f1b] focus-visible:ring-3 focus-visible:outline-none aria-[current=page]:text-[#231f1b]",
+              "nav-link-animated focus-visible:ring-ring/50 inline-flex items-center rounded-full px-2.5 py-2 text-sm font-medium text-[#000000] hover:text-[#000000] focus-visible:ring-3 focus-visible:outline-none aria-[current=page]:text-[#000000]",
               linkClassName,
             )}
           >

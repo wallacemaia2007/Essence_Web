@@ -161,7 +161,7 @@ function FooterLinkList({ links }: { links: readonly FooterLink[] }) {
     <ul>
       {links.map((link) => {
         const label = (
-          <span className="nav-link-animated">
+          <span className="nav-link-animated inline-block pb-0.5 [--underline-bottom:0px] [--underline-inset-x:0px]">
             {link.label}
             {link.external ? (
               <span className="sr-only"> (abre em uma nova aba)</span>

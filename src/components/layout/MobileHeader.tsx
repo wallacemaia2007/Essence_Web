@@ -57,7 +57,7 @@ function notifyPendingIntegration(action: PendingHeaderAction) {
 const actionClassName = cn(
   "header-mobile-action",
   "inline-flex size-11 shrink-0 items-center justify-center rounded-full",
-  "text-[#231f1b] transition-[background-color,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-90 motion-reduce:transition-none motion-reduce:active:scale-100",
+  "text-[#000000] transition-[background-color,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-90 motion-reduce:transition-none motion-reduce:active:scale-100",
   "hover:bg-[rgb(35_31_27_/_0.05)]",
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]",
 );

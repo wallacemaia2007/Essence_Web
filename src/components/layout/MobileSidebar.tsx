@@ -165,7 +165,7 @@ export function MobileSidebar({
         aria-modal="true"
         aria-label="Menu principal"
         className={cn(
-          "themed-section fixed top-0 left-0 flex h-dvh w-[min(23rem,calc(100vw-2rem))] flex-col rounded-r-[1.5rem] border-r border-[#231f1b]/10 bg-[#faf8f4]/95 px-5 py-5 text-[#231f1b] shadow-[0_20px_65px_rgba(35,31,27,0.2)] backdrop-blur-2xl transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,1.25,0.35,1)] motion-reduce:transition-none",
+          "themed-section fixed top-0 left-0 flex h-dvh w-[min(23rem,calc(100vw-2rem))] flex-col rounded-r-[1.5rem] border-r border-[#231f1b]/10 bg-[#faf8f4]/95 px-5 py-5 text-[#000000] shadow-[0_20px_65px_rgba(35,31,27,0.2)] backdrop-blur-2xl transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,1.25,0.35,1)] motion-reduce:transition-none",
           isOpen
             ? "translate-x-0 opacity-100"
             : "-translate-x-full opacity-0 motion-reduce:translate-x-0",
@@ -175,7 +175,7 @@ export function MobileSidebar({
           <SamePageScrollLink
             href={routes.home}
             onNavigate={onClose}
-            className="font-heading flex items-center gap-2 text-xl leading-none tracking-wide uppercase"
+            className="font-heading flex items-center gap-2 text-xl leading-none tracking-wide text-[#000000] uppercase"
           >
             Essence Passos
           </SamePageScrollLink>
@@ -193,13 +193,13 @@ export function MobileSidebar({
         <NavLinks
           onNavigate={onClose}
           className="mt-10 flex flex-col gap-1"
-          linkClassName="px-1 py-3 text-base text-[#655e57] hover:text-[#231f1b]"
+          linkClassName="px-1 py-3 text-base text-[#000000] hover:text-[#000000] aria-[current=page]:text-[#000000]"
         />
 
         <SamePageScrollLink
           href={anchors.localizacao}
           onNavigate={onClose}
-          className="mt-auto inline-flex h-12 items-center justify-center rounded-full bg-[#231f1b] px-4 text-sm font-semibold text-white transition duration-300 hover:bg-[#4a4038] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
+          className="mt-auto inline-flex h-12 items-center justify-center rounded-full bg-[#000000] px-4 text-sm font-semibold text-white transition duration-300 hover:bg-[#333333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100"
         >
           Visite a loja
         </SamePageScrollLink>

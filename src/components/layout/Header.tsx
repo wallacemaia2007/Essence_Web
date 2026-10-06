@@ -111,20 +111,20 @@ export function Header() {
           <SamePageScrollLink
             href={routes.home}
             aria-label="Essence Passos — ir para o início"
-            className="font-heading focus-visible:ring-ring/50 flex items-center gap-2 rounded-full text-base leading-none tracking-wide uppercase transition-transform duration-300 focus-visible:ring-3 focus-visible:outline-none active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            className="font-heading focus-visible:ring-ring/50 flex items-center gap-2 rounded-full text-base leading-none tracking-wide text-[#000000] uppercase transition-transform duration-300 focus-visible:ring-3 focus-visible:outline-none active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
           >
             Essence Passos
           </SamePageScrollLink>
 
           <NavLinks
             className="hidden items-center gap-0.5 lg:flex"
-            linkClassName="text-[0.68rem] font-semibold tracking-[0.12em] text-[#655e57] uppercase hover:text-[#231f1b]"
+            linkClassName="text-[0.68rem] font-semibold tracking-[0.12em] text-[#000000] uppercase hover:text-[#000000] aria-[current=page]:text-[#000000]"
           />
 
           <div className="flex items-center gap-2">
             <SamePageScrollLink
               href={anchors.localizacao}
-              className="inline-flex h-10 items-center gap-2 rounded-full bg-[#231f1b] px-4 text-xs font-semibold tracking-wide text-white transition duration-300 hover:bg-[#4a4038] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-[#000000] px-4 text-xs font-semibold tracking-wide text-white transition duration-300 hover:bg-[#333333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
             >
               <MapPin aria-hidden="true" className="size-3.5" />
               Visite a loja
