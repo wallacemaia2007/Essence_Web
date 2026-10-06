@@ -15,6 +15,9 @@ const linkClassName =
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { contato } = footerData;
+  const emailConfigurado = !contato.email
+    .toLowerCase()
+    .endsWith("@example.com");
 
   return (
     <footer>
@@ -51,7 +54,7 @@ export function Footer() {
           </div>
 
           {/* 2. Colunas de links (acordeão no mobile) */}
-          <div className="border-border border-t md:grid md:grid-cols-2 md:gap-x-12 md:gap-y-10 md:pt-10 lg:grid-cols-4">
+          <div className="border-border border-t md:grid md:grid-cols-2 md:gap-x-12 md:gap-y-10 md:pt-10 lg:grid-cols-5 lg:gap-x-8">
             {footerData.grupos.map((group) => (
               <FooterColumn key={group.title} title={group.title}>
                 <nav aria-label={group.title}>
@@ -69,14 +72,16 @@ export function Footer() {
                     </span>
                   ))}
                 </p>
-                <p>
-                  <a
-                    href={`mailto:${contato.email}`}
-                    className="hover:text-primary focus-visible:ring-ring/50 rounded-sm transition-colors focus-visible:ring-3 focus-visible:outline-none"
-                  >
-                    {contato.email}
-                  </a>
-                </p>
+                {emailConfigurado ? (
+                  <p>
+                    <a
+                      href={`mailto:${contato.email}`}
+                      className="hover:text-primary focus-visible:ring-ring/50 rounded-sm transition-colors focus-visible:ring-3 focus-visible:outline-none"
+                    >
+                      {contato.email}
+                    </a>
+                  </p>
+                ) : null}
                 <p>
                   <a
                     href={contato.whatsapp}
@@ -154,13 +159,35 @@ export function Footer() {
 function FooterLinkList({ links }: { links: readonly FooterLink[] }) {
   return (
     <ul>
-      {links.map((link) => (
-        <li key={link.label} className="pl-0 before:hidden">
-          <SamePageScrollLink href={link.href} className={linkClassName}>
-            <span className="nav-link-animated">{link.label}</span>
-          </SamePageScrollLink>
-        </li>
-      ))}
+      {links.map((link) => {
+        const label = (
+          <span className="nav-link-animated">
+            {link.label}
+            {link.external ? (
+              <span className="sr-only"> (abre em uma nova aba)</span>
+            ) : null}
+          </span>
+        );
+
+        return (
+          <li key={link.label} className="pl-0 before:hidden">
+            {link.external ? (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkClassName}
+              >
+                {label}
+              </a>
+            ) : (
+              <SamePageScrollLink href={link.href} className={linkClassName}>
+                {label}
+              </SamePageScrollLink>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }

@@ -1,10 +1,12 @@
 import { anchors, routes } from "@/constants/routes";
+import { conjuntosData } from "@/data/conjuntos";
 import { contato } from "@/data/contato";
 import { localizacaoLoja } from "@/data/localizacao";
 
 export type FooterLink = {
   label: string;
   href: string;
+  external?: boolean;
 };
 
 export type FooterLinkGroup = {
@@ -12,12 +14,22 @@ export type FooterLinkGroup = {
   links: readonly FooterLink[];
 };
 
-/**
- * PLACEHOLDER: `href: "#"` marca páginas que ainda não existem no projeto.
- * Quando a rota entrar no ar, troque o "#" pelo caminho real (ou adicione a
- * rota em `src/constants/routes.ts` e use aqui).
- */
-const PENDING = "#";
+const whatsappHref = `https://wa.me/${contato.whatsapp.replace(/\D/g, "")}`;
+
+function formatarTelefone(telefone: string) {
+  const digitos = telefone.replace(/\D/g, "");
+  const numeroLocal = digitos.startsWith("55") ? digitos.slice(2) : digitos;
+
+  if (numeroLocal.length === 11) {
+    return `(${numeroLocal.slice(0, 2)}) ${numeroLocal.slice(2, 7)}-${numeroLocal.slice(7)}`;
+  }
+
+  if (numeroLocal.length === 10) {
+    return `(${numeroLocal.slice(0, 2)}) ${numeroLocal.slice(2, 6)}-${numeroLocal.slice(6)}`;
+  }
+
+  return telefone;
+}
 
 export const footerData = {
   marca: "Essence",
@@ -34,45 +46,48 @@ export const footerData = {
 
   grupos: [
     {
-      title: "Loja",
+      title: "Navegue",
       links: [
-        { label: "Novidades", href: PENDING },
-        { label: "Coleções", href: PENDING },
-        { label: "Feminino", href: PENDING },
-        { label: "Masculino", href: PENDING },
-        { label: "Acessórios", href: PENDING },
-        { label: "Outlet", href: PENDING },
+        { label: "Novidades", href: anchors.novidades },
+        { label: "Vitrine", href: anchors.vitrine },
+        { label: "Catálogo completo", href: routes.colecao },
+        { label: "Conjuntos", href: anchors.conjuntos },
+        { label: "Instagram", href: anchors.instagram },
       ],
     },
     {
-      title: "Ajuda",
+      title: "Conjuntos",
+      links: conjuntosData.itens.map((conjunto) => ({
+        label: conjunto.titulo,
+        href: conjunto.href ?? `${routes.colecao}/${conjunto.id}`,
+      })),
+    },
+    {
+      title: "Atendimento",
       links: [
-        { label: "Trocas e devoluções", href: PENDING },
-        { label: "Entregas e prazos", href: PENDING },
-        { label: "Tabela de medidas", href: PENDING },
-        { label: "Perguntas frequentes", href: anchors.faq },
-        { label: "Contato", href: routes.contato },
+        { label: "Dúvidas frequentes", href: anchors.faq },
+        { label: "Fale com a loja", href: routes.contato },
+        { label: "WhatsApp", href: whatsappHref, external: true },
       ],
     },
     {
       title: "Institucional",
       links: [
         { label: "Sobre a Essence", href: routes.sobre },
-        { label: "Lojas físicas", href: PENDING },
-        { label: "Trabalhe conosco", href: PENDING },
+        { label: "Loja física em Passos", href: anchors.localizacao },
         { label: "Política de Privacidade", href: routes.politicaPrivacidade },
         { label: "Termos de Uso", href: routes.termosUso },
       ],
     },
   ] satisfies FooterLinkGroup[],
 
-  /** O endereço foi confirmado; email e telefone continuam configuráveis. */
+  /** O endereço e o telefone usam os dados de localização e WhatsApp cadastrados. */
   contato: {
     titulo: "Contato",
     endereco: localizacaoLoja.endereco,
     email: contato.email,
-    telefone: contato.telefone,
-    whatsapp: `https://wa.me/${contato.whatsapp}`,
+    telefone: formatarTelefone(contato.whatsapp),
+    whatsapp: whatsappHref,
     horario: "Seg a sex, 9h às 18h",
   },
 

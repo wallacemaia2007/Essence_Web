@@ -30,14 +30,4 @@ export const socialLinks = [
     href: whatsappUrl,
     label: "WhatsApp",
   },
-  {
-    platform: "tiktok",
-    href: "https://tiktok.com",
-    label: "TikTok",
-  },
-  {
-    platform: "pinterest",
-    href: "https://pinterest.com",
-    label: "Pinterest",
-  },
 ] satisfies SocialLink[];
