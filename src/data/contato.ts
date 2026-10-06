@@ -1,7 +1,7 @@
 export const contato = {
   email: "contato@example.com",
   whatsapp: "5535992050341",
-  institutoMotiro: "https://github.com",
+  telefone: "+55 (35) 99205-0341",
 };
 
 export const contatoAssuntos = [

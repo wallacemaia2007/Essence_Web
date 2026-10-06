@@ -1,5 +1,3 @@
-import { Crest } from "@/components/common/crest";
-
 type SectionTitleProps = {
   eyebrow?: string;
   title: string;
@@ -13,9 +11,6 @@ export function SectionTitle({
 }: SectionTitleProps) {
   return (
     <div className="max-w-3xl">
-      <div className="text-primary mb-4">
-        <Crest className="h-12 w-12" />
-      </div>
       {eyebrow ? (
         <p className="text-primary text-xs font-semibold tracking-[0.26em] uppercase">
           {eyebrow}

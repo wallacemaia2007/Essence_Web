@@ -111,7 +111,7 @@ export function HomeSocial() {
                   alt=""
                   width={44}
                   height={44}
-                  className="size-11 object-contain"
+                  className="size-full rounded-full object-cover"
                 />
               </span>
             </div>

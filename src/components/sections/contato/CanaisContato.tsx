@@ -33,15 +33,15 @@ export function CanaisContato() {
             >
               WhatsApp
             </QuickContactLink>
-          ) : (
-            <QuickContactLink
-              href={contato.institutoMotiro}
-              icon={<ExternalLink />}
-              external
-            >
-              Instituto Motirõ
-            </QuickContactLink>
-          )}
+          ) : null}
+
+          <QuickContactLink
+            href={contato.telefone}
+            icon={<MessageCircle />}
+            external
+          >
+            Telefone
+          </QuickContactLink>
         </div>
       </div>
 
