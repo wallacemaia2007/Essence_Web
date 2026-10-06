@@ -1,4 +1,4 @@
-import { ThemedSection } from "@/components/common";
+import { ImageBanner, ThemedSection } from "@/components/common";
 import { HomeHero } from "@/components/sections/home/home-hero";
 
 export default function Home() {
@@ -49,6 +49,17 @@ export default function Home() {
           </div>
         </div>
       </ThemedSection>
+      <ImageBanner
+        imageSrc="/images/hero/hero-essence-poster.webp"
+        imageAlt=""
+        buttonLabel="Contato"
+        buttonAriaLabel="Ir para a página de contato"
+        href="/contato"
+        buttonVariant="light"
+        buttonPosition="bottom"
+        overlay="soft"
+        objectPosition="center"
+      />
       <ThemedSection className="py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-4 text-center">
           <h2 className="font-heading text-3xl tracking-wide uppercase md:text-4xl">
