@@ -43,7 +43,7 @@ function precoNumerico(value: string) {
 function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
   return (
     <article className="group min-w-0">
-      <div className="relative aspect-[2/3] overflow-hidden bg-[#eee9e3]">
+      <div className="relative aspect-[2/3] overflow-hidden bg-[#f5f5f5]">
         {produto.imagem ? (
           <>
             <Image
@@ -68,7 +68,7 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
           <div
             role="img"
             aria-label={`Foto pendente: ${produto.alt}`}
-            className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(145deg,#f5f1ec,#e8e0d8)] text-[#74685f]"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(145deg,#ffffff,#f1f1ef)] text-[#74685f]"
           >
             <ImagePlus
               className="size-9 opacity-70"
@@ -138,9 +138,9 @@ export function CatalogoProdutos() {
     filtros.colecoes.length;
 
   return (
-    <ThemedSection className="min-h-[70vh] bg-[#f8f6f2] py-12 text-[#231f1b] sm:py-16 md:py-20">
+    <ThemedSection className="min-h-[70vh] bg-white py-12 text-[#231f1b] sm:py-16 md:py-20">
       <Container className="max-w-[1600px] px-5 sm:px-7 lg:px-10">
-        <header className="mb-8 border-b border-[#ded7ce] pb-7 md:mb-10 md:pb-9">
+        <header className="mb-8 border-b border-[#e5e5e5] pb-7 md:mb-10 md:pb-9">
           <p className="text-xs font-medium tracking-[0.22em] text-[#75695e] uppercase">
             Essence — coleção
           </p>
@@ -166,7 +166,7 @@ export function CatalogoProdutos() {
               onChange={(event) => setBusca(event.target.value)}
               placeholder="Buscar por nome"
               autoComplete="off"
-              className="h-12 w-full border border-[#d8d0c7] bg-white pr-4 pl-12 text-sm text-[#231f1b] transition-colors outline-none placeholder:text-[#897f75] focus:border-[#75695e] focus:ring-2 focus:ring-[#75695e]/15"
+              className="h-12 w-full border border-[#dedede] bg-white pr-4 pl-12 text-sm text-[#231f1b] transition-colors outline-none placeholder:text-[#897f75] focus:border-[#75695e] focus:ring-2 focus:ring-[#75695e]/15"
             />
           </label>
 
@@ -216,7 +216,7 @@ export function CatalogoProdutos() {
             ))}
           </ul>
         ) : (
-          <div className="border border-dashed border-[#cfc5ba] bg-white/60 px-6 py-16 text-center">
+          <div className="border border-dashed border-[#d7d7d7] bg-white px-6 py-16 text-center">
             <p className="text-left text-base text-[#231f1b]">
               Nenhuma peça encontrada.
             </p>

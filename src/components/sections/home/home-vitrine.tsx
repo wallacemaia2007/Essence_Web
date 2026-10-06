@@ -49,7 +49,7 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
   return (
     <li className="min-w-0 list-none p-0 before:hidden">
       <article className="group">
-        <div className="relative aspect-[2/3] overflow-hidden bg-[#eee9e3]">
+        <div className="relative aspect-[2/3] overflow-hidden bg-[#f5f5f5]">
           {produto.imagem ? (
             <>
               <Image
@@ -79,7 +79,7 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
             <div
               role="img"
               aria-label={`Foto pendente: ${produto.alt}`}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(145deg,#f5f1ec,#e8e0d8)] text-[#74685f] transition-colors duration-500 group-hover:bg-[linear-gradient(145deg,#eee8e1,#ddd2c7)] motion-reduce:transition-none"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(145deg,#ffffff,#f1f1ef)] text-[#74685f] transition-colors duration-500 group-hover:bg-[linear-gradient(145deg,#f5f5f5,#e9e9e7)] motion-reduce:transition-none"
             >
               <ImagePlus
                 className="size-8 opacity-70"

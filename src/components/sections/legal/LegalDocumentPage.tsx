@@ -77,7 +77,7 @@ export function LegalDocumentPage({ document }: { document: LegalDocument }) {
   return (
     <main className="flex flex-1 flex-col">
       <ThemedSection
-        className="min-h-[70vh] bg-[#f5f1ea] py-12 text-[#231f1b] sm:py-16 lg:py-20"
+        className="min-h-[70vh] bg-white py-12 text-[#231f1b] sm:py-16 lg:py-20"
         style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
       >
         <Container className="max-w-7xl px-5 sm:px-7 lg:px-10">
@@ -188,7 +188,7 @@ export function LegalDocumentPage({ document }: { document: LegalDocument }) {
                 <div className="mt-5 flex flex-wrap gap-3">
                   <Link
                     href={routes.contato}
-                    className="inline-flex min-h-11 items-center justify-center bg-[#231f1b] px-5 text-xs font-bold tracking-[0.12em] text-[#f5f1ea] uppercase transition-colors hover:bg-[#8a6746] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8a6746] motion-reduce:transition-none"
+                    className="inline-flex min-h-11 items-center justify-center bg-[#231f1b] px-5 text-xs font-bold tracking-[0.12em] text-white uppercase transition-colors hover:bg-[#8a6746] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8a6746] motion-reduce:transition-none"
                   >
                     Fale com a Essence
                   </Link>

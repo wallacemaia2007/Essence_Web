@@ -112,9 +112,9 @@ export function CatalogoFiltrosDrawer({
         aria-modal="true"
         aria-labelledby="catalogo-filtros-title"
         tabIndex={-1}
-        className="motion-safe:animate-in motion-safe:slide-in-from-right absolute inset-y-0 right-0 flex h-dvh w-full max-w-[26rem] flex-col bg-[#fbf9f6] text-[#231f1b] shadow-2xl outline-none motion-safe:duration-300"
+        className="motion-safe:animate-in motion-safe:slide-in-from-right absolute inset-y-0 right-0 flex h-dvh w-full max-w-[26rem] flex-col bg-white text-[#231f1b] shadow-2xl outline-none motion-safe:duration-300"
       >
-        <header className="flex items-center justify-between border-b border-[#ded7ce] px-6 py-5">
+        <header className="flex items-center justify-between border-b border-[#e5e5e5] px-6 py-5">
           <div>
             <p className="text-[0.65rem] font-medium tracking-[0.2em] text-[#75695e] uppercase">
               Refine sua busca
@@ -131,7 +131,7 @@ export function CatalogoFiltrosDrawer({
             type="button"
             onClick={onFechar}
             aria-label="Fechar filtros"
-            className="inline-flex size-11 items-center justify-center rounded-full border border-[#d8d0c7] transition-colors hover:bg-[#f0ebe5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] motion-reduce:transition-none"
+            className="inline-flex size-11 items-center justify-center rounded-full border border-[#dedede] transition-colors hover:bg-[#f5f5f5] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] motion-reduce:transition-none"
           >
             <X className="size-5" aria-hidden="true" />
           </button>
@@ -145,7 +145,7 @@ export function CatalogoFiltrosDrawer({
             <div className="grid grid-cols-2 gap-3">
               <label className="block text-xs text-[#665b52]">
                 Mínimo
-                <span className="mt-2 flex h-11 items-center border border-[#d8d0c7] bg-white px-3 focus-within:border-[#75695e] focus-within:ring-2 focus-within:ring-[#75695e]/15">
+                <span className="mt-2 flex h-11 items-center border border-[#dedede] bg-white px-3 focus-within:border-[#75695e] focus-within:ring-2 focus-within:ring-[#75695e]/15">
                   <span aria-hidden="true" className="mr-2 text-[#75695e]">
                     R$
                   </span>
@@ -166,7 +166,7 @@ export function CatalogoFiltrosDrawer({
               </label>
               <label className="block text-xs text-[#665b52]">
                 Máximo
-                <span className="mt-2 flex h-11 items-center border border-[#d8d0c7] bg-white px-3 focus-within:border-[#75695e] focus-within:ring-2 focus-within:ring-[#75695e]/15">
+                <span className="mt-2 flex h-11 items-center border border-[#dedede] bg-white px-3 focus-within:border-[#75695e] focus-within:ring-2 focus-within:ring-[#75695e]/15">
                   <span aria-hidden="true" className="mr-2 text-[#75695e]">
                     R$
                   </span>
@@ -200,7 +200,7 @@ export function CatalogoFiltrosDrawer({
             ) : null}
           </fieldset>
 
-          <fieldset className="space-y-4 border-0 border-t border-[#ded7ce] p-0 pt-7">
+          <fieldset className="space-y-4 border-0 border-t border-[#e5e5e5] p-0 pt-7">
             <legend className="text-sm font-semibold tracking-[0.08em] uppercase">
               Coleções
             </legend>
@@ -232,7 +232,7 @@ export function CatalogoFiltrosDrawer({
           </fieldset>
         </div>
 
-        <footer className="border-t border-[#ded7ce] bg-[#fbf9f6] px-6 py-5">
+        <footer className="border-t border-[#e5e5e5] bg-white px-6 py-5">
           <div className="mb-4">
             <button
               type="button"

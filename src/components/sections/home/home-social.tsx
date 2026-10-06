@@ -99,7 +99,7 @@ export function HomeSocial() {
     <ThemedSection
       id="redes-sociais"
       aria-labelledby="social-feature-title"
-      className="social-feature bg-[#f5f1ea] py-16 text-[#231f1b] md:py-24"
+      className="social-feature bg-white py-16 text-[#231f1b] md:py-24"
     >
       <Container className="max-w-7xl">
         <div className="grid gap-10 lg:grid-cols-[minmax(15rem,0.78fr)_minmax(0,1.8fr)] lg:items-center lg:gap-14">
