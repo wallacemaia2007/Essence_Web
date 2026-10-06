@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { routes } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
-import brandLogoImg from "../../../public/images/brand/logo.png";
+import brandLogoImg from "../../../public/images/logo_16-9.png";
 import { SamePageScrollLink } from "./SamePageScrollLink";
 
 type MobileHeaderProps = {
@@ -39,8 +39,7 @@ const PENDING_ACTION_COPY: Record<
   },
   conta: {
     title: "Área da conta ainda não está disponível nesta versão.",
-    integration:
-      "Integração pendente: criar rota /conta (login e perfil).",
+    integration: "Integração pendente: criar rota /conta (login e perfil).",
   },
   sacola: {
     title: "Sacola ainda não está disponível nesta versão.",
@@ -57,8 +56,8 @@ function notifyPendingIntegration(action: PendingHeaderAction) {
 
 const actionClassName = cn(
   "header-mobile-action",
-  "inline-flex size-11 shrink-0 items-center justify-center rounded-lg",
-  "text-[#231f1b] transition-colors",
+  "inline-flex size-11 shrink-0 items-center justify-center rounded-full",
+  "text-[#231f1b] transition-[background-color,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-90 motion-reduce:transition-none motion-reduce:active:scale-100",
   "hover:bg-[rgb(35_31_27_/_0.05)]",
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]",
 );
@@ -114,12 +113,12 @@ export function MobileHeader({
       <SamePageScrollLink
         href={routes.home}
         aria-label="Essence — ir para o início"
-        className="header-mobile-logo absolute left-1/2 z-[2] inline-flex min-h-11 min-w-11 -translate-x-1/2 items-center justify-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+        className="header-mobile-logo absolute left-1/2 z-[2] inline-flex min-h-11 min-w-11 -translate-x-1/2 items-center justify-center rounded-lg transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100"
       >
         <Image
           src={brandLogoImg}
           alt="Essence"
-          className="h-8 w-8 object-contain sm:h-9 sm:w-9"
+          className="h-14 w-auto object-contain"
           priority
         />
       </SamePageScrollLink>
@@ -153,7 +152,11 @@ export function MobileHeader({
           onClick={() => notifyPendingIntegration("sacola")}
           className={actionClassName}
         >
-          <ShoppingBag aria-hidden="true" className="size-5" strokeWidth={1.75} />
+          <ShoppingBag
+            aria-hidden="true"
+            className="size-5"
+            strokeWidth={1.75}
+          />
         </button>
       </div>
     </div>

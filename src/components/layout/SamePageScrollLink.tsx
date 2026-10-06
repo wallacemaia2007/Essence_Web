@@ -35,7 +35,7 @@ export function SamePageScrollLink({
   return (
     <Link
       href={href}
-      scroll={false}
+      scroll={!isSamePage}
       onNavigate={(event) => {
         if (!isSamePage) {
           onNavigate?.(event);

@@ -1,11 +1,12 @@
 "use client";
 
+import { MapPin } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Container } from "@/components/common";
-import { routes } from "@/constants/routes";
+import { anchors, routes } from "@/constants/routes";
 import { useHasPassedHero } from "@/hooks/useHasPassedHero";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 
@@ -29,9 +30,9 @@ export function Header() {
     pathname,
   );
   const { direction } = useScrollDirection({ threshold: 9, topOffset: 80 });
-  // No hero o header não existe. Fora dele só volta ao rolar para cima: ao
-  // descer, sai de cena.
-  const isHidden = !hasPassedHero || direction === "down";
+  // A cápsula fica acessível sobre o hero; ao descer recolhe e ao subir
+  // reaparece. Ela permanece aberta enquanto um painel está ativo.
+  const isHidden = direction === "down" && !isSidebarOpen && !isSearchOpen;
   const headerTheme = hasPassedHero ? "default" : "intro";
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -96,39 +97,41 @@ export function Header() {
         data-state={isHidden ? "hidden" : "visible"}
         data-hero-state={hasMeasured ? "measured" : "pending"}
         inert={isHidden && !isSidebarOpen && !isSearchOpen ? true : undefined}
-        className="header-glass text-foreground fixed inset-x-0 top-0 z-[90] border-b backdrop-blur-md"
+        className="header-glass fixed inset-x-0 top-0 z-[90]"
       >
-        {/* Desktop: composição atual preservada */}
-        <Container className="hidden min-h-16 items-center justify-between gap-6 lg:flex">
+        {/* Desktop: navegação em cápsula de vidro fosco */}
+        <Container className="header-desktop-shell hidden min-h-16 items-center justify-between gap-2 lg:flex">
           <SamePageScrollLink
             href={routes.home}
-            className="font-heading hover:text-primary focus-visible:ring-ring/50 flex items-center gap-2 text-xl leading-none tracking-wide uppercase transition-colors focus-visible:ring-3 focus-visible:outline-none"
+            aria-label="Essence Passos — ir para o início"
+            className="font-heading focus-visible:ring-ring/50 flex items-center gap-2 rounded-full text-base leading-none tracking-wide uppercase transition-transform duration-300 focus-visible:ring-3 focus-visible:outline-none active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
           >
             <Image
               src={logoImg}
-              alt="Essence Web Template"
-              className="h-8 w-8 object-contain"
+              alt=""
+              className="size-9 object-contain"
               priority
             />
-            Essence Web
+            Essence Passos
           </SamePageScrollLink>
 
           <NavLinks
-            className="hidden items-center gap-4 lg:flex"
-            linkClassName="text-sm"
+            className="hidden items-center gap-0.5 lg:flex"
+            linkClassName="text-[0.68rem] font-semibold tracking-[0.12em] text-[#655e57] uppercase hover:text-[#231f1b]"
           />
 
           <div className="flex items-center gap-2">
             <SamePageScrollLink
-              href={routes.contato}
-              className="bg-primary text-primary-foreground focus-visible:ring-ring/50 hover:bg-primary/85 hidden h-9 items-center rounded-md px-3 text-sm font-semibold transition focus-visible:ring-3 focus-visible:outline-none sm:inline-flex"
+              href={anchors.localizacao}
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-[#231f1b] px-4 text-xs font-semibold tracking-wide text-white transition duration-300 hover:bg-[#4a4038] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
             >
-              Contato
+              <MapPin aria-hidden="true" className="size-3.5" />
+              Visite a loja
             </SamePageScrollLink>
           </div>
         </Container>
 
-        {/* Mobile: barra branca com logo centralizada */}
+        {/* Mobile: cápsula translúcida com logo centralizada */}
         <div className="lg:hidden">
           <MobileHeader
             onOpenMenu={openSidebar}

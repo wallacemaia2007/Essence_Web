@@ -212,82 +212,125 @@
 
   .nav-link-animated {
     position: relative;
+    border-radius: 9999px;
+    transition:
+      color 180ms ease,
+      background-color 180ms ease,
+      transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .nav-link-animated::after {
-    content: "";
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--primary);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: none;
   }
 
-  .nav-link-animated:hover::after {
-    transform: scaleX(1);
+  .nav-link-animated:hover {
+    transform: translateY(-1px);
+    background: rgb(35 31 27 / 0.055);
+  }
+
+  .nav-link-animated:active {
+    transform: scale(0.96);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .nav-link-animated::after {
       transition: none;
     }
+
+    .nav-link-animated {
+      transition: none;
+    }
+
+    .nav-link-animated:hover,
+    .nav-link-animated:active {
+      transform: none;
+    }
   }
 
   .header-glass {
     color-scheme: light;
-    background: color-mix(in srgb, var(--background), transparent 42%);
-    border-color: color-mix(in srgb, var(--border), transparent 52%);
+    padding-block-start: max(0.65rem, env(safe-area-inset-top));
+    padding-inline: clamp(0.75rem, 2.2vw, 1.75rem);
+    background: transparent;
+    border-color: transparent;
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition-property:
-      opacity, transform, background-color, border-color, backdrop-filter;
-    transition-duration: 320ms, 320ms, 520ms, 520ms, 520ms;
-    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+      opacity 220ms ease,
+      transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
     will-change: transform, opacity;
+  }
+
+  .header-desktop-shell,
+  .header-mobile-bar {
+    color-scheme: light;
+    border: 1px solid rgb(255 255 255 / 0.72);
+    background: rgb(250 248 244 / 0.78);
+    box-shadow:
+      0 16px 48px rgb(35 31 27 / 0.12),
+      inset 0 1px 0 rgb(255 255 255 / 0.9);
+    -webkit-backdrop-filter: blur(24px) saturate(175%);
+    backdrop-filter: blur(24px) saturate(175%);
+    transition:
+      background-color 260ms ease,
+      box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 260ms ease;
+  }
+
+  .header-desktop-shell {
+    max-width: 72rem;
+    min-height: 4.25rem;
+    padding-inline: clamp(1rem, 2vw, 1.5rem);
+    border-color: rgb(255 255 255 / 0.78);
+    border-radius: 9999px;
+    color: #231f1b;
+  }
+
+  .header-mobile-bar {
+    max-width: 72rem;
+    min-height: 3.6rem;
+    margin-inline: auto;
+    border-color: rgb(255 255 255 / 0.8);
+    border-radius: 1.35rem;
+    background: rgb(250 248 244 / 0.82);
+    color: #231f1b;
+  }
+
+  .header-desktop-shell:hover,
+  .header-mobile-bar:hover {
+    box-shadow:
+      0 20px 56px rgb(35 31 27 / 0.15),
+      inset 0 1px 0 rgb(255 255 255 / 0.96);
   }
 
   .dark .header-glass {
     color-scheme: dark;
   }
 
-  /* some ao rolar para baixo, volta ao rolar para cima */
-  .header-glass[data-variant="site"][data-state="visible"] {
+  /* Cápsula flutuante: recolhe ao rolar para baixo e reaparece ao subir. */
+  .header-glass[data-state="visible"] {
     opacity: 1;
     transform: translate3d(0, 0, 0);
     pointer-events: auto;
   }
 
-  .header-glass[data-variant="site"][data-state="hidden"] {
+  .header-glass[data-state="hidden"] {
     opacity: 0;
-    transform: translate3d(0, calc(-100% - 1px), 0);
+    transform: translate3d(0, calc(-100% - 1rem), 0);
     pointer-events: none;
   }
 
-  /* Sobre o hero da home o header não existe: sem fundo, sem blur, fora do
-     canvas e inalcançável. O `inert` no elemento cuida do teclado/leitor. */
+  /* Sobre o hero, a cápsula continua visível e legível graças ao vidro fosco. */
   .header-glass[data-variant="intro"] {
     color-scheme: light;
     background: transparent !important;
     background-color: transparent !important;
     border-color: transparent !important;
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-    opacity: 0;
-    transform: translate3d(0, calc(-100% - 1px), 0);
-    pointer-events: none;
   }
 
-  .dark .header-glass[data-variant="intro"] {
-    color-scheme: dark;
-  }
-
-  /* Primeiro paint, antes da hidratação: se a página tem hero, o header já
-     nasce oculto. Depois que o JS mede a geometria quem manda é o
-     data-variant. Páginas sem hero (Sobre, Contato) seguem visíveis no SSR. */
+  /* Primeiro paint: em páginas com hero, a cápsula nasce oculta enquanto o JS
+     mede a geometria para evitar um flash; após a medida, fica disponível
+     também sobre o hero. Páginas sem hero já aparecem no SSR. */
   body:has(#site-content [data-page-hero])
     .header-glass[data-hero-state="pending"] {
     opacity: 0;
@@ -298,31 +341,31 @@
 
   @media (prefers-reduced-motion: reduce) {
     .header-glass {
-      transition-duration: 120ms, 120ms, 120ms, 120ms, 120ms;
+      transition-duration: 120ms, 120ms;
       will-change: auto;
     }
 
-    .header-glass[data-variant="site"][data-state="hidden"],
-    .header-glass[data-variant="intro"] {
+    .header-glass[data-state="hidden"] {
       opacity: 0;
       transform: translate3d(0, 0, 0);
+    }
+
+    .header-desktop-shell,
+    .header-mobile-bar {
+      transition: none;
     }
   }
 
   /* ------------------------------------------------------------------
-     Header mobile (< lg): barra branca, limpa e compacta.
-     O logo fica centralizado na viewport (absolute), independente da
-     largura dos clusters de ícones à esquerda e à direita.
-     O header desktop continua com o vidro (header-glass) intacto.
+     Header mobile (< lg): barra vítrea, arredondada e compacta.
+     O logo segue centralizado na viewport, independente dos clusters laterais.
      ------------------------------------------------------------------ */
   @media (max-width: 1023px) {
     .header-glass[data-variant="site"] {
       color-scheme: light;
-      background: #ffffff !important;
-      background-color: #ffffff !important;
-      border-color: rgb(35 31 27 / 0.08) !important;
-      -webkit-backdrop-filter: none !important;
-      backdrop-filter: none !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      border-color: transparent !important;
     }
   }
 
@@ -357,8 +400,7 @@
        --hero-footer-height         altura do rodapé
        --hero-footer-bg/-border     vidro e borda do rodapé
        --hero-marquee-duration      velocidade do carrossel
-       --hero-marquee-separator     símbolo entre os nomes (✦ • / —)
-       --hero-marquee-separator-color  cor de destaque do separador
+       --hero-marquee-gap           espaçamento entre os nomes
        --hero-veil-color/-height    véu sutil da base
        --hero-media-position        object-position do vídeo/poster
      ------------------------------------------------------------------ */
@@ -371,9 +413,7 @@
     --hero-footer-weight: 600;
     --hero-footer-tracking: 0.24em;
     --hero-marquee-duration: 20s;
-    --hero-marquee-gap: 1.5rem;
-    --hero-marquee-separator: "\2726"; /* ✦ */
-    --hero-marquee-separator-color: rgb(255 255 255 / 0.55);
+    --hero-marquee-gap: 3rem;
     --hero-veil-height: 32%;
     --hero-veil-color: rgb(0 0 0 / 0.35);
     --hero-media-position: center;
@@ -484,15 +524,9 @@
   .marquee__item {
     display: inline-flex;
     align-items: center;
-    gap: var(--hero-marquee-gap);
+    /* Margem (e não gap do track): o -50% da animação segue exato. */
+    margin-inline-end: var(--hero-marquee-gap);
     white-space: nowrap;
-  }
-
-  /* O separador também fecha a emenda do loop (último item → primeiro item). */
-  .marquee__item::after {
-    content: var(--hero-marquee-separator);
-    color: var(--hero-marquee-separator-color);
-    font-size: 0.72em;
   }
 
   .marquee__label,
@@ -564,7 +598,7 @@
     .hero {
       --hero-footer-height: 4.25rem;
       --hero-marquee-duration: 30s;
-      --hero-marquee-gap: 2rem;
+      --hero-marquee-gap: 4.5rem;
     }
   }
 
