@@ -3,6 +3,8 @@ export const routes = {
   sobre: "/sobre",
   contato: "/contato",
   colecao: "/colecao",
+  politicaPrivacidade: "/politica-de-privacidade",
+  termosUso: "/termos-de-uso",
 } as const;
 
 /** Âncoras de seções da home. */

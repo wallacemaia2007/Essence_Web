@@ -78,8 +78,8 @@ export const footerData = {
   pagamentos: ["Pix", "Visa", "Mastercard", "Elo", "Boleto"],
 
   legal: [
-    { label: "Política de Privacidade", href: PENDING },
-    { label: "Termos de Uso", href: PENDING },
+    { label: "Política de Privacidade", href: routes.politicaPrivacidade },
+    { label: "Termos de Uso", href: routes.termosUso },
   ] satisfies FooterLink[],
 
   creditos: {
