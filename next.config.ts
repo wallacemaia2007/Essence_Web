@@ -61,6 +61,9 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns: [{ protocol: "https", hostname: "img.youtube.com" }],
+    // Padrão do Next é [75]: qualquer outro `quality` é arredondado para 75.
+    // 80 é o usado na foto da seção "Sobre a loja".
+    qualities: [75, 80],
   },
 };
 

@@ -1,10 +1,12 @@
 import { ImageBanner, ThemedSection } from "@/components/common";
+import { HomeAbout } from "@/components/sections/home/home-about";
 import { HomeHero } from "@/components/sections/home/home-hero";
 
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
       <HomeHero />
+      <HomeAbout />
       <ThemedSection className="py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid gap-8 md:grid-cols-3">

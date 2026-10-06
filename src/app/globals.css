@@ -166,6 +166,13 @@
     height: 0;
     background: transparent;
   }
+
+  /* Default de parágrafo do site. Fica em `base` de propósito: regra sem
+     camada vence qualquer regra dentro de `@layer`, o que deixaria o
+     `text-align: left` de componentes (ex.: .about__body p) sem efeito. */
+  p {
+    text-align: justify;
+  }
 }
 
 @layer components {
@@ -778,6 +785,189 @@
   }
 }
 
-p {
-  text-align: justify;
+/* ------------------------------------------------------------------
+   Home "Sobre a loja": foto com parallax ancorada à esquerda, escurecendo
+   para a direita — o texto fica sobre a área escura. Sempre escura e com
+   texto claro, independente do tema claro/escuro do site.
+
+   Ajustes rápidos (tudo declarado em .about):
+     --about-shade           cor do degradê (canais RGB, sem vírgula)
+     --about-min-height      altura mínima da seção
+     --about-media-position  enquadramento da foto (esquerda por padrão)
+     --about-content-width   largura máxima da coluna de texto
+   O degradê em si fica em .about__veil (paradas de opacidade por tela).
+   ------------------------------------------------------------------ */
+@layer components {
+  .about {
+    --about-shade: 5 5 5;
+    --about-min-height: 42rem;
+    --about-media-position: left center;
+    --about-content-width: 34rem;
+
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    min-height: var(--about-min-height);
+    overflow: hidden;
+    color: #fff;
+    background-color: rgb(var(--about-shade));
+  }
+
+  /* 30% mais alta que a seção, centralizada: margem para o parallax. */
+  .about__media {
+    position: absolute;
+    inset-inline: 0;
+    top: -15%;
+    z-index: 0;
+    height: 130%;
+    will-change: transform;
+  }
+
+  .about__image {
+    object-fit: cover;
+    object-position: var(--about-media-position);
+  }
+
+  /* Mobile: o texto desce para a base, então o escuro sobe de baixo. */
+  .about__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: linear-gradient(
+      to top,
+      rgb(var(--about-shade) / 1) 0%,
+      rgb(var(--about-shade) / 0.92) 42%,
+      rgb(var(--about-shade) / 0.45) 72%,
+      rgb(var(--about-shade) / 0) 100%
+    );
+  }
+
+  .about__inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding: 12rem 1rem 4rem;
+  }
+
+  .about__content {
+    max-width: var(--about-content-width);
+    text-align: left;
+  }
+
+  .about__eyebrow {
+    margin: 0 0 1rem;
+    color: rgb(255 255 255 / 0.62);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .about__title {
+    margin: 0;
+    font-family: var(--font-bodoni-moda), Georgia, "Times New Roman", serif;
+    font-size: clamp(2.1rem, 5vw, 3.75rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .about__body {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1rem;
+    color: rgb(255 255 255 / 0.82);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .about__body p {
+    text-align: left;
+  }
+
+  .about__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-top: 2rem;
+    padding-inline: 1.5rem;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition:
+      background-color 240ms ease,
+      color 240ms ease;
+  }
+
+  .about__cta:hover {
+    background-color: #fff;
+    color: #000;
+  }
+
+  .about__cta:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+  }
+
+  /* Desktop: foto à esquerda, escuro crescendo para a direita, texto na metade escura. */
+  @media (min-width: 1024px) {
+    .about {
+      --about-min-height: 46rem;
+
+      align-items: center;
+    }
+
+    .about__veil {
+      background-image: linear-gradient(
+        to right,
+        rgb(var(--about-shade) / 0) 0%,
+        rgb(var(--about-shade) / 0) 20%,
+        rgb(var(--about-shade) / 0.62) 45%,
+        rgb(var(--about-shade) / 0.9) 62%,
+        rgb(var(--about-shade) / 0.98) 80%,
+        rgb(var(--about-shade) / 1) 100%
+      );
+    }
+
+    .about__inner {
+      padding: 7rem 2rem;
+    }
+
+    .about__content {
+      margin-left: auto;
+      /* Alinha o texto à metade direita do container. */
+      margin-right: 0;
+    }
+
+    .about__body {
+      font-size: 1.0625rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .about {
+      --about-min-height: 52rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about__media {
+      will-change: auto;
+    }
+
+    .about__cta {
+      transition: none;
+    }
+  }
 }
