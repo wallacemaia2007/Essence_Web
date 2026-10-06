@@ -58,8 +58,8 @@ const actionClassName = cn(
   "header-mobile-action",
   "inline-flex size-11 shrink-0 items-center justify-center rounded-full",
   "text-[#000000] transition-[background-color,transform] duration-300 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-90 motion-reduce:transition-none motion-reduce:active:scale-100",
-  "hover:bg-[rgb(35_31_27_/_0.05)]",
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]",
+  "hover:bg-black/5",
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000]",
 );
 
 /**
@@ -113,7 +113,7 @@ export function MobileHeader({
       <SamePageScrollLink
         href={routes.home}
         aria-label="Essence — ir para o início"
-        className="header-mobile-logo absolute left-1/2 z-[2] inline-flex min-h-11 min-w-11 -translate-x-1/2 items-center justify-center rounded-lg transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100"
+        className="header-mobile-logo absolute left-1/2 z-[2] inline-flex min-h-11 min-w-11 -translate-x-1/2 items-center justify-center rounded-lg transition-transform duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100"
       >
         <Image
           src={brandLogoImg}

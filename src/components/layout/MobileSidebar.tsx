@@ -165,7 +165,7 @@ export function MobileSidebar({
         aria-modal="true"
         aria-label="Menu principal"
         className={cn(
-          "themed-section fixed top-0 left-0 flex h-dvh w-[min(23rem,calc(100vw-2rem))] flex-col rounded-r-[1.5rem] border-r border-[#231f1b]/10 bg-[#faf8f4]/95 px-5 py-5 text-[#000000] shadow-[0_20px_65px_rgba(35,31,27,0.2)] backdrop-blur-2xl transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,1.25,0.35,1)] motion-reduce:transition-none",
+          "themed-section fixed top-0 left-0 flex h-dvh w-[min(23rem,calc(100vw-2rem))] flex-col rounded-r-[1.5rem] border-border border-r bg-white px-5 py-5 text-[#000000] shadow-[0_20px_65px_rgba(0,0,0,0.2)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,1.25,0.35,1)] motion-reduce:transition-none",
           isOpen
             ? "translate-x-0 opacity-100"
             : "-translate-x-full opacity-0 motion-reduce:translate-x-0",
