@@ -1,9 +1,14 @@
 import type { IconType } from "react-icons";
 import {
+  FaFacebookF,
   FaGithub,
   FaInstagram,
   FaLinkedinIn,
+  FaPinterestP,
+  FaSpotify,
+  FaTiktok,
   FaTwitter,
+  FaWhatsapp,
   FaYoutube,
 } from "react-icons/fa6";
 
@@ -21,10 +26,11 @@ const socialIconMap: Record<SocialPlatform, IconType> = {
   linkedin: FaLinkedinIn,
   instagram: FaInstagram,
   youtube: FaYoutube,
-  facebook: FaGithub, // fallback
-  tiktok: FaGithub, // fallback
-  whatsapp: FaGithub, // fallback
-  spotify: FaGithub, // fallback
+  facebook: FaFacebookF,
+  tiktok: FaTiktok,
+  pinterest: FaPinterestP,
+  whatsapp: FaWhatsapp,
+  spotify: FaSpotify,
 };
 
 export function SocialLinks({ className, links }: SocialLinksProps) {

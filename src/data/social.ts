@@ -1,20 +1,30 @@
 import type { SocialLink } from "@/types/portfolio";
+
 import { contato } from "./contato";
 
+/**
+ * PLACEHOLDER: troque os links pelos perfis reais da loja.
+ * Os ícones vêm de `SocialLinks` (src/components/common/social-links.tsx).
+ */
 export const socialLinks = [
   {
-    platform: "github",
-    href: "https://github.com",
-    label: "GitHub",
+    platform: "instagram",
+    href: "https://instagram.com",
+    label: "Instagram",
   },
   {
-    platform: "twitter",
-    href: "https://twitter.com",
-    label: "Twitter",
+    platform: "whatsapp",
+    href: `https://wa.me/${contato.whatsapp}`,
+    label: "WhatsApp",
   },
   {
-    platform: "linkedin",
-    href: "https://linkedin.com",
-    label: "LinkedIn",
+    platform: "tiktok",
+    href: "https://tiktok.com",
+    label: "TikTok",
+  },
+  {
+    platform: "pinterest",
+    href: "https://pinterest.com",
+    label: "Pinterest",
   },
 ] satisfies SocialLink[];

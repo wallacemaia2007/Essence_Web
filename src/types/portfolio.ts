@@ -6,6 +6,7 @@ export type SocialPlatform =
   | "youtube"
   | "facebook"
   | "tiktok"
+  | "pinterest"
   | "whatsapp"
   | "spotify";
 
