@@ -9,7 +9,10 @@ export const metadata: Metadata = {
   title: "Favoritos",
   description: "As peças da Essence que você marcou com o coração.",
   alternates: { canonical: routes.favoritos },
-  // Lista pessoal (fica no navegador de cada visitante): não indexar.
+  openGraph: {
+    title: "Favoritos",
+    description: "As peças da Essence que você marcou com o coração.",
+  },
   robots: { index: false, follow: true },
 };
 

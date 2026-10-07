@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { Container, Crest, ThemedSection } from "@/components/common";
+import { Container, ThemedSection } from "@/components/common";
 import { routes } from "@/constants/routes";
 
 type PageHeaderProps = {
@@ -20,9 +20,7 @@ export function PageHeader({
   return (
     <ThemedSection className="border-b py-16 md:py-20">
       <Container>
-        <div className="text-primary">
-          <Crest className="h-12 w-12" />
-        </div>
+        <div className="text-primary"></div>
 
         <nav
           aria-label="Breadcrumb"
