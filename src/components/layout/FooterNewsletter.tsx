@@ -55,10 +55,10 @@ export function FooterNewsletter() {
 
   return (
     <div>
-      <h2 className="font-heading text-2xl leading-tight tracking-wide uppercase md:text-3xl text-center lg:text-left">
+      <h2 className="font-heading text-center text-2xl leading-tight tracking-wide uppercase md:text-3xl lg:text-left">
         {footerData.newsletter.titulo}
       </h2>
-      <p className="text-muted-foreground mt-3 max-w-md text-sm leading-6 text-center lg:text-left">
+      <p className="text-muted-foreground mt-3 max-w-md text-center text-sm leading-6 lg:text-left">
         {footerData.newsletter.descricao}
       </p>
 
@@ -79,7 +79,7 @@ export function FooterNewsletter() {
             placeholder={footerData.newsletter.placeholder}
             aria-invalid={isError}
             aria-describedby={messageId}
-            className="placeholder:text-muted-foreground aria-invalid:border-destructive h-11 w-full rounded-sm border-b bg-transparent px-1 text-sm transition outline-none"
+            className="placeholder:text-muted-foreground aria-invalid:border-destructive h-8 w-full rounded-sm border-b bg-transparent px-1 text-sm transition outline-none"
             {...register("email", { onChange: () => setStatus("idle") })}
           />
         </div>

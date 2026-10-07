@@ -1,15 +1,15 @@
 "use client";
 
-import { Menu, Search, ShoppingBag, User } from "lucide-react";
+import { Menu, Search, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { RefObject } from "react";
-import { toast } from "sonner";
 
 import { routes } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 import brandLogoImg from "../../../public/images/logo_16-9.png";
+import { CarrinhoLink } from "./CarrinhoLink";
 import { FavoritosLink } from "./FavoritosLink";
 import { SamePageScrollLink } from "./SamePageScrollLink";
 
@@ -21,26 +21,6 @@ type MobileHeaderProps = {
   searchButtonRef?: RefObject<HTMLButtonElement | null>;
   className?: string;
 };
-
-/** A sacola continua demonstrativa; conta e favoritos já têm seus destinos. */
-type PendingHeaderAction = "sacola";
-
-const PENDING_ACTION_COPY: Record<
-  PendingHeaderAction,
-  { title: string; integration: string }
-> = {
-  sacola: {
-    title: "Sacola ainda não está disponível nesta versão.",
-    integration:
-      "Integração pendente: criar rota /sacola e estado de carrinho.",
-  },
-};
-
-function notifyPendingIntegration(action: PendingHeaderAction) {
-  const copy = PENDING_ACTION_COPY[action];
-
-  toast.info(copy.title, { description: copy.integration });
-}
 
 const actionClassName = cn(
   "header-mobile-action",
@@ -123,19 +103,7 @@ export function MobileHeader({
           <User aria-hidden="true" className="size-5" strokeWidth={1.75} />
         </Link>
 
-        <button
-          type="button"
-          aria-label="Abrir sacola"
-          data-pending-integration="sacola"
-          onClick={() => notifyPendingIntegration("sacola")}
-          className={actionClassName}
-        >
-          <ShoppingBag
-            aria-hidden="true"
-            className="size-5"
-            strokeWidth={1.75}
-          />
-        </button>
+        <CarrinhoLink className={actionClassName} />
       </div>
     </div>
   );

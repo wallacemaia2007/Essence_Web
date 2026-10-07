@@ -11,6 +11,7 @@ import { useHasPassedHero } from "@/hooks/useHasPassedHero";
 import { useHeaderTopHold } from "@/hooks/useHeaderTopHold";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 
+import { CarrinhoLink } from "./CarrinhoLink";
 import { FavoritosLink } from "./FavoritosLink";
 import { MobileHeader } from "./MobileHeader";
 import { MobileSidebar } from "./MobileSidebar";
@@ -133,6 +134,7 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <FavoritosLink className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100" />
+            <CarrinhoLink className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100" />
             <Link
               href={routes.login}
               aria-label="Entrar na conta"

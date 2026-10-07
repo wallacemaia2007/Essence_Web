@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { anchors, routes } from "@/constants/routes";
+import { routes } from "@/constants/routes";
 import { caminhoDaColecao } from "@/lib/colecao";
 import {
   formatarPreco,
@@ -90,11 +90,11 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
             <hr className="my-6 border-[#e5e1dd]" />
 
             <ProdutoCompra
+              produtoId={produto.id}
               nome={produto.nome}
               referencia={referencia}
               tamanhos={tamanhos}
               whatsappBase={whatsappBase}
-              hrefLoja={anchors.localizacao}
             />
 
             <div className="mt-8 flex items-start gap-4 bg-[#f1efec] p-5">

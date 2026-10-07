@@ -1,29 +1,29 @@
 "use client";
 
-import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
+import { toast } from "sonner";
 
 import type { TamanhoProduto } from "@/data/produto-detalhes";
+import { useCarrinho } from "@/hooks/useCarrinho";
 import { cn } from "@/lib/utils";
 import { mensagemDeInteresse, montarLinkWhatsapp } from "@/lib/whatsapp";
 
 type ProdutoCompraProps = {
+  produtoId: string;
   nome: string;
   referencia: string;
   tamanhos: readonly TamanhoProduto[];
   /** Link base do WhatsApp da loja (a mensagem é acrescentada aqui). */
   whatsappBase: string;
-  /** Destino do botão "Visitar a loja". */
-  hrefLoja: string;
 };
 
 /**
- * Seletor de tamanho e botões de compra. Sem carrinho por enquanto: "Comprar"
- * abre o WhatsApp da loja com a peça e o tamanho já escritos na mensagem.
+ * Seletor de tamanho e ações de compra da página do produto.
  */
 export function ProdutoCompra({
-  hrefLoja,
+  produtoId,
   nome,
   referencia,
   tamanhos,
@@ -31,6 +31,7 @@ export function ProdutoCompra({
 }: ProdutoCompraProps) {
   const idErro = useId();
   const grupoRef = useRef<HTMLFieldSetElement>(null);
+  const { adicionar } = useCarrinho();
   const [tamanho, setTamanho] = useState<string | null>(null);
   const [mostrarErro, setMostrarErro] = useState(false);
 
@@ -48,6 +49,26 @@ export function ProdutoCompra({
         ?.querySelector<HTMLInputElement>("input:not(:disabled)")
         ?.focus();
     }
+  }
+
+  function aoAdicionarAoCarrinho() {
+    if (!exigeTamanho) {
+      toast.error("Esta peça está temporariamente indisponível.");
+      return;
+    }
+
+    if (tamanho === null) {
+      setMostrarErro(true);
+      grupoRef.current
+        ?.querySelector<HTMLInputElement>("input:not(:disabled)")
+        ?.focus();
+      return;
+    }
+
+    adicionar(produtoId, tamanho);
+    toast.success(`${nome} adicionado à sacola`, {
+      description: `Tamanho ${tamanho}`,
+    });
   }
 
   return (
@@ -118,12 +139,15 @@ export function ProdutoCompra({
         {exigeTamanho ? "Comprar pelo WhatsApp" : "Consultar disponibilidade"}
       </a>
 
-      <Link
-        href={hrefLoja}
-        className="mt-3 flex h-12 w-full items-center justify-center border border-black px-4 text-xs font-semibold tracking-[0.18em] text-[#231f1b] uppercase transition-colors hover:bg-black hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black motion-reduce:transition-none"
+      <button
+        type="button"
+        onClick={aoAdicionarAoCarrinho}
+        disabled={!exigeTamanho}
+        className="mt-3 flex h-12 w-full items-center justify-center gap-2 border border-black px-4 text-xs font-semibold tracking-[0.18em] text-[#231f1b] uppercase transition-colors hover:bg-black hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-not-allowed disabled:border-[#cfc6bc] disabled:text-[#897f75] disabled:hover:bg-transparent disabled:hover:text-[#897f75] motion-reduce:transition-none"
       >
-        Visitar a loja
-      </Link>
+        <ShoppingBag className="size-4" aria-hidden="true" />
+        Adicionar ao carrinho
+      </button>
     </div>
   );
 }

@@ -10,6 +10,7 @@ export const routes = {
   colecao: "/colecao",
   produto: "/produto",
   favoritos: "/favoritos",
+  carrinho: "/carrinho",
   politicaPrivacidade: "/politica-de-privacidade",
   termosUso: "/termos-de-uso",
 } as const;

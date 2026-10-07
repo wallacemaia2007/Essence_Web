@@ -15,11 +15,23 @@ function agruparEmSlides<T>(itens: readonly T[], tamanhoSlide: number): T[][] {
   return slides;
 }
 
+type CarouselOptions = {
+  pauseOnHover?: boolean;
+  pauseOnFocus?: boolean;
+  respectReducedMotion?: boolean;
+};
+
 export function useCarouselSlides<T>(
   itens: readonly T[],
   itensPorSlide: number,
   intervaloMs: number,
+  options: CarouselOptions = {},
 ) {
+  const {
+    pauseOnHover = true,
+    pauseOnFocus = true,
+    respectReducedMotion = true,
+  } = options;
   const movimentoReduzido = useReducedMotion();
   const slides = useMemo(
     () => agruparEmSlides(itens, itensPorSlide),
@@ -29,10 +41,15 @@ export function useCarouselSlides<T>(
   const slideAtual = slides.length > 0 ? slideSolicitado % slides.length : 0;
   const [hoverAtivo, setHoverAtivo] = useState(false);
   const [focoAtivo, setFocoAtivo] = useState(false);
-  const pausado = hoverAtivo || focoAtivo;
+  const pausado =
+    (pauseOnHover && hoverAtivo) || (pauseOnFocus && focoAtivo);
 
   useEffect(() => {
-    if (slides.length < 2 || movimentoReduzido || pausado) {
+    if (
+      slides.length < 2 ||
+      (respectReducedMotion && movimentoReduzido) ||
+      pausado
+    ) {
       return;
     }
 
@@ -41,7 +58,14 @@ export function useCarouselSlides<T>(
     }, intervaloMs);
 
     return () => window.clearInterval(intervalId);
-  }, [intervaloMs, movimentoReduzido, pausado, slideAtual, slides.length]);
+  }, [
+    intervaloMs,
+    movimentoReduzido,
+    pausado,
+    respectReducedMotion,
+    slideAtual,
+    slides.length,
+  ]);
 
   const irParaSlide = useCallback(
     (destino: number) => {
