@@ -2,6 +2,7 @@
 
 import { Menu, Search, ShoppingBag, User } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import type { RefObject } from "react";
 import { toast } from "sonner";
 
@@ -21,22 +22,13 @@ type MobileHeaderProps = {
   className?: string;
 };
 
-/**
- * Ações do header mobile sem rota pronta no projeto.
- * Ponto de integração: quando a função existir, trocar o botão por
- * `SamePageScrollLink`/`Link` apontando para a rota real em
- * `src/constants/routes.ts` (não usar href "#").
- */
-type PendingHeaderAction = "conta" | "sacola";
+/** A sacola continua demonstrativa; conta e favoritos já têm seus destinos. */
+type PendingHeaderAction = "sacola";
 
 const PENDING_ACTION_COPY: Record<
   PendingHeaderAction,
   { title: string; integration: string }
 > = {
-  conta: {
-    title: "Área da conta ainda não está disponível nesta versão.",
-    integration: "Integração pendente: criar rota /conta (login e perfil).",
-  },
   sacola: {
     title: "Sacola ainda não está disponível nesta versão.",
     integration:
@@ -123,15 +115,13 @@ export function MobileHeader({
       <div className="header-mobile-cluster relative z-[1] flex items-center">
         <FavoritosLink className={actionClassName} />
 
-        <button
-          type="button"
+        <Link
+          href={routes.login}
           aria-label="Abrir minha conta"
-          data-pending-integration="conta"
-          onClick={() => notifyPendingIntegration("conta")}
           className={actionClassName}
         >
           <User aria-hidden="true" className="size-5" strokeWidth={1.75} />
-        </button>
+        </Link>
 
         <button
           type="button"

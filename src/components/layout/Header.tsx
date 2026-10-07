@@ -1,6 +1,7 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { MapPin, UserRound } from "lucide-react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -132,6 +133,14 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <FavoritosLink className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100" />
+            <Link
+              href={routes.login}
+              aria-label="Entrar na conta"
+              className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full px-3 text-xs font-semibold tracking-wide text-[#000000] transition hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            >
+              <UserRound aria-hidden="true" className="size-4" />
+              Entrar
+            </Link>
             <SamePageScrollLink
               href={anchors.localizacao}
               className="inline-flex h-10 items-center gap-2 rounded-full bg-[#000000] px-4 text-xs font-semibold tracking-wide text-white transition duration-300 hover:bg-[#333333] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
