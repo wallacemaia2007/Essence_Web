@@ -1,12 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ShieldCheck, Sparkles } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-
-import { routes } from "@/constants/routes";
 
 type AuthLayoutProps = {
   children: ReactNode;
@@ -19,7 +15,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <main className="auth-screen relative isolate flex flex-1 items-center overflow-hidden bg-white px-4 pt-24 pb-16 text-[#171512] sm:px-6 sm:pt-28 sm:pb-20">
+    <main className="auth-screen relative isolate flex min-h-max flex-1 items-start overflow-x-clip overflow-y-visible bg-white px-4 pt-24 pb-16 text-[#171512] sm:px-6 sm:pt-28 sm:pb-20">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-36 -right-32 -z-10 size-[30rem] rounded-full bg-[#f5f1eb] blur-3xl sm:size-[38rem]"
