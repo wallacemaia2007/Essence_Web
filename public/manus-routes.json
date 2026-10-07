@@ -3,6 +3,7 @@
     { "path": "/", "title": "Essence Passos — Início" },
     { "path": "/colecao", "title": "Coleções" },
     { "path": "/colecao/:slug", "title": "Detalhe da coleção" },
+    { "path": "/conjuntos", "title": "Conjuntos selecionados" },
     { "path": "/contato", "title": "Contato" },
     { "path": "/favoritos", "title": "Favoritos" },
     { "path": "/login", "title": "Entrar" },

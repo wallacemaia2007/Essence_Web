@@ -8,6 +8,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: absoluteUrl("/"), changeFrequency: "monthly", priority: 1 },
     {
+      url: absoluteUrl(routes.conjuntos),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    {
       url: absoluteUrl(routes.colecao),
       changeFrequency: "weekly",
       priority: 0.8,

@@ -8,6 +8,7 @@ export const routes = {
   verifyCode: "/verificar-codigo",
   resetPassword: "/redefinir-senha",
   colecao: "/colecao",
+  conjuntos: "/conjuntos",
   produto: "/produto",
   favoritos: "/favoritos",
   carrinho: "/carrinho",

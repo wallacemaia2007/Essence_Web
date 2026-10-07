@@ -17,6 +17,7 @@ import {
 
 import { Container, ThemedSection } from "@/components/common";
 import { Button } from "@/components/ui/button";
+import { routes } from "@/constants/routes";
 import { type Conjunto, conjuntosData } from "@/data/conjuntos";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/utils";
@@ -585,7 +586,7 @@ export function HomeConjuntos({
       </div>
 
       <Container className="mt-8 max-w-7xl">
-        <div className="flex items-center justify-between gap-8">
+        <div className="flex flex-wrap items-center justify-between gap-6">
           {/* Barra de progresso do carrossel (decorativa). */}
           <div
             aria-hidden="true"
@@ -598,14 +599,22 @@ export function HomeConjuntos({
             />
           </div>
 
-          <a
-            href={conjuntosData.cta.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary focus-visible:ring-ring/50 shrink-0 rounded-sm text-xs font-semibold tracking-[0.2em] uppercase underline-offset-8 hover:underline focus-visible:ring-3 focus-visible:outline-none"
-          >
-            {conjuntosData.cta.label}
-          </a>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link
+              href={routes.conjuntos}
+              className="text-primary focus-visible:ring-ring/50 shrink-0 rounded-sm text-xs font-semibold tracking-[0.2em] uppercase underline-offset-8 hover:underline focus-visible:ring-3 focus-visible:outline-none"
+            >
+              Ver todos os conjuntos
+            </Link>
+            <a
+              href={conjuntosData.cta.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary focus-visible:ring-ring/50 shrink-0 rounded-sm text-xs font-semibold tracking-[0.2em] uppercase underline-offset-8 hover:underline focus-visible:ring-3 focus-visible:outline-none"
+            >
+              {conjuntosData.cta.label}
+            </a>
+          </div>
         </div>
       </Container>
     </ThemedSection>

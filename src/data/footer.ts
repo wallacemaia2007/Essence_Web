@@ -51,7 +51,7 @@ export const footerData = {
         { label: "Novidades", href: anchors.novidades },
         { label: "Vitrine", href: anchors.vitrine },
         { label: "Catálogo completo", href: routes.colecao },
-        { label: "Conjuntos", href: anchors.conjuntos },
+        { label: "Conjuntos", href: routes.conjuntos },
         { label: "Instagram", href: anchors.instagram },
       ],
     },

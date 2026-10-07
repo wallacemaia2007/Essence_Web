@@ -16,6 +16,8 @@ export type Conjunto = {
    * Links que começam com `http` abrem em nova aba.
    */
   href?: string;
+  /** Opt-in: só os conjuntos `true` aparecem na página curada /conjuntos. */
+  mostrarNaPaginaConjuntos: boolean;
 };
 
 /**
@@ -42,6 +44,7 @@ export const conjuntosData = {
       image: "/images/conjuntos/conjunto-vestidos.webp",
       alt: "Vestidos da Essence",
       href: `${routes.colecao}/vestidos`,
+      mostrarNaPaginaConjuntos: true,
     },
     {
       id: "conjuntos-verao",
@@ -50,6 +53,7 @@ export const conjuntosData = {
       image: "/images/conjuntos/conjunto-verao.webp",
       alt: "Conjuntos de verão da Essence",
       href: `${routes.colecao}/conjuntos-verao`,
+      mostrarNaPaginaConjuntos: true,
     },
     {
       id: "conjuntos-inverno",
@@ -58,6 +62,7 @@ export const conjuntosData = {
       image: "/images/conjuntos/conjunto-inverno.webp",
       alt: "Conjuntos de inverno da Essence",
       href: `${routes.colecao}/conjuntos-inverno`,
+      mostrarNaPaginaConjuntos: false,
     },
     {
       id: "alfaiataria",
@@ -66,6 +71,7 @@ export const conjuntosData = {
       image: "/images/conjuntos/conjunto-alfaiataria.webp",
       alt: "Conjuntos de alfaiataria da Essence",
       href: `${routes.colecao}/alfaiataria`,
+      mostrarNaPaginaConjuntos: true,
     },
     {
       id: "festa",
@@ -74,6 +80,7 @@ export const conjuntosData = {
       image: "/images/conjuntos/conjunto-festa.webp",
       alt: "Looks de festa da Essence",
       href: `${routes.colecao}/festa`,
+      mostrarNaPaginaConjuntos: true,
     },
     {
       id: "casual",
@@ -82,6 +89,7 @@ export const conjuntosData = {
       image: "/images/conjuntos/conjunto-casual.webp",
       alt: "Conjuntos casuais da Essence",
       href: `${routes.colecao}/casual`,
+      mostrarNaPaginaConjuntos: false,
     },
   ] satisfies Conjunto[],
 } as const;
