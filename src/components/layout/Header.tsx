@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Container } from "@/components/common";
 import { anchors, routes } from "@/constants/routes";
 import { useHasPassedHero } from "@/hooks/useHasPassedHero";
+import { useHeaderTopHold } from "@/hooks/useHeaderTopHold";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 
 import { FavoritosLink } from "./FavoritosLink";
@@ -33,14 +34,21 @@ export function Header() {
     topOffset: 80,
   });
   // No topo do hero o header fica recolhido; ao descer um pouco ele aparece
-  // e permanece visível enquanto o hero ocupa o topo. Fora do hero vale o
+  // e permanece visível enquanto o hero ocupa o topo. Ao voltar ao topo ele
+  // não some na hora: espera 2 s e só então recolhe. Fora do hero vale o
   // padrão: some ao descer e reaparece ao subir. Ele permanece aberto
   // enquanto um painel está ativo.
   const isAtHeroTop = !hasPassedHero && isAtTop;
-  const isHidden =
+  const isPanelOpen = isSidebarOpen || isSearchOpen;
+  const shouldHide =
     (isAtHeroTop || (hasPassedHero && !isAtTop && direction !== "up")) &&
-    !isSidebarOpen &&
-    !isSearchOpen;
+    !isPanelOpen;
+  const isHoldingAtTop = useHeaderTopHold({
+    isAtTop: isAtHeroTop,
+    isVisible: !shouldHide,
+    hasMeasured,
+  });
+  const isHidden = shouldHide && !isHoldingAtTop;
   const headerTheme = hasPassedHero ? "default" : "intro";
 
   const touchStart = useRef<{ x: number; y: number } | null>(null);
