@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
+import { CarrinhoContagem } from "@/components/sections/carrinho/CarrinhoContagem";
 import { CarrinhoConteudo } from "@/components/sections/carrinho/CarrinhoConteudo";
+import { PageHeader } from "@/components/sections/sobre/PageHeader";
 import { routes } from "@/constants/routes";
 
 export const metadata: Metadata = {
@@ -13,6 +15,12 @@ export const metadata: Metadata = {
 export default function CarrinhoPage() {
   return (
     <main className="flex flex-1 flex-col">
+      <PageHeader
+        currentPage="Minha sacola"
+        title="Minha sacola"
+        description="Revise suas peças, confira os tamanhos e quantidades e consulte a entrega pelo seu CEP."
+      >
+      </PageHeader>
       <CarrinhoConteudo />
     </main>
   );

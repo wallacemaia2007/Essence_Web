@@ -37,6 +37,7 @@ import {
 } from "@/lib/produto";
 import { cn } from "@/lib/utils";
 import { montarLinkWhatsapp } from "@/lib/whatsapp";
+import { CarrinhoContagem } from "./CarrinhoContagem";
 
 const produtosEmDestaque = produtosVitrine
   .filter((produto) => produto.featured)
@@ -60,7 +61,7 @@ function CartItem({
   );
 
   return (
-    <li className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-b border-[#e5e1dd] py-5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-6">
+    <li className="grid list-none before:hidden grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-b border-[#e5e1dd] py-5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-6">
       <Link
         href={`${routes.produto}/${produto.id}`}
         aria-label={`Ver ${produto.nome}`}
@@ -240,20 +241,7 @@ export function CarrinhoConteudo() {
         className="min-h-[55vh] bg-white py-12 text-[#231f1b] sm:py-16 md:py-20"
       >
         <Container className="max-w-7xl">
-          <header className="mb-9 border-b border-[#e5e1dd] pb-6 md:mb-12">
-            <p className="text-xs font-semibold tracking-[0.24em] text-[#74685f] uppercase">
-              Essence — sua seleção
-            </p>
-            <h1 className="font-heading mt-2 text-3xl leading-tight tracking-wide uppercase sm:text-4xl md:text-5xl">
-              Minha sacola
-            </h1>
-            <p className="mt-3 text-sm text-[#655e57] sm:text-base">
-              {hidratado
-                ? `${pecasNoCarrinho} ${pecasNoCarrinho === 1 ? "peça" : "peças"} na sacola`
-                : "A carregar a sua sacola…"}
-            </p>
-          </header>
-
+          <CarrinhoContagem />
           {!hidratado ? null : linhas.length === 0 ? (
             <div className="border border-dashed border-[#d7d1ca] px-6 py-14 text-center sm:py-20">
               <p className="font-heading alingn-center flex justify-center text-2xl tracking-wide text-[#231f1b] uppercase sm:text-3xl">
