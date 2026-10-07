@@ -12,10 +12,10 @@ import { useHeaderTopHold } from "@/hooks/useHeaderTopHold";
 import { useScrollDirection } from "@/hooks/useScrollDirection";
 
 import { CarrinhoLink } from "./CarrinhoLink";
+import { type DesktopMegaMenuId, DesktopMegaNav } from "./DesktopMegaNav";
 import { FavoritosLink } from "./FavoritosLink";
 import { MobileHeader } from "./MobileHeader";
 import { MobileSidebar } from "./MobileSidebar";
-import { NavLinks } from "./NavLinks";
 import { SamePageScrollLink } from "./SamePageScrollLink";
 import { SiteSearchDialog } from "./SiteSearchDialog";
 
@@ -24,6 +24,8 @@ const HEADER_HEIGHT = 64;
 export function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [activeMegaMenu, setActiveMegaMenu] =
+    useState<DesktopMegaMenuId | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
@@ -41,7 +43,7 @@ export function Header() {
   // padrão: some ao descer e reaparece ao subir. Ele permanece aberto
   // enquanto um painel está ativo.
   const isAtHeroTop = !hasPassedHero && isAtTop;
-  const isPanelOpen = isSidebarOpen || isSearchOpen;
+  const isPanelOpen = isSidebarOpen || isSearchOpen || activeMegaMenu !== null;
   const shouldHide =
     (isAtHeroTop || (hasPassedHero && !isAtTop && direction !== "up")) &&
     !isPanelOpen;
@@ -91,6 +93,7 @@ export function Header() {
 
   const openSidebar = useCallback(() => {
     setIsSearchOpen(false);
+    setActiveMegaMenu(null);
     setIsSidebarOpen(true);
   }, []);
 
@@ -100,6 +103,7 @@ export function Header() {
 
   const openSearch = useCallback(() => {
     setIsSidebarOpen(false);
+    setActiveMegaMenu(null);
     setIsSearchOpen(true);
   }, []);
 
@@ -127,7 +131,9 @@ export function Header() {
             Essence Passos
           </SamePageScrollLink>
 
-          <NavLinks
+          <DesktopMegaNav
+            activeMenu={activeMegaMenu}
+            onActiveMenuChange={setActiveMegaMenu}
             className="hidden items-center gap-0.5 lg:flex"
             linkClassName="text-[0.68rem] font-semibold tracking-[0.12em] text-[#000000] uppercase hover:text-[#000000] aria-[current=page]:text-[#000000]"
           />

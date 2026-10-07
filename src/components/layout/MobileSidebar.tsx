@@ -1,7 +1,6 @@
 "use client";
 
 import { X } from "lucide-react";
-import Image from "next/image";
 import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 
@@ -9,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { anchors, routes } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
-import logoImg from "../../../public/images/logo.png";
-import { NavLinks } from "./NavLinks";
+import { MobileMegaNav } from "./MobileMegaNav";
 import { SamePageScrollLink } from "./SamePageScrollLink";
 
 type MobileSidebarProps = {
@@ -165,7 +163,7 @@ export function MobileSidebar({
         aria-modal="true"
         aria-label="Menu principal"
         className={cn(
-          "themed-section fixed top-0 left-0 flex h-dvh w-[min(23rem,calc(100vw-2rem))] flex-col rounded-r-[1.5rem] border-border border-r bg-white px-5 py-5 text-[#000000] shadow-[0_20px_65px_rgba(0,0,0,0.2)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,1.25,0.35,1)] motion-reduce:transition-none",
+          "themed-section border-border fixed top-0 left-0 flex h-dvh w-[min(23rem,calc(100vw-2rem))] flex-col rounded-r-[1.5rem] border-r bg-white px-5 py-5 text-[#000000] shadow-[0_20px_65px_rgba(0,0,0,0.2)] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.2,1.25,0.35,1)] motion-reduce:transition-none",
           isOpen
             ? "translate-x-0 opacity-100"
             : "-translate-x-full opacity-0 motion-reduce:translate-x-0",
@@ -190,9 +188,9 @@ export function MobileSidebar({
           </Button>
         </div>
 
-        <NavLinks
+        <MobileMegaNav
           onNavigate={onClose}
-          className="mt-10 flex flex-col gap-1"
+          className="mt-8 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain pb-4"
           linkClassName="px-1 py-3 text-base text-[#000000] hover:text-[#000000] aria-[current=page]:text-[#000000]"
         />
 
