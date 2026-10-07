@@ -16,6 +16,7 @@ import {
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
+import { caminhoDoProduto } from "@/lib/produto";
 import { cn } from "@/lib/utils";
 
 function formatarPreco(preco: number) {
@@ -32,7 +33,7 @@ const produtosEmDestaque = produtosVitrine
 function ProductCard({ produto }: { produto: ProdutoVitrine }) {
   return (
     <li className="min-w-0 list-none p-0 before:hidden">
-      <article className="group">
+      <article className="group relative">
         <div className="relative aspect-[2/3] overflow-hidden bg-[#f5f5f5]">
           {produto.imagem ? (
             <>
@@ -84,7 +85,13 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
         <div className="mt-3 flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-left text-sm leading-5 text-[#231f1b] sm:text-base">
-              {produto.nome}
+              {/* Link "esticado": o ::after cobre o card inteiro e abre a peça. */}
+              <Link
+                href={caminhoDoProduto(produto.id)}
+                className="after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+              >
+                {produto.nome}
+              </Link>
             </p>
             <p className="mt-1 text-left text-xs text-[#51483f] sm:text-sm">
               {produto.preco != null
@@ -93,7 +100,7 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
             </p>
           </div>
 
-          <FavoritoButton produto={produto} />
+          <FavoritoButton produto={produto} className="relative z-10" />
         </div>
       </article>
     </li>

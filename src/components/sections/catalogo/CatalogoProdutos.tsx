@@ -2,11 +2,13 @@
 
 import { ImagePlus, Search, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { Container, ThemedSection } from "@/components/common";
 import { FavoritoButton } from "@/components/common/favorito-button";
 import { produtosVitrine, type ProdutoVitrine } from "@/data/vitrine";
+import { caminhoDoProduto } from "@/lib/produto";
 
 import {
   type CatalogoFiltros,
@@ -43,7 +45,7 @@ function precoNumerico(value: string) {
 
 function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
   return (
-    <article className="group min-w-0">
+    <article className="group relative min-w-0">
       <div className="relative aspect-[2/3] overflow-hidden bg-[#f5f5f5]">
         {produto.imagem ? (
           <>
@@ -90,7 +92,13 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
       <div className="mt-3 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-left text-sm leading-5 text-[#231f1b] sm:text-base">
-            {produto.nome}
+            {/* Link "esticado": o ::after cobre o card inteiro e abre a peça. */}
+            <Link
+              href={caminhoDoProduto(produto.id)}
+              className="after:absolute after:inset-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+            >
+              {produto.nome}
+            </Link>
           </h2>
           <p className="mt-1 text-left text-xs text-[#51483f] sm:text-sm">
             {produto.preco != null
@@ -99,7 +107,7 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
           </p>
         </div>
 
-        <FavoritoButton produto={produto} />
+        <FavoritoButton produto={produto} className="relative z-10" />
       </div>
     </article>
   );
