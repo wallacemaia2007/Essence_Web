@@ -20,6 +20,7 @@ export default function CarrinhoPage() {
         title="Minha sacola"
         description="Revise suas peças, confira os tamanhos e quantidades e consulte a entrega pelo seu CEP."
       >
+        <CarrinhoContagem />
       </PageHeader>
       <CarrinhoConteudo />
     </main>

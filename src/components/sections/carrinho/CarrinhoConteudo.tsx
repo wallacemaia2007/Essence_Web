@@ -10,12 +10,14 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type FormEvent, useMemo, useState } from "react";
 
 import { Container, ThemedSection } from "@/components/common";
 import { ProdutoColecaoCard } from "@/components/sections/colecao/ProdutoColecaoCard";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
+import { CHECKOUT_CEP_STORAGE_KEY } from "@/constants/storage";
 import {
   produtosVitrine,
   type ProdutoVitrine,
@@ -30,14 +32,8 @@ import {
   removerDoCarrinho,
   useCarrinho,
 } from "@/hooks/useCarrinho";
-import {
-  detalharProduto,
-  formatarPreco,
-  linkBaseWhatsapp,
-} from "@/lib/produto";
+import { detalharProduto, formatarPreco } from "@/lib/produto";
 import { cn } from "@/lib/utils";
-import { montarLinkWhatsapp } from "@/lib/whatsapp";
-import { CarrinhoContagem } from "./CarrinhoContagem";
 
 const produtosEmDestaque = produtosVitrine
   .filter((produto) => produto.featured)
@@ -61,7 +57,7 @@ function CartItem({
   );
 
   return (
-    <li className="grid list-none before:hidden grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-b border-[#e5e1dd] py-5 sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-6">
+    <li className="grid list-none grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-b border-[#e5e1dd] py-5 before:hidden sm:grid-cols-[7rem_minmax(0,1fr)] sm:gap-6">
       <Link
         href={`${routes.produto}/${produto.id}`}
         aria-label={`Ver ${produto.nome}`}
@@ -122,7 +118,7 @@ function CartItem({
                 alterarTamanho(produto.id, tamanho, event.target.value)
               }
               aria-label={`Tamanho de ${produto.nome}`}
-              className="h-6 min-w-16 cursor-pointer border border-[#ded9d3] bg-white px-2 text-sm text-[#231f1b] outline-none focus:border-[#75695e] focus:ring-2 focus:ring-[#75695e]/15"
+              className="essence-select h-10 min-w-16 text-sm"
             >
               {!tamanhoAtualDisponivel ? (
                 <option value={tamanho}>{tamanho} (indisponível)</option>
@@ -186,6 +182,7 @@ function CartItem({
 
 export function CarrinhoConteudo() {
   const { itens, hidratado } = useCarrinho();
+  const router = useRouter();
   const { slides, slideAtual, irParaSlide, pausarPorFoco, retomarPorFoco } =
     useCarouselSlides(
       produtosEmDestaque,
@@ -211,17 +208,6 @@ export function CarrinhoConteudo() {
     (total, item) => total + item.quantidade,
     0,
   );
-  const mensagemDoPedido = linhas
-    .map(
-      (item) =>
-        `• ${item.produto.nome} — tam. ${item.tamanho} — qtd. ${item.quantidade} — ${formatarPreco((item.produto.preco ?? 0) * item.quantidade)}`,
-    )
-    .join("\n");
-  const linkWhatsapp = montarLinkWhatsapp(
-    linkBaseWhatsapp(),
-    `Olá! Gostaria de consultar este pedido:\n${mensagemDoPedido}\n\nSubtotal: ${formatarPreco(subtotal)}\nFrete: a consultar.`,
-  );
-
   function consultarFrete(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const cepNumerico = cep.replace(/\D/g, "");
@@ -234,6 +220,20 @@ export function CarrinhoConteudo() {
     );
   }
 
+  function finalizarPedido() {
+    try {
+      if (cep) {
+        window.sessionStorage.setItem(CHECKOUT_CEP_STORAGE_KEY, cep);
+      } else {
+        window.sessionStorage.removeItem(CHECKOUT_CEP_STORAGE_KEY);
+      }
+    } catch {
+      // A finalização continua mesmo se o armazenamento da sessão estiver bloqueado.
+    }
+
+    router.push(routes.finalizarPedido);
+  }
+
   return (
     <>
       <ThemedSection
@@ -241,13 +241,12 @@ export function CarrinhoConteudo() {
         className="min-h-[55vh] bg-white py-12 text-[#231f1b] sm:py-16 md:py-20"
       >
         <Container className="max-w-7xl">
-          <CarrinhoContagem />
           {!hidratado ? null : linhas.length === 0 ? (
             <div className="border border-dashed border-[#d7d1ca] px-6 py-14 text-center sm:py-20">
-              <p className="font-heading alingn-center flex justify-center text-2xl tracking-wide text-[#231f1b] uppercase sm:text-3xl">
+              <p className="font-heading text-2xl tracking-wide uppercase">
                 Sua sacola está vazia
               </p>
-              <p className="alingn-center mx-auto mt-3 flex max-w-lg justify-center text-sm leading-6 text-[#655e57]">
+              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-[#655e57]">
                 Explore a seleção Essence e adicione as peças que deseja levar.
               </p>
               <Link
@@ -357,14 +356,16 @@ export function CarrinhoConteudo() {
                   </div>
                 </dl>
 
-                <a
-                  href={linkWhatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex min-h-12 items-center justify-center bg-[#231f1b] px-4 text-center text-xs font-semibold tracking-[0.14em] text-white uppercase transition-colors hover:bg-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+                <button
+                  type="button"
+                  onClick={finalizarPedido}
+                  className="flex min-h-12 w-full cursor-pointer items-center justify-center bg-[#231f1b] px-4 text-center text-xs font-semibold tracking-[0.14em] text-white uppercase transition-colors hover:bg-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
                 >
-                  Consultar pedido pelo WhatsApp
-                </a>
+                  Finalizar pedido
+                </button>
+                <p className="mt-3 text-center text-[0.68rem] leading-5 text-[#74685f]">
+                  O frete será confirmado após a integração da consulta por CEP.
+                </p>
               </aside>
             </div>
           )}

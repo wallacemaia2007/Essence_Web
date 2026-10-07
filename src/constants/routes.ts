@@ -12,6 +12,7 @@ export const routes = {
   produto: "/produto",
   favoritos: "/favoritos",
   carrinho: "/carrinho",
+  finalizarPedido: "/finalizar-pedido",
   politicaPrivacidade: "/politica-de-privacidade",
   termosUso: "/termos-de-uso",
 } as const;
