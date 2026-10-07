@@ -1,8 +1,4 @@
-/**
- * PLACEHOLDER: destino provisório dos botões "Comprar" (Instagram da loja).
- * Troque, em cada item, pelo link de compra da peça (produto, WhatsApp...).
- */
-const COMPRAR_PROVISORIO = "https://www.instagram.com/essencepassos/";
+import { routes } from "@/constants/routes";
 
 /** Máximo de imagens da seção: 5 pares (esquerda + direita). */
 export const NOVIDADES_MAX_ITENS = 10;
@@ -28,7 +24,7 @@ export type Novidade = {
 };
 
 /**
- * PLACEHOLDER: textos, imagens e links provisórios da seção "Novidades".
+ * PLACEHOLDER: textos e imagens provisórios da seção "Novidades".
  *
  * Como funciona: as imagens entram em ordem, de duas em duas — a 1ª fica à
  * esquerda e a 2ª à direita do primeiro par, a 3ª e a 4ª formam o segundo par,
@@ -37,7 +33,7 @@ export type Novidade = {
  *
  * Para trocar uma foto, sobrescreva o arquivo em `public/images/novidades/`
  * (mesmo nome; sugestão: vertical 4:5, ~1200×1500, WebP, até ~250 KB) ou mude
- * o caminho aqui. Troque também o `href` pelo link de compra de cada peça.
+ * o caminho aqui. Cada `href` aponta para os detalhes do produto correspondente.
  */
 export const novidadesData = {
   eyebrow: "Novidades",
@@ -48,28 +44,28 @@ export const novidadesData = {
       nome: "Novidade 01",
       image: "/images/novidades/novidade-01.webp",
       alt: "Novidade 01 da Essence",
-      href: COMPRAR_PROVISORIO,
+      href: `${routes.produto}/produto-01`,
     },
     {
       id: "novidade-02",
       nome: "Novidade 02",
       image: "/images/novidades/novidade-02.webp",
       alt: "Novidade 02 da Essence",
-      href: COMPRAR_PROVISORIO,
+      href: `${routes.produto}/vestidos-02`,
     },
     {
       id: "novidade-03",
       nome: "Novidade 03",
       image: "/images/novidades/novidade-03.webp",
       alt: "Novidade 03 da Essence",
-      href: COMPRAR_PROVISORIO,
+      href: `${routes.produto}/vestidos-03`,
     },
     {
       id: "novidade-04",
       nome: "Novidade 04",
       image: "/images/novidades/novidade-04.webp",
       alt: "Novidade 04 da Essence",
-      href: COMPRAR_PROVISORIO,
+      href: `${routes.produto}/vestidos-04`,
     },
   ] satisfies Novidade[],
 } as const;
