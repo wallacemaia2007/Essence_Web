@@ -1,5 +1,6 @@
 "use client";
 
+import { useLenis } from "lenis/react";
 import { ImagePlus, Search, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +11,13 @@ import { FavoritoButton } from "@/components/common/favorito-button";
 import { produtosVitrine, type ProdutoVitrine } from "@/data/vitrine";
 import { caminhoDoProduto } from "@/lib/produto";
 
+import { PaginacaoProdutos } from "../colecao/PaginacaoProdutos";
 import {
   type CatalogoFiltros,
   CatalogoFiltrosDrawer,
 } from "./CatalogoFiltrosDrawer";
+
+const ITENS_POR_PAGINA = 18;
 
 const filtrosIniciais: CatalogoFiltros = {
   precoMinimo: "",
@@ -114,9 +118,11 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
 }
 
 export function CatalogoProdutos() {
+  const lenis = useLenis();
   const [busca, setBusca] = useState("");
   const [filtros, setFiltros] = useState<CatalogoFiltros>(filtrosIniciais);
   const [drawerAberto, setDrawerAberto] = useState(false);
+  const [paginaSolicitada, setPaginaSolicitada] = useState(1);
 
   const colecoes = useMemo(
     () => [...new Set(produtosVitrine.map((produto) => produto.colecao))],
@@ -149,6 +155,21 @@ export function CatalogoProdutos() {
     Number(Boolean(filtros.precoMinimo)) +
     Number(Boolean(filtros.precoMaximo)) +
     filtros.colecoes.length;
+  const totalDeProdutos = produtosFiltrados.length;
+  const totalDePaginas = Math.max(
+    1,
+    Math.ceil(totalDeProdutos / ITENS_POR_PAGINA),
+  );
+  const paginaAtual = Math.min(paginaSolicitada, totalDePaginas);
+  const indiceInicial = (paginaAtual - 1) * ITENS_POR_PAGINA;
+  const produtosDaPagina = produtosFiltrados.slice(
+    indiceInicial,
+    indiceInicial + ITENS_POR_PAGINA,
+  );
+  const indiceFinal = Math.min(
+    indiceInicial + produtosDaPagina.length,
+    totalDeProdutos,
+  );
 
   return (
     <ThemedSection className="min-h-[70vh] bg-white py-12 text-[#231f1b] sm:py-16 md:py-20">
@@ -176,7 +197,10 @@ export function CatalogoProdutos() {
             <input
               type="search"
               value={busca}
-              onChange={(event) => setBusca(event.target.value)}
+              onChange={(event) => {
+                setBusca(event.target.value);
+                setPaginaSolicitada(1);
+              }}
               placeholder="Buscar por nome"
               autoComplete="off"
               className="h-12 w-full border border-[#dedede] bg-white pr-4 pl-12 text-sm text-[#231f1b] transition-colors outline-none placeholder:text-[#897f75] focus:border-[#75695e] focus:ring-2 focus:ring-[#75695e]/15"
@@ -212,6 +236,7 @@ export function CatalogoProdutos() {
               onClick={() => {
                 setBusca("");
                 setFiltros(filtrosIniciais);
+                setPaginaSolicitada(1);
               }}
               className="min-h-11 text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
             >
@@ -220,9 +245,12 @@ export function CatalogoProdutos() {
           ) : null}
         </div>
 
-        {produtosFiltrados.length > 0 ? (
-          <ul className="grid list-none grid-cols-1 gap-x-5 gap-y-9 p-0 before:hidden sm:grid-cols-2 sm:gap-x-6 sm:gap-y-11 xl:grid-cols-3 xl:gap-x-8">
-            {produtosFiltrados.map((produto) => (
+        {totalDeProdutos > 0 ? (
+          <ul
+            id="catalogo-produtos"
+            className="grid list-none grid-cols-1 gap-x-5 gap-y-9 p-0 before:hidden sm:grid-cols-2 sm:gap-x-6 sm:gap-y-11 xl:grid-cols-3 xl:gap-x-8"
+          >
+            {produtosDaPagina.map((produto) => (
               <li key={produto.id} className="min-w-0 p-0 before:hidden">
                 <ProdutoCard produto={produto} />
               </li>
@@ -238,6 +266,23 @@ export function CatalogoProdutos() {
             </p>
           </div>
         )}
+        <PaginacaoProdutos
+          paginaAtual={paginaAtual}
+          totalDePaginas={totalDePaginas}
+          indiceInicial={indiceInicial}
+          indiceFinal={indiceFinal}
+          totalDeProdutos={totalDeProdutos}
+          aoMudarPagina={(pagina) => {
+            setPaginaSolicitada(pagina);
+            if (lenis) {
+              lenis.scrollTo(0);
+            } else {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+          controlaId="catalogo-produtos"
+          rotulo="Paginação do catálogo de produtos"
+        />
       </Container>
 
       {drawerAberto ? (
@@ -246,6 +291,7 @@ export function CatalogoProdutos() {
           filtrosAtuais={filtros}
           onAplicar={(novosFiltros) => {
             setFiltros(novosFiltros);
+            setPaginaSolicitada(1);
             setDrawerAberto(false);
           }}
           onFechar={() => setDrawerAberto(false)}
