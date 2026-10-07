@@ -55,10 +55,10 @@ export function FooterNewsletter() {
 
   return (
     <div>
-      <h2 className="font-heading text-2xl leading-tight tracking-wide uppercase md:text-3xl">
+      <h2 className="font-heading text-2xl leading-tight tracking-wide uppercase md:text-3xl text-center lg:text-left">
         {footerData.newsletter.titulo}
       </h2>
-      <p className="text-muted-foreground mt-3 max-w-md text-sm leading-6">
+      <p className="text-muted-foreground mt-3 max-w-md text-sm leading-6 text-center lg:text-left">
         {footerData.newsletter.descricao}
       </p>
 
