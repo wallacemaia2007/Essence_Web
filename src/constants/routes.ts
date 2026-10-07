@@ -30,13 +30,11 @@ export const anchors = {
 } as const;
 
 export const navLinks = [
+  { label: "Catálogo", href: routes.colecao },
+  { label: "Conjuntos", href: routes.conjuntos },
   { label: "Novidades", href: anchors.novidades },
-  { label: "Vitrine", href: anchors.vitrine },
-  { label: "Instagram", href: anchors.instagram },
-  { label: "Looks", href: anchors.conjuntos },
-  { label: "Sobre", href: anchors.sobre },
-  { label: "Localização", href: anchors.localizacao },
-  { label: "Dúvidas", href: anchors.faq },
+  { label: "Sobre", href: routes.sobre },
+  { label: "Contato", href: routes.contato },
 ] as const;
 
 export const externalLinks = {

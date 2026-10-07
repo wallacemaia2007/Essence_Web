@@ -23,7 +23,11 @@ export function NavLinks({
   return (
     <nav aria-label="Navegação principal" className={className}>
       {navLinks.map((link) => {
-        const isActive = pathname === link.href;
+        const linkPath = link.href.split(/[?#]/, 1)[0] || "/";
+        const isActive =
+          !link.href.includes("#") &&
+          (pathname === linkPath ||
+            (linkPath !== "/" && pathname.startsWith(`${linkPath}/`)));
 
         return (
           <SamePageScrollLink
