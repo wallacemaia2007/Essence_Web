@@ -344,10 +344,10 @@ export function DesktopMegaNav({
         aria-hidden={!activeMenu}
         inert={!activeMenu ? true : undefined}
         className={cn(
-          "fixed inset-x-0 z-[95] max-h-[calc(100dvh-5rem)] overflow-y-auto border-y border-black/10 bg-white/95 text-[#171717] shadow-[0_20px_44px_rgba(0,0,0,0.12)] backdrop-blur-2xl transition-[opacity,transform,visibility] duration-200 motion-reduce:transition-none",
+          "fixed left-1/2 z-[95] max-h-[calc(100dvh-5rem)] w-[min(72rem,calc(100vw-2*clamp(0.75rem,2.2vw,1.75rem)))] origin-top -translate-x-1/2 overflow-y-auto rounded-t-none rounded-b-[1.75rem] border border-t-0 border-black/10 bg-white text-[#171717] shadow-[0_20px_44px_rgba(0,0,0,0.14)] transition-[opacity,translate,scale,visibility] duration-300 ease-out motion-reduce:transition-none",
           activeMenu
-            ? "visible translate-y-0 opacity-100"
-            : "pointer-events-none invisible -translate-y-2 opacity-0",
+            ? "visible translate-y-0 scale-y-100 opacity-100"
+            : "pointer-events-none invisible -translate-y-3 scale-y-95 opacity-0",
         )}
         style={{
           top: "calc(max(0.65rem, env(safe-area-inset-top)) + 4.25rem)",

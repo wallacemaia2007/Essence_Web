@@ -122,7 +122,10 @@ export function Header() {
         className="header-glass fixed inset-x-0 top-0 z-[90]"
       >
         {/* Desktop: navegação em cápsula de vidro fosco */}
-        <Container className="header-desktop-shell hidden min-h-16 items-center justify-between gap-2 lg:flex">
+        <Container
+          className="header-desktop-shell hidden items-center justify-between gap-2 motion-reduce:transition-none lg:flex"
+          data-mega-open={activeMegaMenu ? "true" : "false"}
+        >
           <SamePageScrollLink
             href={routes.home}
             aria-label="Essence Passos — ir para o início"
