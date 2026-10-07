@@ -33,14 +33,40 @@ type HomeConjuntosProps = {
 const EDGE_TOLERANCE = 4;
 /** Deslocamento (px) a partir do qual o arrasto deixa de contar como clique. */
 const DRAG_SLOP = 6;
-/** Intervalo (ms) válido para amostrar a velocidade do arrasto. */
+/** Pausa (ms) no arrasto a partir da qual a velocidade deixa de contar. */
 const VELOCITY_WINDOW = 100;
-/** Velocidade mínima (px/ms) para o arrasto virar "flick" com inércia. */
-const FLICK_VELOCITY = 0.25;
-/** Distância (ms) projetada pela velocidade no momento do "flick". */
-const FLICK_PROJECTION = 220;
-/** Duração (s) do retorno animado para o card alinhado. */
-const SNAP_DURATION = 0.55;
+/** Velocidade mínima (px/ms) para o arrasto continuar deslizando ao soltar. */
+const FLING_MIN_VELOCITY = 0.1;
+/** Quanto da velocidade (ms) vira deslize depois de soltar o mouse. */
+const FLING_PROJECTION = 380;
+/** Duração (s) do deslize depois de soltar o mouse. */
+const GLIDE_DURATION = 1;
+/** Duração (s) do passo dos botões anterior/próximo. */
+const STEP_DURATION = 0.75;
+/** Tempo parado (ms) até a trilha encaixar no card mais próximo. */
+const SETTLE_DELAY_MS = 1000;
+/** Duração mínima e máxima (s) da volta suave até um card. */
+const RETURN_MIN_DURATION = 0.8;
+const RETURN_MAX_DURATION = 1.3;
+/** Quanto a duração da volta cresce por px percorrido (s/px). */
+const RETURN_DURATION_PER_PX = 1 / 700;
+/** Ao soltar o mouse a até esta fração do card, ele "puxa" para o card. */
+const MAGNET_RATIO = 0.25;
+
+/** Curvas: a volta começa e termina devagar; o deslize só desacelera. */
+const EASE_RETURN = "power2.inOut";
+const EASE_GLIDE = "power3.out";
+
+/** Duração da volta proporcional à distância: curtas ficam leves, longas calmas. */
+function returnDuration(distance: number) {
+  return Math.min(
+    RETURN_MAX_DURATION,
+    Math.max(
+      RETURN_MIN_DURATION,
+      0.5 + Math.abs(distance) * RETURN_DURATION_PER_PX,
+    ),
+  );
+}
 
 type DragState = {
   /** `pointerdown` do mouse registrado, ainda sem passar do `DRAG_SLOP`. */
@@ -63,12 +89,34 @@ type DragState = {
   moved: boolean;
 };
 
+// Posições de scroll (px) em que cada card fica alinhado à borda esquerda,
+// já descontado o `scroll-padding` da trilha.
+function cardStops(track: HTMLUListElement) {
+  const trackLeft = track.getBoundingClientRect().left;
+  const scrollLeft = track.scrollLeft;
+  const padding = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0;
+  const maxScroll = track.scrollWidth - track.clientWidth;
+
+  return Array.from(track.querySelectorAll("li")).map((card) =>
+    Math.min(
+      Math.max(
+        card.getBoundingClientRect().left - trackLeft + scrollLeft - padding,
+        0,
+      ),
+      maxScroll,
+    ),
+  );
+}
+
 /**
  * Seção "Conjuntos": minibanners 16:9 em carrossel horizontal sangrado.
  *
- * Sem biblioteca de carrossel: scroll nativo com scroll-snap (toque, trackpad e
- * roda do mouse funcionam de graça), botões anterior/próximo e arraste com o
- * mouse (GSAP ScrollToPlugin cuida do retorno animado para o card alinhado).
+ * Sem biblioteca de carrossel: scroll nativo com scroll-snap em modo
+ * `proximity` (um "grude" leve perto de cada card; toque, trackpad e roda do
+ * mouse funcionam de graça e deslizam com inércia), botões anterior/próximo e
+ * arraste com o mouse, que continua deslizando depois de soltar (GSAP
+ * ScrollToPlugin anima o deslize e o passo dos botões). Parada por 1 s, a
+ * trilha encaixa no card mais próximo, que aparece inteiro.
  * A trilha fica fora do `Container` para alcançar as bordas da viewport; no
  * repouso o primeiro card alinha com o texto do título (mesma calha de 1rem) e
  * os seguintes aparecem cortados na lateral, indicando que há mais conteúdo.
@@ -160,24 +208,32 @@ export function HomeConjuntos({
     };
   }, [syncScrollState]);
 
-  // Libera o `scroll-snap` e o `scroll-behavior: smooth` que a trilha usa por
-  // padrão: com eles ligados, cada escrita em `scrollLeft` vira animação e o
-  // arraste deixa de acompanhar o ponteiro 1:1.
-  const setTrackDragMode = (isOn: boolean) => {
+  // Liga/desliga o `scroll-snap` da trilha. Durante o arraste com o mouse e as
+  // animações do GSAP ele fica desligado: com o snap ativo, cada escrita em
+  // `scrollLeft` seria puxada pelo navegador e o movimento deixaria de seguir
+  // o ponteiro. Ao terminar o gesto, o snap volta (valor do CSS) e dá o
+  // "grude" leve em quem parou perto de um card.
+  const setSnapEnabled = useCallback((enabled: boolean) => {
     const track = trackRef.current;
 
-    if (!track) {
-      return;
+    if (track) {
+      track.style.scrollSnapType = enabled ? "" : "none";
     }
+  }, []);
 
-    track.style.scrollSnapType = isOn ? "none" : "";
-    track.style.scrollBehavior = isOn ? "auto" : "";
-  };
-
-  // Anima a trilha até `target` com ScrollToPlugin e devolve o controle do
-  // snap/smooth ao final (ou de imediato, com movimento reduzido).
+  // Anima a trilha até `target` com ScrollToPlugin (ou salta direto, com
+  // movimento reduzido). `snapWhenDone` só deve ser `true` quando `target` é
+  // a posição de um card: religar o snap fora de um card faria o navegador
+  // puxar a trilha de uma vez, e é justamente esse "tranco" que se evita.
   const animateTo = useCallback(
-    (target: number) => {
+    (
+      target: number,
+      {
+        duration = STEP_DURATION,
+        ease = EASE_RETURN,
+        snapWhenDone = true,
+      }: { duration?: number; ease?: string; snapWhenDone?: boolean } = {},
+    ) => {
       const track = trackRef.current;
 
       if (!track) {
@@ -187,76 +243,133 @@ export function HomeConjuntos({
       const maxScroll = track.scrollWidth - track.clientWidth;
       const bounded = Math.min(Math.max(target, 0), maxScroll);
 
-      gsap.killTweensOf(track);
+      const finish = () => {
+        if (snapWhenDone) {
+          setSnapEnabled(true);
+        }
 
-      const settle = () => {
-        setTrackDragMode(false);
         syncScrollState();
       };
 
+      gsap.killTweensOf(track);
+      setSnapEnabled(false);
+
       if (reduceMotion || Math.abs(bounded - track.scrollLeft) < 0.5) {
         gsap.set(track, { scrollLeft: bounded });
-        settle();
+        finish();
         return;
       }
 
       gsap.to(track, {
         scrollTo: { x: bounded, y: 0 },
-        duration: SNAP_DURATION,
-        ease: "power3.out",
+        duration,
+        ease,
         overwrite: "auto",
-        onComplete: settle,
+        onComplete: finish,
       });
     },
-    [reduceMotion, syncScrollState],
+    [reduceMotion, setSnapEnabled, syncScrollState],
   );
 
-  // Anda exatamente um card (largura do card + espaçamento) por clique.
-  const scrollByCard = (direction: 1 | -1) => {
+  // Interrompe um deslize em andamento quando o usuário assume o controle
+  // (toque ou roda do mouse), para a animação não brigar com o gesto.
+  const stopGlide = () => {
     const track = trackRef.current;
-    const firstCard = track?.querySelector("li");
 
-    if (!track || !firstCard) {
-      return;
+    if (track) {
+      gsap.killTweensOf(track);
     }
-
-    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-    const step = firstCard.getBoundingClientRect().width + gap;
-
-    animateTo(track.scrollLeft + direction * step);
   };
 
-  // Offset (px de scroll) do início de cada card, medido em relação à borda
-  // esquerda da trilha: são os pontos em que o snap válido encosta.
-  const cardOffsets = (track: HTMLUListElement) => {
-    const trackLeft = track.getBoundingClientRect().left;
-    const scrollLeft = track.scrollLeft;
-
-    return Array.from(track.querySelectorAll("li")).map(
-      (card) => card.getBoundingClientRect().left - trackLeft + scrollLeft,
-    );
-  };
-
-  // Encaixa na posição `position` no card mais próximo.
-  const animateToNearestCard = (position: number) => {
+  // Os botões levam ao próximo/anterior card a partir de onde a trilha está,
+  // mesmo depois de um deslize livre que parou entre dois cards.
+  const scrollByCard = (direction: 1 | -1) => {
     const track = trackRef.current;
 
     if (!track) {
       return;
     }
 
-    const offsets = cardOffsets(track);
-    const nearest = offsets.reduce((best, offset) =>
-      Math.abs(offset - position) < Math.abs(best - position) ? offset : best,
-    );
+    const stops = cardStops(track);
+    const current = track.scrollLeft;
+    const target =
+      direction === 1
+        ? stops.find((stop) => stop > current + EDGE_TOLERANCE)
+        : [...stops].reverse().find((stop) => stop < current - EDGE_TOLERANCE);
 
-    animateTo(nearest);
+    animateTo(target ?? (direction === 1 ? track.scrollWidth : 0));
   };
+
+  // Depois de um tempo parada, a trilha encaixa no card mais próximo (o que
+  // estiver cortado aparece inteiro). Vale para qualquer origem de movimento:
+  // arraste, toque, roda do mouse, deslize e botões.
+  useEffect(() => {
+    const track = trackRef.current;
+
+    if (!track) {
+      return;
+    }
+
+    let timeoutId = 0;
+    let isTouching = false;
+
+    const settle = () => {
+      timeoutId = 0;
+
+      const drag = dragRef.current;
+
+      // Com o dedo ou o mouse ainda no gesto, espera: ao soltar, o timer
+      // volta a ser armado.
+      if (isTouching || drag.pending || drag.active) {
+        return;
+      }
+
+      const current = track.scrollLeft;
+      const nearest = cardStops(track).reduce((best, stop) =>
+        Math.abs(stop - current) < Math.abs(best - current) ? stop : best,
+      );
+
+      animateTo(nearest, {
+        duration: returnDuration(nearest - current),
+      });
+    };
+
+    const scheduleSettle = () => {
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(settle, SETTLE_DELAY_MS);
+    };
+
+    const onTouchStart = () => {
+      isTouching = true;
+    };
+
+    const onTouchEnd = () => {
+      isTouching = false;
+      scheduleSettle();
+    };
+
+    track.addEventListener("scroll", scheduleSettle, { passive: true });
+    track.addEventListener("touchstart", onTouchStart, { passive: true });
+    track.addEventListener("touchend", onTouchEnd, { passive: true });
+    track.addEventListener("touchcancel", onTouchEnd, { passive: true });
+    track.addEventListener("pointerup", scheduleSettle);
+    track.addEventListener("pointercancel", scheduleSettle);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      track.removeEventListener("scroll", scheduleSettle);
+      track.removeEventListener("touchstart", onTouchStart);
+      track.removeEventListener("touchend", onTouchEnd);
+      track.removeEventListener("touchcancel", onTouchEnd);
+      track.removeEventListener("pointerup", scheduleSettle);
+      track.removeEventListener("pointercancel", scheduleSettle);
+    };
+  }, [animateTo]);
 
   function handlePointerDown(event: ReactPointerEvent<HTMLUListElement>) {
     const track = trackRef.current;
 
-    // Só mouse: em toque e caneta o scroll nativo (com snap) é melhor.
+    // Só mouse: em toque e caneta o scroll nativo é melhor.
     if (!track || event.pointerType !== "mouse" || event.button !== 0) {
       return;
     }
@@ -294,27 +407,31 @@ export function HomeConjuntos({
         return;
       }
 
-      // Agora é arrasto: captura o ponteiro para ele não escapar da trilha e
-      // desliga snap/smooth para a posição seguir o mouse 1:1.
+      // Agora é arrasto: captura o ponteiro para ele não escapar da trilha.
       drag.active = true;
       drag.moved = true;
       track.setPointerCapture(drag.pointerId);
-      setTrackDragMode(true);
+      setSnapEnabled(false);
       setIsDragging(true);
     }
 
+    // Velocidade suavizada (média móvel); uma pausa longa zera o impulso.
     const elapsed = event.timeStamp - drag.lastTime;
 
-    if (elapsed > 0 && elapsed <= VELOCITY_WINDOW) {
-      drag.velocity = (event.clientX - drag.lastX) / elapsed;
-      drag.lastX = event.clientX;
-      drag.lastTime = event.timeStamp;
+    if (elapsed > VELOCITY_WINDOW) {
+      drag.velocity = 0;
+    } else if (elapsed > 0) {
+      const instant = (event.clientX - drag.lastX) / elapsed;
+      drag.velocity = drag.velocity * 0.6 + instant * 0.4;
     }
+
+    drag.lastX = event.clientX;
+    drag.lastTime = event.timeStamp;
 
     gsap.set(track, { scrollLeft: drag.startScroll - offset });
   }
 
-  function handlePointerEnd() {
+  function handlePointerEnd(event: ReactPointerEvent<HTMLUListElement>) {
     const track = trackRef.current;
     const drag = dragRef.current;
 
@@ -336,15 +453,38 @@ export function HomeConjuntos({
       track.releasePointerCapture(drag.pointerId);
     }
 
-    // "Flick": projeta a velocidade e encaixa no card mais próximo do ponto
-    // projetado — o arrasto longo continua indo longe, mas nunca deixa o
-    // carrossel entre dois cards.
-    const projection =
-      Math.abs(drag.velocity) > FLICK_VELOCITY
-        ? track.scrollLeft + drag.velocity * FLICK_PROJECTION
-        : track.scrollLeft;
+    // Soltou parado: fica onde está. Soltou em movimento: continua deslizando
+    // no mesmo sentido do arrasto (mouse para a esquerda = scroll para a
+    // direita), sem encaixar em nenhum card.
+    const velocity =
+      event.timeStamp - drag.lastTime > VELOCITY_WINDOW ? 0 : drag.velocity;
 
-    animateToNearestCard(projection);
+    if (reduceMotion || Math.abs(velocity) < FLING_MIN_VELOCITY) {
+      // Soltou parado: se está perto de um card, puxa de leve até ele; senão
+      // o encaixe de 1 s cuida disso.
+      const current = track.scrollLeft;
+      const stops = cardStops(track);
+      const nearest = stops.reduce((best, stop) =>
+        Math.abs(stop - current) < Math.abs(best - current) ? stop : best,
+      );
+      const cardWidth = track.querySelector("li")?.clientWidth ?? 0;
+
+      if (Math.abs(nearest - current) <= cardWidth * MAGNET_RATIO) {
+        animateTo(nearest, { duration: returnDuration(nearest - current) });
+      } else {
+        syncScrollState();
+      }
+
+      return;
+    }
+
+    // Deslize livre: termina onde parar, sem religar o snap (o encaixe de 1 s
+    // leva ao card com a animação suave).
+    animateTo(track.scrollLeft - velocity * FLING_PROJECTION, {
+      duration: GLIDE_DURATION,
+      ease: EASE_GLIDE,
+      snapWhenDone: false,
+    });
   }
 
   // Depois de arrastar sobre um card, o navegador ainda dispararia `click` e o
@@ -423,8 +563,13 @@ export function HomeConjuntos({
           onPointerUp={handlePointerEnd}
           onPointerCancel={handlePointerEnd}
           onClickCapture={handleClickCapture}
+          // Impede o navegador de "pegar" o link/imagem do card como arrasto
+          // nativo, o que cancelaria o gesto do carrossel.
+          onDragStart={(event) => event.preventDefault()}
+          onTouchStart={stopGlide}
+          onWheel={stopGlide}
           className={cn(
-            "flex snap-x snap-mandatory scroll-p-4 gap-4 overflow-x-auto overscroll-x-contain scroll-smooth px-4 pb-1 select-none motion-reduce:scroll-auto md:gap-5",
+            "flex snap-x snap-proximity scroll-p-4 gap-4 overflow-x-auto overscroll-x-contain px-4 pb-1 select-none [-webkit-touch-callout:none] md:gap-5",
             isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
         >
@@ -528,6 +673,7 @@ function wrapWithLink(
         href={href}
         target="_blank"
         rel="noopener noreferrer"
+        draggable={false}
         className={className}
       >
         {children}
@@ -536,7 +682,7 @@ function wrapWithLink(
   }
 
   return (
-    <Link href={href} className={className}>
+    <Link href={href} draggable={false} className={className}>
       {children}
     </Link>
   );
