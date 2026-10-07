@@ -8,7 +8,11 @@ import { useMemo, useState } from "react";
 
 import { Container, ThemedSection } from "@/components/common";
 import { FavoritoButton } from "@/components/common/favorito-button";
-import { produtosVitrine, type ProdutoVitrine } from "@/data/vitrine";
+import {
+  CATEGORIAS_PRODUTO,
+  produtosVitrine,
+  type ProdutoVitrine,
+} from "@/data/vitrine";
 import { caminhoDoProduto } from "@/lib/produto";
 
 import { PaginacaoProdutos } from "../colecao/PaginacaoProdutos";
@@ -22,6 +26,7 @@ const ITENS_POR_PAGINA = 18;
 const filtrosIniciais: CatalogoFiltros = {
   precoMinimo: "",
   precoMaximo: "",
+  categorias: [],
   colecoes: [],
 };
 
@@ -89,7 +94,7 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
         )}
 
         <span className="absolute top-3 left-3 bg-white/90 px-2.5 py-1 text-[0.58rem] tracking-[0.17em] text-[#51483f] uppercase">
-          {produto.colecao}
+          {produto.categoria}
         </span>
       </div>
 
@@ -104,6 +109,11 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
               {produto.nome}
             </Link>
           </h2>
+          {produto.colecao !== produto.categoria ? (
+            <p className="mt-1 text-left text-xs text-[#75695e]">
+              {produto.colecao}
+            </p>
+          ) : null}
           <p className="mt-1 text-left text-xs text-[#51483f] sm:text-sm">
             {produto.preco != null
               ? formatarPreco(produto.preco)
@@ -128,6 +138,16 @@ export function CatalogoProdutos() {
     () => [...new Set(produtosVitrine.map((produto) => produto.colecao))],
     [],
   );
+  const categorias = useMemo(
+    () =>
+      CATEGORIAS_PRODUTO.map((nome) => ({
+        nome,
+        quantidade: produtosVitrine.filter(
+          (produto) => produto.categoria === nome,
+        ).length,
+      })),
+    [],
+  );
 
   const produtosFiltrados = useMemo(() => {
     const termoBusca = normalizarTexto(busca);
@@ -140,8 +160,11 @@ export function CatalogoProdutos() {
       const combinaColecao =
         filtros.colecoes.length === 0 ||
         filtros.colecoes.includes(produto.colecao);
+      const combinaCategoria =
+        filtros.categorias.length === 0 ||
+        filtros.categorias.includes(produto.categoria);
 
-      if (!combinaNome || !combinaColecao) return false;
+      if (!combinaNome || !combinaColecao || !combinaCategoria) return false;
       if (!temFiltroDePreco) return true;
       if (produto.preco == null) return false;
       if (precoMinimo !== null && produto.preco < precoMinimo) return false;
@@ -154,6 +177,7 @@ export function CatalogoProdutos() {
   const filtrosAtivos =
     Number(Boolean(filtros.precoMinimo)) +
     Number(Boolean(filtros.precoMaximo)) +
+    filtros.categorias.length +
     filtros.colecoes.length;
   const totalDeProdutos = produtosFiltrados.length;
   const totalDePaginas = Math.max(
@@ -287,6 +311,7 @@ export function CatalogoProdutos() {
 
       {drawerAberto ? (
         <CatalogoFiltrosDrawer
+          categorias={categorias}
           colecoes={colecoes}
           filtrosAtuais={filtros}
           onAplicar={(novosFiltros) => {

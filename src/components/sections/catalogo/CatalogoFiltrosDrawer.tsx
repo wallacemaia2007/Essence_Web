@@ -1,15 +1,22 @@
 "use client";
 
-import { X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export type CatalogoFiltros = {
   precoMinimo: string;
   precoMaximo: string;
+  categorias: string[];
   colecoes: string[];
 };
 
+type CategoriaFiltro = {
+  nome: string;
+  quantidade: number;
+};
+
 type CatalogoFiltrosDrawerProps = {
+  categorias: CategoriaFiltro[];
   colecoes: string[];
   filtrosAtuais: CatalogoFiltros;
   onAplicar: (filtros: CatalogoFiltros) => void;
@@ -19,16 +26,20 @@ type CatalogoFiltrosDrawerProps = {
 const filtrosVazios: CatalogoFiltros = {
   precoMinimo: "",
   precoMaximo: "",
+  categorias: [],
   colecoes: [],
 };
 
 export function CatalogoFiltrosDrawer({
+  categorias,
   colecoes,
   filtrosAtuais,
   onAplicar,
   onFechar,
 }: CatalogoFiltrosDrawerProps) {
   const [rascunho, setRascunho] = useState<CatalogoFiltros>(filtrosAtuais);
+  const [categoriasAbertas, setCategoriasAbertas] = useState(true);
+  const [colecoesAbertas, setColecoesAbertas] = useState(true);
   const painelRef = useRef<HTMLElement>(null);
   const fecharRef = useRef<HTMLButtonElement>(null);
   const precoMinimo = rascunho.precoMinimo
@@ -98,6 +109,15 @@ export function CatalogoFiltrosDrawer({
     }));
   };
 
+  const alternarCategoria = (categoria: string) => {
+    setRascunho((atual) => ({
+      ...atual,
+      categorias: atual.categorias.includes(categoria)
+        ? atual.categorias.filter((item) => item !== categoria)
+        : [...atual.categorias, categoria],
+    }));
+  };
+
   return (
     <div
       className="fixed inset-0 z-[100] bg-[#231f1b]/45"
@@ -112,7 +132,7 @@ export function CatalogoFiltrosDrawer({
         aria-modal="true"
         aria-labelledby="catalogo-filtros-title"
         tabIndex={-1}
-        className="motion-safe:animate-in motion-safe:slide-in-from-right absolute inset-y-0 right-0 flex h-dvh w-full max-w-[26rem] flex-col bg-white text-[#231f1b] shadow-2xl outline-none motion-safe:duration-300"
+        className="motion-safe:animate-in motion-safe:slide-in-from-right absolute inset-y-0 right-0 grid h-dvh w-full max-w-[26rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white text-[#231f1b] shadow-2xl outline-none motion-safe:duration-300"
       >
         <header className="flex items-center justify-between border-b border-[#e5e5e5] px-6 py-5">
           <div>
@@ -137,7 +157,10 @@ export function CatalogoFiltrosDrawer({
           </button>
         </header>
 
-        <div className="flex-1 space-y-8 overflow-y-auto px-6 py-7">
+        <div
+          data-lenis-prevent
+          className="min-h-0 space-y-8 overflow-y-auto overscroll-y-contain px-6 py-7 touch-pan-y [-webkit-overflow-scrolling:touch]"
+        >
           <fieldset className="space-y-4 border-0 p-0">
             <legend className="text-sm font-semibold tracking-[0.08em] uppercase">
               Preço
@@ -200,35 +223,123 @@ export function CatalogoFiltrosDrawer({
             ) : null}
           </fieldset>
 
-          <fieldset className="space-y-4 border-0 border-t border-[#e5e5e5] p-0 pt-7">
-            <legend className="text-sm font-semibold tracking-[0.08em] uppercase">
+          <fieldset className="space-y-1 border-t border-[#e5e5e5] p-0 pt-7">
+            <legend className="sr-only">
+              Categorias
+            </legend>
+            <button
+              type="button"
+              onClick={() => setCategoriasAbertas((abertas) => !abertas)}
+              aria-expanded={categoriasAbertas}
+              aria-controls="catalogo-categorias-opcoes"
+              aria-label={
+                categoriasAbertas ? "Recolher categorias" : "Expandir categorias"
+              }
+              className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 py-2 text-left text-sm font-semibold tracking-[0.08em] text-[#231f1b] uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+            >
+              <span>Categorias</span>
+              <ChevronDown
+                className={`size-4 transition-transform motion-reduce:transition-none ${
+                  categoriasAbertas ? "rotate-180" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+            <div
+              id="catalogo-categorias-opcoes"
+              hidden={!categoriasAbertas}
+            >
+              {categorias.length > 0 ? (
+                <ul className="space-y-1 p-0">
+                  {categorias.map(({ nome, quantidade }) => {
+                    const selecionada = rascunho.categorias.includes(nome);
+                    const indisponivel = quantidade === 0;
+
+                    return (
+                      <li key={nome} className="list-none p-0 before:hidden">
+                        <label
+                          className={`flex min-h-11 items-center gap-3 text-sm text-[#51483f] ${
+                            indisponivel
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selecionada}
+                            disabled={indisponivel}
+                            onChange={() => alternarCategoria(nome)}
+                            className="size-4 accent-[#231f1b]"
+                          />
+                          <span className="flex-1">{nome}</span>
+                          <span
+                            aria-label={`${quantidade} peças nesta categoria`}
+                            className="text-xs tabular-nums text-[#75695e]"
+                          >
+                            {quantidade}
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-sm text-[#75695e]">
+                  Nenhuma categoria cadastrada ainda.
+                </p>
+              )}
+            </div>
+          </fieldset>
+
+          <fieldset className="space-y-4 border-t border-[#e5e5e5] p-0 pt-7">
+            <legend className="sr-only">
               Coleções
             </legend>
-            {colecoes.length > 0 ? (
-              <ul className="space-y-1 p-0">
-                {colecoes.map((colecao) => {
-                  const selecionada = rascunho.colecoes.includes(colecao);
+            <button
+              type="button"
+              onClick={() => setColecoesAbertas((abertas) => !abertas)}
+              aria-expanded={colecoesAbertas}
+              aria-controls="catalogo-colecoes-opcoes"
+              aria-label={
+                colecoesAbertas ? "Recolher coleções" : "Expandir coleções"
+              }
+              className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 py-2 text-left text-sm font-semibold tracking-[0.08em] text-[#231f1b] uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+            >
+              <span>Coleções</span>
+              <ChevronDown
+                className={`size-4 transition-transform motion-reduce:transition-none ${
+                  colecoesAbertas ? "rotate-180" : ""
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+            <div id="catalogo-colecoes-opcoes" hidden={!colecoesAbertas}>
+              {colecoes.length > 0 ? (
+                <ul className="space-y-1 p-0">
+                  {colecoes.map((colecao) => {
+                    const selecionada = rascunho.colecoes.includes(colecao);
 
-                  return (
-                    <li key={colecao} className="list-none p-0 before:hidden">
-                      <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-[#51483f]">
-                        <input
-                          type="checkbox"
-                          checked={selecionada}
-                          onChange={() => alternarColecao(colecao)}
-                          className="size-4 accent-[#231f1b]"
-                        />
-                        <span>{colecao}</span>
-                      </label>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="text-sm text-[#75695e]">
-                Nenhuma coleção cadastrada ainda.
-              </p>
-            )}
+                    return (
+                      <li key={colecao} className="list-none p-0 before:hidden">
+                        <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-[#51483f]">
+                          <input
+                            type="checkbox"
+                            checked={selecionada}
+                            onChange={() => alternarColecao(colecao)}
+                            className="size-4 accent-[#231f1b]"
+                          />
+                          <span>{colecao}</span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="text-sm text-[#75695e]">
+                  Nenhuma coleção cadastrada ainda.
+                </p>
+              )}
+            </div>
           </fieldset>
         </div>
 
@@ -237,7 +348,7 @@ export function CatalogoFiltrosDrawer({
             <button
               type="button"
               onClick={() => setRascunho(filtrosVazios)}
-              className="min-h-11 text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+              className="cursor-pointer min-h-11 text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
             >
               Limpar filtros
             </button>
@@ -249,7 +360,7 @@ export function CatalogoFiltrosDrawer({
             aria-describedby={
               faixaInvalida ? "catalogo-preco-error" : undefined
             }
-            className="flex h-12 w-full items-center justify-center bg-[#231f1b] px-4 text-xs font-semibold tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] motion-reduce:transition-none"
+            className="cursor-pointer flex h-12 w-full items-center justify-center bg-[#231f1b] px-4 text-xs font-semibold tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] motion-reduce:transition-none"
           >
             Aplicar filtros
           </button>

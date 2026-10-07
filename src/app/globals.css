@@ -175,9 +175,22 @@
   p {
     text-align: justify;
   }
+
+  /* Remove as setinhas dos inputs number */
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 @layer components {
+
   /* Selects nativos com acabamento Essence; estilize todo select reutilizando .essence-select. */
   .essence-select {
     min-height: 2.75rem;
