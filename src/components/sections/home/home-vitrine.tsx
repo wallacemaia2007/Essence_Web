@@ -174,7 +174,7 @@ export function HomeVitrine() {
                   variant="outline"
                   onClick={() => irParaSlide(slideAtual - 1)}
                   aria-label="Mostrar os três produtos anteriores"
-                  className="size-11 rounded-full"
+                  className="size-11 cursor-pointer rounded-full"
                 >
                   <ChevronLeft className="size-5" aria-hidden="true" />
                 </Button>
@@ -183,7 +183,7 @@ export function HomeVitrine() {
                   variant="outline"
                   onClick={() => irParaSlide(slideAtual + 1)}
                   aria-label="Mostrar os três próximos produtos"
-                  className="size-11 rounded-full"
+                  className="size-11 cursor-pointer rounded-full"
                 >
                   <ChevronRight className="size-5" aria-hidden="true" />
                 </Button>

@@ -533,7 +533,7 @@ export function HomeConjuntos({
               aria-label="Conjunto anterior"
               disabled={!canPrev}
               onClick={() => scrollByCard(-1)}
-              className="size-11 rounded-full"
+              className="size-11 cursor-pointer rounded-full"
             >
               <ChevronLeft className="size-5" aria-hidden="true" />
             </Button>
@@ -543,7 +543,7 @@ export function HomeConjuntos({
               aria-label="Próximo conjunto"
               disabled={!canNext}
               onClick={() => scrollByCard(1)}
-              className="size-11 rounded-full"
+              className="size-11 cursor-pointer rounded-full"
             >
               <ChevronRight className="size-5" aria-hidden="true" />
             </Button>

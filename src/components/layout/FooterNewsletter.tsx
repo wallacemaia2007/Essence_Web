@@ -88,7 +88,7 @@ export function FooterNewsletter() {
           type="submit"
           size="lg"
           disabled={isSubmitting}
-          className="h-11 gap-2 px-6 text-xs tracking-[0.18em] uppercase"
+          className="h-11 gap-2 px-6 text-xs tracking-[0.18em] uppercase cursor-pointer"
         >
           {isSubmitting ? (
             <LoaderCircle className="animate-spin" aria-hidden="true" />
