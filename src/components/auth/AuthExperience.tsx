@@ -13,7 +13,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 
+import { useDemoAuth } from "@/components/auth/DemoAuthProvider";
 import { routes } from "@/constants/routes";
+import {
+  clearPendingDemoRegistration,
+  createDemoAuthUser,
+  getDemoAccount,
+  readPendingDemoRegistration,
+  saveDemoAccount,
+  savePendingDemoRegistration,
+} from "@/lib/demo-auth";
 
 export type AuthMode = "login" | "register" | "forgot" | "verify" | "reset";
 export type DemoFlow = "login" | "register" | "google" | "recovery";
@@ -28,6 +37,7 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 const codePattern = /^\d{6}$/;
 const verifiedDemoEmailsKey = "essence-demo-verified-emails";
 const demoGoogleEmail = "google@exemplo.com";
+const demoGoogleName = "Marina Alves";
 
 function readVerifiedDemoEmails(): string[] {
   if (typeof window === "undefined") return [];
@@ -169,6 +179,7 @@ export function AuthExperience({
   initialFlow,
 }: AuthExperienceProps) {
   const router = useRouter();
+  const { signIn } = useDemoAuth();
   const [email, setEmail] = useState(initialEmail);
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
@@ -180,7 +191,7 @@ export function AuthExperience({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [resendNotice, setResendNotice] = useState("");
-  const [complete, setComplete] = useState(false);
+  const [passwordResetComplete, setPasswordResetComplete] = useState(false);
   const flow = isDemoFlow(initialFlow) ? initialFlow : "login";
   const pageCopy = copyByMode[mode];
   const normalizedEmail = email.trim().toLowerCase();
@@ -196,6 +207,20 @@ export function AuthExperience({
       else delete next[field];
       return next;
     });
+  }
+
+  function authenticateDemoUser(
+    userEmail: string,
+    provider: "email" | "google" = "email",
+    displayName?: string,
+  ) {
+    const existingUser = getDemoAccount(userEmail);
+    const user = displayName
+      ? createDemoAuthUser(userEmail, displayName, provider)
+      : (existingUser ?? createDemoAuthUser(userEmail, undefined, provider));
+
+    saveDemoAccount(user);
+    signIn(user);
   }
 
   function validateEmail() {
@@ -257,7 +282,8 @@ export function AuthExperience({
 
     if (mode === "login") {
       if (isDemoEmailVerified(normalizedEmail)) {
-        setComplete(true);
+        authenticateDemoUser(normalizedEmail);
+        router.replace(routes.home);
         return;
       }
       router.push(verificationHref(normalizedEmail, "login"));
@@ -265,6 +291,7 @@ export function AuthExperience({
     }
 
     if (mode === "register") {
+      savePendingDemoRegistration(normalizedEmail, fullName.trim());
       router.push(verificationHref(normalizedEmail, "register"));
       return;
     }
@@ -282,59 +309,61 @@ export function AuthExperience({
         return;
       }
       markDemoEmailVerified(normalizedEmail);
-      setComplete(true);
+      if (flow === "google") {
+        authenticateDemoUser(normalizedEmail, "google", demoGoogleName);
+      } else if (flow === "register") {
+        const pendingRegistration =
+          readPendingDemoRegistration(normalizedEmail);
+        authenticateDemoUser(
+          normalizedEmail,
+          "email",
+          pendingRegistration?.name,
+        );
+        clearPendingDemoRegistration(normalizedEmail);
+      } else {
+        authenticateDemoUser(normalizedEmail);
+      }
+      router.replace(routes.home);
       return;
     }
 
     if (mode === "reset") {
       markDemoEmailVerified(normalizedEmail);
+      setPasswordResetComplete(true);
     }
-    setComplete(true);
   }
 
   function startGoogleDemo() {
     if (mode === "login" && isDemoEmailVerified(demoGoogleEmail)) {
-      setComplete(true);
+      authenticateDemoUser(demoGoogleEmail, "google", demoGoogleName);
+      router.replace(routes.home);
       return;
     }
     router.push(verificationHref(demoGoogleEmail, "google"));
   }
 
-  if (complete) {
-    const isPasswordReset = mode === "reset";
-    const isExistingLogin = mode === "login";
+  if (passwordResetComplete) {
     return (
       <div className="py-5 text-center sm:py-8">
         <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-[#f2efe9] text-[#7a5d3d]">
           <Check aria-hidden="true" className="size-6" />
         </div>
         <p className="mt-6 mb-2 text-[0.65rem] font-semibold tracking-[0.2em] text-[#8a6746] uppercase">
-          {isPasswordReset
-            ? "SENHA ATUALIZADA"
-            : isExistingLogin
-              ? "ACESSO DEMONSTRATIVO"
-              : "CÓDIGO ACEITO"}
+          SENHA ATUALIZADA
         </p>
         <h2 className="font-heading m-0 text-3xl font-medium tracking-tight text-[#171512]">
-          {isPasswordReset
-            ? "Tudo pronto para recomeçar."
-            : isExistingLogin
-              ? "Seu e-mail já está confirmado."
-              : "Confirmação concluída."}
+          Tudo pronto para recomeçar.
         </h2>
         <p className="mx-auto mt-3 mb-0 max-w-sm text-sm leading-6 text-[#686158]">
-          {isPasswordReset
-            ? "Sua senha foi atualizada apenas nesta demonstração visual. Nenhuma alteração foi salva."
-            : isExistingLogin
-              ? "A etapa de código foi pulada porque este navegador já marcou o e-mail como confirmado. O login continua sendo apenas uma simulação."
-              : "Este passo foi simulado no frontend. Nenhum código foi enviado e nenhuma conta foi criada."}
+          Sua senha foi atualizada apenas nesta demonstração visual. Nenhuma
+          alteração foi salva.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
-            href={isPasswordReset ? routes.login : routes.home}
+            href={routes.login}
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#171512] px-6 text-xs font-semibold tracking-[0.12em] text-white uppercase transition hover:bg-[#39332d] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-black"
           >
-            {isPasswordReset ? "Ir para o login" : "Voltar para a loja"}
+            Ir para o login
             <ArrowRight aria-hidden="true" className="size-4" />
           </Link>
         </div>

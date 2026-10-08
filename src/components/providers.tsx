@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { type ReactNode, useState } from "react";
 import { Toaster } from "sonner";
 
+import { DemoAuthProvider } from "@/components/auth/DemoAuthProvider";
 import { SmoothScrollProvider } from "@/components/common";
 
 type ProvidersProps = {
@@ -27,7 +28,9 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <QueryClientProvider client={queryClient}>
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <DemoAuthProvider>
+          <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        </DemoAuthProvider>
         <Toaster richColors closeButton />
       </QueryClientProvider>
     </ThemeProvider>

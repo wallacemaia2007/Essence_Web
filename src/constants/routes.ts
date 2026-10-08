@@ -4,6 +4,8 @@ export const routes = {
   contato: "/contato",
   login: "/login",
   register: "/register",
+  perfil: "/perfil",
+  meusPedidos: "/meus-pedidos",
   forgotPassword: "/login/forgot-password",
   verifyCode: "/verificar-codigo",
   resetPassword: "/redefinir-senha",

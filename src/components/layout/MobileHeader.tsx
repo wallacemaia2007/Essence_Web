@@ -1,14 +1,14 @@
 "use client";
 
-import { Menu, Search, User } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import type { RefObject } from "react";
 
 import { routes } from "@/constants/routes";
 import { cn } from "@/lib/utils";
 
 import brandLogoImg from "../../../public/images/logo_16-9.png";
+import { AccountMenu } from "./AccountMenu";
 import { CarrinhoLink } from "./CarrinhoLink";
 import { FavoritosLink } from "./FavoritosLink";
 import { SamePageScrollLink } from "./SamePageScrollLink";
@@ -95,13 +95,7 @@ export function MobileHeader({
       <div className="header-mobile-cluster relative z-[1] flex items-center">
         <FavoritosLink className={actionClassName} />
 
-        <Link
-          href={routes.login}
-          aria-label="Abrir minha conta"
-          className={actionClassName}
-        >
-          <User aria-hidden="true" className="size-5" strokeWidth={1.75} />
-        </Link>
+        <AccountMenu compact />
 
         <CarrinhoLink className={actionClassName} />
       </div>
