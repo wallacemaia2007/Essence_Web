@@ -8,7 +8,7 @@ import { useRef } from "react";
 import { Container } from "@/components/common";
 import { anchors, navLinks, routes } from "@/constants/routes";
 import { conjuntosData } from "@/data/conjuntos";
-import { megaMenuProducts } from "@/data/header-mega-menu";
+import { megaMenuCategories, megaMenuProducts } from "@/data/header-mega-menu";
 import type { ProdutoVitrine } from "@/data/vitrine";
 import { caminhoDoProduto, formatarPreco } from "@/lib/produto";
 import { cn } from "@/lib/utils";
@@ -167,15 +167,40 @@ function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
           onNavigate={onNavigate}
           className="border-t border-black/10 pt-5 md:border-t-0 md:px-6 md:pt-0"
         />
-        <ProductShelf
-          id="outras-pecas"
-          title="Outras peças"
-          description="Mais para descobrir"
-          href={routes.colecao}
-          products={megaMenuProducts.outrasPecas}
-          onNavigate={onNavigate}
+        <section
+          aria-labelledby="mega-shelf-outras-pecas"
           className="border-t border-black/10 pt-5 md:border-t-0 md:pt-0 md:pl-6"
-        />
+        >
+          <div className="mb-3">
+            <p className="text-[0.58rem] font-semibold tracking-[0.2em] text-[#75695e] uppercase">
+              Mais para descobrir
+            </p>
+            <h3
+              id="mega-shelf-outras-pecas"
+              className="font-heading mt-1 text-lg tracking-wide text-[#171717] uppercase"
+            >
+              Outras peças
+            </h3>
+          </div>
+          <ul className="grid list-none grid-cols-2 gap-x-3 gap-y-1 border-t border-black/10 p-0 pt-2">
+            {megaMenuCategories.map((categoria) => (
+              <li key={categoria} className="list-none p-0 before:hidden">
+                <Link
+                  href={`${routes.colecao}?categoria=${encodeURIComponent(categoria)}`}
+                  prefetch={false}
+                  onClick={onNavigate}
+                  className="group flex min-h-10 items-center justify-between gap-2 border-b border-black/5 py-2 text-[0.72rem] text-[#222222] transition-colors hover:text-[#75695e] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black"
+                >
+                  <span>{categoria}</span>
+                  <ArrowRight
+                    className="size-3 shrink-0 text-[#8b8178] opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       </div>
     </Container>
   );
@@ -207,7 +232,7 @@ function ConjuntosMegaPanel({ onNavigate }: { onNavigate: () => void }) {
       </div>
 
       <ul className="grid list-none grid-cols-1 gap-2 p-0 sm:grid-cols-2 lg:grid-cols-3">
-        {conjuntosData.itens.map((conjunto, index) => (
+        {conjuntosData.itens.map((conjunto) => (
           <li key={conjunto.id} className="p-0 before:hidden">
             <Link
               href={conjunto.href ?? `${routes.colecao}/${conjunto.id}`}

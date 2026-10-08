@@ -7,7 +7,7 @@ import { useState } from "react";
 
 import { anchors, navLinks, routes } from "@/constants/routes";
 import { conjuntosData } from "@/data/conjuntos";
-import { megaMenuProducts } from "@/data/header-mega-menu";
+import { megaMenuCategories, megaMenuProducts } from "@/data/header-mega-menu";
 import { caminhoDoProduto, formatarPreco } from "@/lib/produto";
 import { cn } from "@/lib/utils";
 
@@ -33,13 +33,6 @@ const mobileShelfSections = [
     label: "Destaques",
     href: anchors.vitrine,
     products: megaMenuProducts.destaques,
-    showNewBadge: false,
-  },
-  {
-    id: "outras-pecas",
-    label: "Outras peças",
-    href: routes.colecao,
-    products: megaMenuProducts.outrasPecas,
     showNewBadge: false,
   },
 ] as const;
@@ -85,6 +78,30 @@ function MobileCatalogSubmenu({ onNavigate }: { onNavigate: () => void }) {
           </ul>
         </section>
       ))}
+      <section aria-labelledby="mobile-mega-outras-pecas">
+        <p className="text-[0.58rem] font-semibold tracking-[0.2em] text-[#75695e] uppercase">
+          Mais para descobrir
+        </p>
+        <h3
+          id="mobile-mega-outras-pecas"
+          className="font-heading mt-1 text-base tracking-wide text-[#171717] uppercase"
+        >
+          Outras peças
+        </h3>
+        <ul className="mt-2 grid list-none grid-cols-2 gap-x-3 border-t border-black/10 p-0 pt-2">
+          {megaMenuCategories.map((categoria) => (
+            <li key={categoria} className="list-none p-0 before:hidden">
+              <Link
+                href={`${routes.colecao}?categoria=${encodeURIComponent(categoria)}`}
+                onClick={onNavigate}
+                className="flex min-h-10 items-center border-b border-black/5 py-2 text-xs text-[#222222]"
+              >
+                {categoria}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
       <Link
         href={routes.colecao}
         onClick={onNavigate}

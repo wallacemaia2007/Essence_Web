@@ -1,5 +1,9 @@
 import { novidadesData } from "@/data/novidades";
-import { produtosVitrine, type ProdutoVitrine } from "@/data/vitrine";
+import {
+  CATEGORIAS_PRODUTO,
+  produtosVitrine,
+  type ProdutoVitrine,
+} from "@/data/vitrine";
 
 const produtosPorId = new Map(
   produtosVitrine.map((produto) => [produto.id, produto]),
@@ -22,6 +26,22 @@ const destaques = produtosVitrine
 const outrasPecas = produtosVitrine
   .filter((produto) => !produto.featured && !idsNovidades.has(produto.id))
   .slice(0, 4);
+
+const MAX_MEGA_MENU_CATEGORIES = 10;
+
+export const megaMenuCategories = CATEGORIAS_PRODUTO.map(
+  (categoria, ordem) => ({
+    categoria,
+    ordem,
+    quantidade: produtosVitrine.filter(
+      (produto) => produto.categoria === categoria,
+    ).length,
+  }),
+)
+  .filter(({ quantidade }) => quantidade > 0)
+  .sort((a, b) => b.quantidade - a.quantidade || a.ordem - b.ordem)
+  .slice(0, MAX_MEGA_MENU_CATEGORIES)
+  .map(({ categoria }) => categoria);
 
 /** Seleções únicas usadas pelas prateleiras do mega menu desktop e mobile. */
 export const megaMenuProducts = {

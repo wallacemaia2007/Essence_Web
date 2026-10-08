@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { CatalogoProdutos } from "@/components/sections/catalogo/CatalogoProdutos";
 import { routes } from "@/constants/routes";
+import { CATEGORIAS_PRODUTO } from "@/data/vitrine";
 
 export const metadata: Metadata = {
   title: "Catálogo",
@@ -19,10 +20,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ColecaoPage() {
+type ColecaoPageProps = {
+  searchParams: Promise<{ categoria?: string | string[] }>;
+};
+
+export default async function ColecaoPage({
+  searchParams,
+}: ColecaoPageProps) {
+  const parametros = await searchParams;
+  const categoriaParam = Array.isArray(parametros.categoria)
+    ? undefined
+    : parametros.categoria;
+  const categoriaInicial = CATEGORIAS_PRODUTO.find(
+    (categoria) => categoria === categoriaParam,
+  );
+
   return (
     <main className="flex flex-1 flex-col">
-      <CatalogoProdutos />
+      <CatalogoProdutos
+        key={categoriaInicial ?? "todas-as-categorias"}
+        categoriaInicial={categoriaInicial}
+      />
     </main>
   );
 }

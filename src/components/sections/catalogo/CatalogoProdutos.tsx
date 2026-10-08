@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import { Container, ThemedSection } from "@/components/common";
 import { FavoritoButton } from "@/components/common/favorito-button";
 import {
+  type CategoriaProduto,
   CATEGORIAS_PRODUTO,
   produtosVitrine,
   type ProdutoVitrine,
@@ -127,10 +128,17 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
   );
 }
 
-export function CatalogoProdutos() {
+export function CatalogoProdutos({
+  categoriaInicial,
+}: {
+  categoriaInicial?: CategoriaProduto;
+}) {
   const lenis = useLenis();
   const [busca, setBusca] = useState("");
-  const [filtros, setFiltros] = useState<CatalogoFiltros>(filtrosIniciais);
+  const [filtros, setFiltros] = useState<CatalogoFiltros>(() => ({
+    ...filtrosIniciais,
+    categorias: categoriaInicial ? [categoriaInicial] : [],
+  }));
   const [drawerAberto, setDrawerAberto] = useState(false);
   const [paginaSolicitada, setPaginaSolicitada] = useState(1);
 
