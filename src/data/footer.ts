@@ -88,7 +88,7 @@ export const footerData = {
     email: contato.email,
     telefone: formatarTelefone(contato.whatsapp),
     whatsapp: whatsappHref,
-    horario: "Seg a sex, 9h às 18h",
+    horario: localizacaoLoja.horario,
   },
 
   /** PLACEHOLDER: formas de pagamento exibidas como selos monocromáticos. */

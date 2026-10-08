@@ -1,13 +1,11 @@
 "use client";
 
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { LenisOptions } from "lenis";
 import { ReactLenis, useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const LENIS_OPTIONS: LenisOptions = {
   duration: 1.2,

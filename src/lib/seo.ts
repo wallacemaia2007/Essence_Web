@@ -40,10 +40,11 @@ export const pages: Record<string, PageSeo> = {
     type: "website",
   },
   sobre: {
-    title: "Sobre",
-    description: "Conheça mais sobre este template e sua arquitetura.",
+    title: "Sobre a Essence Passos | Moda feminina",
+    description:
+      "Conheça a curadoria, a loja física e a experiência da Essence em Passos, Minas Gerais.",
     path: "/sobre",
-    ogImage,
+    ogImage: "/images/conjuntos/hero-conjuntos-essence.webp",
     type: "website",
   },
   contato: {
