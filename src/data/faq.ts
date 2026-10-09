@@ -1,7 +1,10 @@
+import { routes } from "@/constants/routes";
+
 export type FaqItem = {
   /** Identificador único e estável (usado como valor do accordion). */
   id: string;
   question: string;
+  link?: { href: string; label: string };
   /**
    * Resposta em texto simples. Separe parágrafos com uma linha em branco
    * (`\n\n`). Texto simples porque o mesmo conteúdo alimenta os dados
@@ -88,7 +91,11 @@ export const faqGroups = [
         id: "tabela-medidas",
         question: "Como escolho o tamanho certo?",
         answer:
-          "Cada produto tem uma tabela de medidas na página. Compare com uma peça que já serve bem em você e, na dúvida entre dois tamanhos, escolha o maior.",
+          "Consulte o guia para aprender a medir busto, cintura e quadril. Se suas medidas ficarem entre dois tamanhos, fale com a equipe para considerar a modelagem da peça.",
+        link: {
+          href: routes.guiaTamanhos,
+          label: "Acessar o guia de tamanhos",
+        },
       },
       {
         id: "cuidados-pecas",

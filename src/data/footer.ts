@@ -66,6 +66,7 @@ export const footerData = {
       title: "Atendimento",
       links: [
         { label: "Dúvidas frequentes", href: anchors.faq },
+        { label: "Guia de tamanhos", href: routes.guiaTamanhos },
         { label: "Fale com a loja", href: routes.contato },
         { label: "WhatsApp", href: whatsappHref, external: true },
       ],

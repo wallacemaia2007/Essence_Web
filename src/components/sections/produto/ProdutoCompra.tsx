@@ -1,10 +1,12 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import { useId, useRef, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa6";
 import { toast } from "sonner";
 
+import { routes } from "@/constants/routes";
 import type { TamanhoProduto } from "@/data/produto-detalhes";
 import { useCarrinho } from "@/hooks/useCarrinho";
 import { cn } from "@/lib/utils";
@@ -121,6 +123,15 @@ export function ProdutoCompra({
           ))}
         </div>
       </fieldset>
+
+      <div className="mt-2 flex justify-end">
+        <Link
+          href={routes.guiaTamanhos}
+          className="inline-flex min-h-8 items-center text-xs font-medium text-[#74685f] underline decoration-[#bdb5ad] underline-offset-4 transition-colors hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+        >
+          Guia de tamanhos
+        </Link>
+      </div>
 
       {mostrarErro ? (
         <p id={idErro} role="alert" className="mt-3 text-sm text-[#b42318]">

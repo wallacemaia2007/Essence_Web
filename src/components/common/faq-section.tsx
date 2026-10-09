@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Container } from "@/components/common/container";
 import { SectionCTA } from "@/components/common/section-cta";
 import { SectionTitle } from "@/components/common/section-title";
@@ -99,6 +101,14 @@ export function FaqSection({
                           {item.answer.split("\n\n").map((paragraph) => (
                             <p key={paragraph}>{paragraph}</p>
                           ))}
+                          {item.link ? (
+                            <Link
+                              href={item.link.href}
+                              className="inline-flex min-h-8 items-center text-sm font-medium text-[#231f1b] underline decoration-[#bdb5ad] underline-offset-4 transition-colors hover:text-[#74685f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+                            >
+                              {item.link.label}
+                            </Link>
+                          ) : null}
                         </AccordionContent>
                       </AccordionItem>
                     ))}

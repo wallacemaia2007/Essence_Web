@@ -17,6 +17,7 @@ export const routes = {
   finalizarPedido: "/finalizar-pedido",
   politicaPrivacidade: "/politica-de-privacidade",
   termosUso: "/termos-de-uso",
+  guiaTamanhos: "/guia-de-tamanhos",
 } as const;
 
 /** Âncoras de seções da home. */
