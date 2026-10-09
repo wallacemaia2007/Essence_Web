@@ -167,9 +167,11 @@ function ConsentBanner({
       inert={disabled}
       className="fixed inset-x-3 bottom-3 z-[110] mx-auto max-w-5xl border border-[#171717]/15 bg-white p-4 text-[#171717] shadow-[0_12px_40px_rgba(0,0,0,0.18)] sm:inset-x-6 sm:bottom-6 sm:p-5"
     >
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-        <div className="max-w-2xl">
-          <h2 className="font-heading text-lg font-medium">Sua privacidade importa</h2>
+      <div className="flex flex-col gap-5">
+        <div className="max-w-3xl">
+          <h2 className="font-heading text-lg font-medium">
+            Sua privacidade importa
+          </h2>
           <p className="mt-1 text-sm leading-6 text-[#655e57]">
             Usamos tecnologias necessárias para o funcionamento do site. Com sua
             autorização, também podemos carregar recursos de preferências,
@@ -183,7 +185,7 @@ function ConsentBanner({
             Política de Cookies
           </Link>
         </div>
-        <div className="grid shrink-0 gap-2 sm:min-w-[25rem] sm:grid-cols-3">
+        <div className="grid w-full gap-2 sm:grid-cols-3">
           <button type="button" onClick={onAccept} className={buttonClassName}>
             Aceitar todos
           </button>
