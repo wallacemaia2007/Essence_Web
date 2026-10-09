@@ -51,7 +51,7 @@ export function ScrollStory() {
           scrollTrigger: {
             trigger: root,
             start: "top top",
-            end: "+=800%",
+            end: "+=1200%",
             scrub: 1,
             pin: true,
             pinSpacing: true,

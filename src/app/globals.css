@@ -1893,7 +1893,12 @@ body:has(main.sobre-page) .header-mobile-bar {
     font-size: clamp(4.2rem, 15vw, 13.5rem);
     font-weight: 400;
     letter-spacing: 0.025em;
-    line-height: 0.76;
+    line-height: 0.9;
+  }
+
+  .story-door__line-mask {
+    line-height: 0.95;
+    padding-block: 0.08em 0.12em;
   }
 
   .story-door__line-mask--locality {
