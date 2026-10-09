@@ -56,14 +56,24 @@ export const faqGroups = [
       {
         id: "prazo-troca",
         question: "Qual é o prazo para trocar ou devolver?",
+        // TODO: confirmar com a loja
         answer:
-          "Você tem 7 dias corridos após o recebimento para desistir da compra, e 30 dias para solicitar troca por tamanho ou defeito.",
+          "Prazo para troca voluntária: PLACEHOLDER. Consulte a página de Trocas e devoluções para ver as orientações atualizadas.",
+        link: {
+          href: routes.trocasDevolucoes,
+          label: "Consultar trocas e devoluções",
+        },
       },
       {
         id: "como-trocar",
         question: "Como solicito uma troca?",
+        // TODO: confirmar com a loja
         answer:
-          "Entre em contato pelo formulário do site informando o número do pedido e o item. Enviaremos as instruções de envio e, depois de recebermos a peça, concluímos a troca.\n\nA peça deve estar sem uso, com etiquetas e na embalagem original.",
+          "Entre em contato com a equipe pelo WhatsApp. Procedimento detalhado e condições aplicáveis: PLACEHOLDER. Consulte a página de Trocas e devoluções.",
+        link: {
+          href: routes.trocasDevolucoes,
+          label: "Ver como solicitar",
+        },
       },
     ],
   },

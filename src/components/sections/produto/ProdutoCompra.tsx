@@ -124,12 +124,18 @@ export function ProdutoCompra({
         </div>
       </fieldset>
 
-      <div className="mt-2 flex justify-end">
+      <div className="mt-2 flex flex-wrap justify-end gap-x-4">
         <Link
           href={routes.guiaTamanhos}
           className="inline-flex min-h-8 items-center text-xs font-medium text-[#74685f] underline decoration-[#bdb5ad] underline-offset-4 transition-colors hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
         >
           Guia de tamanhos
+        </Link>
+        <Link
+          href={routes.trocasDevolucoes}
+          className="inline-flex min-h-8 items-center text-xs font-medium text-[#74685f] underline decoration-[#bdb5ad] underline-offset-4 transition-colors hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+        >
+          Trocas e devoluções
         </Link>
       </div>
 

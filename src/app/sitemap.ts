@@ -30,6 +30,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
+      url: absoluteUrl(routes.trocasDevolucoes),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: absoluteUrl(routes.politicaPrivacidade),
       changeFrequency: "yearly",
       priority: 0.3,

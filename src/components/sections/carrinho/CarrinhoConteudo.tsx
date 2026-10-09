@@ -241,6 +241,14 @@ export function CarrinhoConteudo() {
         className="min-h-[55vh] bg-white py-12 text-[#231f1b] sm:py-16 md:py-20"
       >
         <Container className="max-w-7xl">
+          <div className="mb-6 flex justify-end">
+            <Link
+              href={routes.trocasDevolucoes}
+              className="inline-flex min-h-11 items-center text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+            >
+              Trocas e devoluções
+            </Link>
+          </div>
           {!hidratado ? null : linhas.length === 0 ? (
             <div className="border border-dashed border-[#d7d1ca] px-6 py-14 text-center sm:py-20">
               <p className="font-heading text-2xl tracking-wide uppercase">

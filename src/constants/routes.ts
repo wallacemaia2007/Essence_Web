@@ -18,6 +18,7 @@ export const routes = {
   politicaPrivacidade: "/politica-de-privacidade",
   termosUso: "/termos-de-uso",
   guiaTamanhos: "/guia-de-tamanhos",
+  trocasDevolucoes: "/trocas-e-devolucoes",
 } as const;
 
 /** Âncoras de seções da home. */
