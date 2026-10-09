@@ -142,8 +142,7 @@ export function alterarTamanho(
 
   const atual = obterSnapshot();
   const itemAtual = atual.find(
-    (item) =>
-      item.produtoId === produtoId && item.tamanho === tamanhoAtual,
+    (item) => item.produtoId === produtoId && item.tamanho === tamanhoAtual,
   );
   if (!itemAtual) return;
 
@@ -181,6 +180,11 @@ export function removerDoCarrinho(produtoId: string, tamanho: string) {
   );
 }
 
+/** Limpa a sacola após a criação bem-sucedida do pedido demonstrativo. */
+export function limparCarrinho() {
+  persistir(VAZIO);
+}
+
 export function useCarrinho() {
   const itens = useSyncExternalStore(
     assinar,
@@ -200,5 +204,6 @@ export function useCarrinho() {
     alterar: alterarQuantidade,
     alterarTamanho,
     remover: removerDoCarrinho,
+    limpar: limparCarrinho,
   };
 }

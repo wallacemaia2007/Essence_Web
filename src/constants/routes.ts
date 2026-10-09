@@ -17,11 +17,14 @@ export const routes = {
   produto: "/produto",
   favoritos: "/favoritos",
   carrinho: "/carrinho",
+  checkout: "/checkout",
+  pedidoConfirmacao: (id: string) => `/pedido/${encodeURIComponent(id)}`,
   finalizarPedido: "/finalizar-pedido",
   politicaPrivacidade: "/politica-de-privacidade",
   termosUso: "/termos-de-uso",
   guiaTamanhos: "/guia-de-tamanhos",
   trocasDevolucoes: "/trocas-e-devolucoes",
+  entregaFrete: "/entrega-e-frete",
 } as const;
 
 /** Âncoras de seções da home. */

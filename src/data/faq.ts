@@ -33,20 +33,35 @@ export const faqGroups = [
       {
         id: "prazo-entrega",
         question: "Qual é o prazo de entrega?",
+        // TODO: confirmar com a loja
         answer:
-          "O prazo é calculado no carrinho, a partir do CEP, e começa a contar depois da confirmação do pagamento.\n\nPedidos com itens de coleções diferentes podem ser enviados separadamente.",
+          "Prazo estimado por modalidade: PLACEHOLDER. Consulte a página Entrega e frete para acompanhar as informações atualizadas.",
+        link: {
+          href: routes.entregaFrete,
+          label: "Consultar entrega e frete",
+        },
       },
       {
         id: "rastrear-pedido",
         question: "Como acompanho meu pedido?",
+        // TODO: confirmar com a loja
         answer:
-          "Assim que o pedido for despachado, enviamos o código de rastreio por e-mail. Você também pode consultar o status na área da sua conta.",
+          "Quando disponível, use o código de rastreio informado pela equipe. Canal e prazo para receber o código: PLACEHOLDER.",
+        link: {
+          href: routes.entregaFrete,
+          label: "Ver informações de rastreio",
+        },
       },
       {
         id: "frete-gratis",
         question: "Vocês oferecem frete grátis?",
+        // TODO: confirmar com a loja
         answer:
-          "Sim, em compras acima de um valor mínimo definido pela loja. A condição aparece no carrinho quando disponível para o seu CEP.",
+          "Valor mínimo, regiões atendidas e condições para frete grátis: PLACEHOLDER.",
+        link: {
+          href: routes.entregaFrete,
+          label: "Consultar condições de frete",
+        },
       },
     ],
   },

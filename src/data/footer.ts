@@ -68,6 +68,7 @@ export const footerData = {
         { label: "Dúvidas frequentes", href: anchors.faq },
         { label: "Guia de tamanhos", href: routes.guiaTamanhos },
         { label: "Trocas e devoluções", href: routes.trocasDevolucoes },
+        { label: "Entrega e frete", href: routes.entregaFrete },
         { label: "Meus pedidos", href: routes.pedidos },
         { label: "Fale com a loja", href: routes.contato },
         { label: "WhatsApp", href: whatsappHref, external: true },

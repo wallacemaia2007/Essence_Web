@@ -12,7 +12,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function CarrinhoPage() {
+type CarrinhoPageProps = {
+  searchParams: Promise<{ aviso?: string | string[] }>;
+};
+
+export default async function CarrinhoPage({
+  searchParams,
+}: CarrinhoPageProps) {
+  const params = await searchParams;
+  const showCheckoutEmptyNotice = params.aviso === "checkout-vazio";
+
   return (
     <main className="flex flex-1 flex-col">
       <PageHeader
@@ -22,7 +31,7 @@ export default function CarrinhoPage() {
       >
         <CarrinhoContagem />
       </PageHeader>
-      <CarrinhoConteudo />
+      <CarrinhoConteudo showCheckoutEmptyNotice={showCheckoutEmptyNotice} />
     </main>
   );
 }

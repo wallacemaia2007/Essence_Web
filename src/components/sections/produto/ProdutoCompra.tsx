@@ -137,6 +137,12 @@ export function ProdutoCompra({
         >
           Trocas e devoluções
         </Link>
+        <Link
+          href={routes.entregaFrete}
+          className="inline-flex min-h-8 items-center text-xs font-medium text-[#74685f] underline decoration-[#bdb5ad] underline-offset-4 transition-colors hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+        >
+          Entrega e frete
+        </Link>
       </div>
 
       {mostrarErro ? (

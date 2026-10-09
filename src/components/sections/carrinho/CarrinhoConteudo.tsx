@@ -180,7 +180,11 @@ function CartItem({
   );
 }
 
-export function CarrinhoConteudo() {
+export function CarrinhoConteudo({
+  showCheckoutEmptyNotice = false,
+}: {
+  showCheckoutEmptyNotice?: boolean;
+}) {
   const { itens, hidratado } = useCarrinho();
   const router = useRouter();
   const { slides, slideAtual, irParaSlide, pausarPorFoco, retomarPorFoco } =
@@ -192,6 +196,9 @@ export function CarrinhoConteudo() {
     );
   const [cep, setCep] = useState("");
   const [mensagemFrete, setMensagemFrete] = useState("");
+  const avisoCheckout = showCheckoutEmptyNotice
+    ? "Sua sacola está vazia. Adicione uma peça antes de iniciar a finalização."
+    : "";
   const produtosPorId = useMemo(
     () => new Map(produtosVitrine.map((produto) => [produto.id, produto])),
     [],
@@ -208,6 +215,7 @@ export function CarrinhoConteudo() {
     (total, item) => total + item.quantidade,
     0,
   );
+
   function consultarFrete(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const cepNumerico = cep.replace(/\D/g, "");
@@ -231,7 +239,7 @@ export function CarrinhoConteudo() {
       // A finalização continua mesmo se o armazenamento da sessão estiver bloqueado.
     }
 
-    router.push(routes.finalizarPedido);
+    router.push(routes.checkout);
   }
 
   return (
@@ -241,12 +249,26 @@ export function CarrinhoConteudo() {
         className="min-h-[55vh] bg-white py-12 text-[#231f1b] sm:py-16 md:py-20"
       >
         <Container className="max-w-7xl">
+          {avisoCheckout ? (
+            <p
+              role="status"
+              className="mb-6 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900"
+            >
+              {avisoCheckout}
+            </p>
+          ) : null}
           <div className="mb-6 flex justify-end">
             <Link
               href={routes.trocasDevolucoes}
               className="inline-flex min-h-11 items-center text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
             >
               Trocas e devoluções
+            </Link>
+            <Link
+              href={routes.entregaFrete}
+              className="inline-flex min-h-11 items-center text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+            >
+              Entrega e frete
             </Link>
           </div>
           {!hidratado ? null : linhas.length === 0 ? (

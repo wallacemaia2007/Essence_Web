@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 
-import { FinalizarPedidoConteudo } from "@/components/sections/carrinho/FinalizarPedidoConteudo";
-import { PageHeader } from "@/components/sections/sobre/PageHeader";
 import { routes } from "@/constants/routes";
 
 export const metadata: Metadata = {
@@ -13,14 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function FinalizarPedidoPage() {
-  return (
-    <main className="flex flex-1 flex-col">
-      <PageHeader
-        currentPage="Finalizar pedido"
-        title="Quase lá"
-        description="Você será redirecionado para nosso atendimento no WhatsApp para confirmar os detalhes do pedido."
-      />
-      <FinalizarPedidoConteudo />
-    </main>
-  );
+  redirect(routes.checkout);
 }
