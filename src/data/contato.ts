@@ -5,9 +5,10 @@ export const contato = {
 };
 
 export const contatoAssuntos = [
-  "Dúvida Geral",
-  "Parceria",
-  "Proposta Comercial",
+  "Dúvida sobre produtos",
+  "Pedido e entrega",
+  "Trocas e devoluções",
+  "Loja física",
   "Outro",
 ] as const;
 

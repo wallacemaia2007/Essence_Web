@@ -49,7 +49,8 @@ export const pages: Record<string, PageSeo> = {
   },
   contato: {
     title: "Contato",
-    description: "Entre em contato para dúvidas, sugestões ou parcerias.",
+    description:
+      "Fale com a equipe da Essence Passos sobre produtos, pedidos, entregas ou uma visita à loja física.",
     path: "/contato",
     ogImage,
     type: "website",

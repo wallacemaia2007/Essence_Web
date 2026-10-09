@@ -1,297 +1,219 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Check,
-  ChevronDown,
-  LoaderCircle,
-  Mail,
-  MessageSquareText,
-  Phone,
-  Send,
-  Tag,
-  User,
-} from "lucide-react";
-import { type ReactNode, useId, useState } from "react";
+import { ArrowUpRight, MessageSquareText, Send } from "lucide-react";
+import type { ReactNode } from "react";
+import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
 import { contato, contatoAssuntos } from "@/data/contato";
 import {
   contatoFormSchema,
   type ContatoFormValues,
 } from "@/lib/contato-schema";
-import { buildGmailComposeUrl } from "@/lib/gmail";
 import { cn } from "@/lib/utils";
-
-type SubmitStatus = "idle" | "success" | "error";
 
 const defaultValues: ContatoFormValues = {
   nome: "",
   email: "",
   telefone: "",
-  assunto: "Dúvida Geral",
+  assunto: "Dúvida sobre produtos",
   mensagem: "",
-  _gotcha: "",
 };
+
+const inputClassName =
+  "mt-2 h-12 w-full border border-[#d7d7d7] bg-white px-4 text-sm text-[#111111] outline-none transition-colors placeholder:text-[#8a8a8a] focus:border-black focus-visible:ring-2 focus-visible:ring-black/15 aria-invalid:border-red-700";
 
 export function ContatoForm() {
   const formId = useId();
-  const [status, setStatus] = useState<SubmitStatus>("idle");
-  const [serverMessage, setServerMessage] = useState("");
-  const [isSubjectOpen, setIsSubjectOpen] = useState(false);
-  const [selectedSubject, setSelectedSubject] = useState(defaultValues.assunto);
-
+  const [linkWhatsApp, setLinkWhatsApp] = useState("");
   const {
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     register,
-    reset,
-    setValue,
   } = useForm<ContatoFormValues>({
     defaultValues,
     resolver: zodResolver(contatoFormSchema),
   });
 
-  function onSubmit(values: ContatoFormValues) {
-    setStatus("idle");
-    setServerMessage("");
-
-    const subject = `[Site] ${values.assunto} - ${values.nome}`;
-    const body = [
-      `Olá, meu nome é ${values.nome}.`,
-      `Meu e-mail: ${values.email}`,
-      values.telefone ? `Meu telefone: ${values.telefone}` : "",
+  function prepararMensagem(values: ContatoFormValues) {
+    const mensagem = [
+      `Olá! Meu nome é ${values.nome}.`,
+      `E-mail: ${values.email}`,
+      values.telefone ? `Telefone: ${values.telefone}` : "",
+      `Assunto: ${values.assunto}`,
       "",
+      "Mensagem:",
       values.mensagem,
       "",
-      "Mensagem enviada pelo formulário de contato do site.",
+      "Mensagem preparada pelo formulário do site Essence Passos.",
     ]
       .filter(Boolean)
       .join("\n");
+    const telefoneWhatsApp = contato.whatsapp.replace(/\D/g, "");
 
-    const url = buildGmailComposeUrl({ to: contato.email, subject, body });
-    window.open(url, "_blank", "noopener,noreferrer");
-
-    setStatus("success");
-    setServerMessage("Abrindo o Gmail com sua mensagem preenchida...");
-    reset(defaultValues);
-    setSelectedSubject(defaultValues.assunto);
+    setLinkWhatsApp(
+      `https://wa.me/${telefoneWhatsApp}?text=${encodeURIComponent(mensagem)}`,
+    );
   }
 
   return (
     <form
-      className="bg-card rounded-lg border p-5 shadow-sm md:p-6 lg:max-w-[35rem]"
-      onSubmit={handleSubmit(onSubmit)}
+      aria-labelledby={`${formId}-title`}
+      className="border border-[#dedede] bg-white p-5 sm:p-7 lg:p-9"
       noValidate
+      onChange={() => setLinkWhatsApp("")}
+      onSubmit={handleSubmit(prepararMensagem)}
     >
-      <div className="mb-6">
-        <h2 className="text-2xl leading-tight font-semibold">
-          Enviar mensagem
-        </h2>
-        <p className="text-muted-foreground mt-2 max-w-md text-sm leading-6">
-          Conte um pouco sobre o convite ou projeto. Responderei o mais breve
-          possível.
+      <div className="mb-7 border-b border-[#e9e9e9] pb-6">
+        <div className="flex items-center gap-3 text-[#656565]">
+          <MessageSquareText className="size-4" aria-hidden="true" />
+          <p className="m-0 text-[0.65rem] font-semibold tracking-[0.18em] uppercase">
+            Mensagem para a loja
+          </p>
+        </div>
+        <h3
+          id={`${formId}-title`}
+          className="font-heading mt-3 mb-0 text-2xl leading-tight sm:text-3xl"
+        >
+          Deixe seu recado.
+        </h3>
+        <p className="mt-3 mb-0 text-sm leading-6 text-[#656565]">
+          Preencha os campos e confira o texto no WhatsApp antes de enviá-lo.
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2">
         <FormField
           id={`${formId}-nome`}
-          label="Nome completo"
+          label="Seu nome"
           error={errors.nome?.message}
-          icon={<User />}
         >
           <input
             id={`${formId}-nome`}
             type="text"
             autoComplete="name"
-            placeholder="Nome completo*"
+            placeholder="Como podemos chamar você?"
             aria-invalid={Boolean(errors.nome)}
             aria-describedby={errors.nome ? `${formId}-nome-error` : undefined}
-            className={fieldClassName}
+            className={inputClassName}
             {...register("nome")}
           />
         </FormField>
 
         <FormField
           id={`${formId}-email`}
-          label="E-mail"
+          label="Seu e-mail"
           error={errors.email?.message}
-          icon={<Mail />}
         >
           <input
             id={`${formId}-email`}
             type="email"
             autoComplete="email"
-            placeholder="E-mail*"
+            placeholder="voce@email.com"
             aria-invalid={Boolean(errors.email)}
             aria-describedby={
               errors.email ? `${formId}-email-error` : undefined
             }
-            className={fieldClassName}
+            className={inputClassName}
             {...register("email")}
           />
         </FormField>
 
         <FormField
           id={`${formId}-telefone`}
-          label="Telefone opcional"
+          label="Telefone (opcional)"
           error={errors.telefone?.message}
-          icon={<Phone />}
         >
           <input
             id={`${formId}-telefone`}
             type="tel"
             autoComplete="tel"
-            placeholder="Telefone (opcional)"
+            placeholder="(35) 99999-9999"
             aria-invalid={Boolean(errors.telefone)}
             aria-describedby={
               errors.telefone ? `${formId}-telefone-error` : undefined
             }
-            className={fieldClassName}
+            className={inputClassName}
             {...register("telefone")}
           />
         </FormField>
 
         <FormField
           id={`${formId}-assunto`}
-          label="Assunto"
+          label="Sobre o que você quer falar?"
           error={errors.assunto?.message}
-          icon={<Tag />}
         >
-          <button
+          <select
             id={`${formId}-assunto`}
-            type="button"
-            aria-haspopup="listbox"
-            aria-expanded={isSubjectOpen}
-            aria-controls={`${formId}-assunto-options`}
+            aria-invalid={Boolean(errors.assunto)}
             aria-describedby={
               errors.assunto ? `${formId}-assunto-error` : undefined
             }
-            className={cn(
-              fieldClassName,
-              "flex items-center justify-between pr-4 text-left",
-              errors.assunto && "border-destructive ring-destructive/20 ring-3",
-            )}
-            onClick={() => setIsSubjectOpen((isOpen) => !isOpen)}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                setIsSubjectOpen(false);
-              }
-            }}
+            className={cn(inputClassName, "cursor-pointer")}
+            {...register("assunto")}
           >
-            <span>{selectedSubject}</span>
-            <ChevronDown
-              className={cn(
-                "text-muted-foreground size-4 transition",
-                isSubjectOpen && "rotate-180",
-              )}
-              aria-hidden="true"
-            />
-          </button>
-
-          {isSubjectOpen ? (
-            <ul
-              id={`${formId}-assunto-options`}
-              role="listbox"
-              aria-label="Assunto"
-              className="border-border bg-card absolute top-full right-0 left-0 z-20 mt-2 overflow-hidden rounded-md border py-1 shadow-lg"
-            >
-              {contatoAssuntos.map((assunto) => {
-                const isSelected = assunto === selectedSubject;
-
-                return (
-                  <li
-                    key={assunto}
-                    role="option"
-                    aria-selected={isSelected}
-                    className="pl-0 before:hidden"
-                  >
-                    <button
-                      type="button"
-                      className={cn(
-                        "hover:bg-muted focus-visible:bg-muted flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition focus-visible:outline-none",
-                        isSelected && "text-primary font-medium",
-                      )}
-                      onClick={() => {
-                        setSelectedSubject(assunto);
-                        setValue("assunto", assunto, {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        });
-                        setIsSubjectOpen(false);
-                      }}
-                    >
-                      <span>{assunto}</span>
-                      {isSelected ? (
-                        <Check className="size-4" aria-hidden="true" />
-                      ) : null}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          ) : null}
+            {contatoAssuntos.map((assunto) => (
+              <option key={assunto} value={assunto}>
+                {assunto}
+              </option>
+            ))}
+          </select>
         </FormField>
 
         <FormField
           id={`${formId}-mensagem`}
-          label="Mensagem"
+          label="Sua mensagem"
           error={errors.mensagem?.message}
-          icon={<MessageSquareText />}
+          className="sm:col-span-2"
         >
           <textarea
             id={`${formId}-mensagem`}
-            rows={7}
-            placeholder="Mensagem*"
+            rows={5}
+            placeholder="Escreva aqui como podemos ajudar..."
             aria-invalid={Boolean(errors.mensagem)}
             aria-describedby={
               errors.mensagem ? `${formId}-mensagem-error` : undefined
             }
-            className={cn(fieldClassName, "min-h-36 resize-y py-3")}
+            className={cn(inputClassName, "h-auto min-h-36 resize-y py-3")}
             {...register("mensagem")}
           />
         </FormField>
-
-        <div className="hidden" aria-hidden="true">
-          <label htmlFor={`${formId}-gotcha`}>Não preencha este campo</label>
-          <input
-            id={`${formId}-gotcha`}
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            {...register("_gotcha")}
-          />
-        </div>
       </div>
 
-      <div className="mt-4 space-y-3">
-        <p
+      <button
+        type="submit"
+        className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-3 bg-black px-5 text-xs font-semibold tracking-[0.14em] text-white uppercase transition-colors hover:bg-[#333333] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black sm:w-auto"
+      >
+        Preparar mensagem
+        <Send className="size-4" aria-hidden="true" />
+      </button>
+
+      {linkWhatsApp ? (
+        <div
+          role="status"
           aria-live="polite"
-          className={cn(
-            "min-h-5 text-sm",
-            status === "success" && "text-primary font-medium",
-            status === "error" && "text-destructive font-medium",
-          )}
+          className="mt-5 border-l-2 border-black bg-[#f5f5f5] p-4"
         >
-          {serverMessage}
-        </p>
+          <p className="m-0 text-sm font-medium text-[#111111]">
+            Sua mensagem está pronta. Revise e confirme o envio no WhatsApp.
+          </p>
+          <a
+            href={linkWhatsApp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-flex min-h-11 items-center gap-2 text-xs font-semibold tracking-[0.1em] text-[#111111] uppercase underline underline-offset-4 hover:text-[#555555] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+          >
+            Abrir WhatsApp com a mensagem
+            <ArrowUpRight className="size-4" aria-hidden="true" />
+          </a>
+        </div>
+      ) : null}
 
-        <Button
-          type="submit"
-          size="lg"
-          disabled={isSubmitting}
-          className="h-11 w-full gap-2 px-5"
-        >
-          {isSubmitting ? (
-            <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
-          ) : (
-            <Send className="size-5" aria-hidden="true" />
-          )}
-          {isSubmitting ? "Enviando" : "Enviar mensagem"}
-        </Button>
-      </div>
+      <p className="mt-5 mb-0 text-xs leading-5 text-[#777777]">
+        O site não envia a mensagem automaticamente; você poderá revisar o texto
+        e decidir se deseja enviá-lo pelo WhatsApp.
+      </p>
     </form>
   );
 }
@@ -300,30 +222,25 @@ type FormFieldProps = {
   id: string;
   label: string;
   error?: string;
-  icon: ReactNode;
+  className?: string;
   children: ReactNode;
 };
 
-const fieldClassName =
-  "border-border bg-background text-foreground placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary/30 h-11 w-full rounded-md border px-12 text-sm outline-none transition focus-visible:ring-3 aria-invalid:border-destructive aria-invalid:ring-destructive/20";
-
-function FormField({ children, error, icon, id, label }: FormFieldProps) {
+function FormField({ children, className, error, id, label }: FormFieldProps) {
   return (
-    <div>
-      <label htmlFor={id} className="sr-only">
+    <div className={className}>
+      <label
+        htmlFor={id}
+        className="block text-xs font-semibold tracking-[0.04em] text-[#252525]"
+      >
         {label}
       </label>
-      <div className="relative">
-        <span className="text-primary pointer-events-none absolute top-3 left-4 [&_svg]:size-4">
-          {icon}
-        </span>
-        {children}
-      </div>
+      {children}
       {error ? (
         <p
           id={`${id}-error`}
-          className="text-destructive pt-1 text-sm"
-          aria-live="polite"
+          role="alert"
+          className="mt-1 mb-0 text-xs leading-5 text-red-800"
         >
           {error}
         </p>
