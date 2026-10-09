@@ -180,6 +180,94 @@ function CartItem({
   );
 }
 
+function DestaquesCarousel({
+  mobile = false,
+  onSelect,
+  slideAtual,
+  slides,
+}: {
+  slides: ProdutoVitrine[][];
+  slideAtual: number;
+  mobile?: boolean;
+  onSelect: (index: number) => void;
+}) {
+  if (slides.length === 0) {
+    return null;
+  }
+
+  const indiceVisivel = slideAtual % slides.length;
+
+  return (
+    <div
+      role="region"
+      aria-roledescription="carrossel"
+      aria-label={
+        mobile
+          ? "Destaques da Essence, uma peça por slide"
+          : "Destaques da Essence"
+      }
+    >
+      <div className="overflow-hidden">
+        <div
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+          style={{ transform: `translateX(-${indiceVisivel * 100}%)` }}
+        >
+          {slides.map((slide, slideIndex) => (
+            <ul
+              key={`slide-${slideIndex}`}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${slideIndex + 1} de ${slides.length}`}
+              aria-hidden={slideIndex !== indiceVisivel}
+              className={cn(
+                "grid w-full shrink-0 grid-cols-1 gap-x-4 gap-y-8 p-0",
+                !mobile &&
+                  "sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3 lg:gap-x-6",
+              )}
+            >
+              {slide.map((produto, index) => (
+                <li
+                  key={produto.id}
+                  className="min-w-0 list-none p-0 before:hidden"
+                >
+                  <ProdutoColecaoCard
+                    produto={produto}
+                    priority={slideIndex === 0 && index === 0}
+                  />
+                </li>
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
+      {slides.length > 1 ? (
+        <div
+          role="group"
+          aria-label="Páginas dos destaques"
+          className="mt-7 flex items-center justify-center gap-2"
+        >
+          {slides.map((_, index) => (
+            <button
+              key={`destaque-indicator-${index}`}
+              type="button"
+              onClick={() => onSelect(index)}
+              aria-label={`Ir para ${mobile ? "a peça" : "o grupo de destaques"} ${index + 1}`}
+              aria-current={indiceVisivel === index ? "page" : undefined}
+              className={cn(
+                "h-1 cursor-pointer transition-[width,background-color] duration-300 motion-reduce:transition-none",
+                indiceVisivel === index
+                  ? "w-8 bg-[#231f1b]"
+                  : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
+              )}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function CarrinhoConteudo({
   showCheckoutEmptyNotice = false,
 }: {
@@ -187,13 +275,18 @@ export function CarrinhoConteudo({
 }) {
   const { itens, hidratado } = useCarrinho();
   const router = useRouter();
-  const { slides, slideAtual, irParaSlide, pausarPorFoco, retomarPorFoco } =
-    useCarouselSlides(
-      produtosEmDestaque,
-      VITRINE_PRODUTOS_POR_SLIDE,
-      VITRINE_INTERVALO_MS,
-      { pauseOnHover: false },
-    );
+  const carouselDesktop = useCarouselSlides(
+    produtosEmDestaque,
+    VITRINE_PRODUTOS_POR_SLIDE,
+    VITRINE_INTERVALO_MS,
+    { pauseOnHover: false },
+  );
+  const carouselMobile = useCarouselSlides(
+    produtosEmDestaque,
+    1,
+    VITRINE_INTERVALO_MS,
+    { pauseOnHover: false },
+  );
   const [cep, setCep] = useState("");
   const [mensagemFrete, setMensagemFrete] = useState("");
   const avisoCheckout = showCheckoutEmptyNotice
@@ -215,6 +308,16 @@ export function CarrinhoConteudo({
     (total, item) => total + item.quantidade,
     0,
   );
+
+  function pausarPorFoco() {
+    carouselDesktop.pausarPorFoco();
+    carouselMobile.pausarPorFoco();
+  }
+
+  function retomarPorFoco() {
+    carouselDesktop.retomarPorFoco();
+    carouselMobile.retomarPorFoco();
+  }
 
   function consultarFrete(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -416,7 +519,7 @@ export function CarrinhoConteudo({
         }}
       >
         <Container className="max-w-7xl">
-          <div className="mb-7 flex flex-col gap-5 sm:mb-9 sm:flex-row sm:items-end sm:justify-between">
+          <div className="mb-7 flex flex-wrap items-end justify-between gap-5 sm:mb-9">
             <div>
               <p className="text-xs font-semibold tracking-[0.22em] text-[#74685f] uppercase">
                 Curadoria Essence
@@ -432,12 +535,40 @@ export function CarrinhoConteudo({
               </p>
             </div>
 
-            {slides.length > 1 ? (
-              <div className="ml-auto flex items-center gap-2 sm:ml-2">
+            {carouselMobile.slides.length > 1 ? (
+              <div className="ml-auto flex items-center gap-2 md:hidden">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => irParaSlide(slideAtual - 1)}
+                  onClick={() =>
+                    carouselMobile.irParaSlide(carouselMobile.slideAtual - 1)
+                  }
+                  aria-label="Mostrar a peça anterior"
+                  className="size-11 cursor-pointer rounded-full"
+                >
+                  <ChevronLeft className="size-5" aria-hidden="true" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    carouselMobile.irParaSlide(carouselMobile.slideAtual + 1)
+                  }
+                  aria-label="Mostrar a próxima peça"
+                  className="size-11 cursor-pointer rounded-full"
+                >
+                  <ChevronRight className="size-5" aria-hidden="true" />
+                </Button>
+              </div>
+            ) : null}
+            {carouselDesktop.slides.length > 1 ? (
+              <div className="ml-auto hidden items-center gap-2 sm:ml-2 md:flex">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    carouselDesktop.irParaSlide(carouselDesktop.slideAtual - 1)
+                  }
                   aria-label="Mostrar os três destaques anteriores"
                   className="size-11 cursor-pointer rounded-full"
                 >
@@ -446,7 +577,9 @@ export function CarrinhoConteudo({
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => irParaSlide(slideAtual + 1)}
+                  onClick={() =>
+                    carouselDesktop.irParaSlide(carouselDesktop.slideAtual + 1)
+                  }
                   aria-label="Mostrar os três próximos destaques"
                   className="size-11 cursor-pointer rounded-full"
                 >
@@ -456,64 +589,20 @@ export function CarrinhoConteudo({
             ) : null}
           </div>
 
-          <div
-            role="region"
-            aria-roledescription="carrossel"
-            aria-label="Produtos em destaque da Essence"
-          >
-            <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-                style={{ transform: `translateX(-${slideAtual * 100}%)` }}
-              >
-                {slides.map((slide, slideIndex) => (
-                  <ul
-                    key={`slide-${slideIndex}`}
-                    role="group"
-                    aria-roledescription="slide"
-                    aria-label={`${slideIndex + 1} de ${slides.length}`}
-                    aria-hidden={slideIndex !== slideAtual}
-                    className="grid w-full shrink-0 grid-cols-1 gap-x-4 gap-y-8 p-0 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3 lg:gap-x-6"
-                  >
-                    {slide.map((produto, index) => (
-                      <li
-                        key={produto.id}
-                        className="min-w-0 list-none p-0 before:hidden"
-                      >
-                        <ProdutoColecaoCard
-                          produto={produto}
-                          priority={slideIndex === 0 && index === 0}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                ))}
-              </div>
-            </div>
-
-            {slides.length > 1 ? (
-              <div
-                role="group"
-                aria-label="Páginas dos destaques"
-                className="mt-7 flex items-center justify-center gap-2"
-              >
-                {slides.map((_, index) => (
-                  <button
-                    key={`destaque-indicator-${index}`}
-                    type="button"
-                    onClick={() => irParaSlide(index)}
-                    aria-label={`Ir para o grupo de destaques ${index + 1}`}
-                    aria-current={slideAtual === index ? "page" : undefined}
-                    className={cn(
-                      "h-1 cursor-pointer transition-[width,background-color] duration-300 motion-reduce:transition-none",
-                      slideAtual === index
-                        ? "w-8 bg-[#231f1b]"
-                        : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
-                    )}
-                  />
-                ))}
-              </div>
-            ) : null}
+          <div className="hidden md:block">
+            <DestaquesCarousel
+              slides={carouselDesktop.slides}
+              slideAtual={carouselDesktop.slideAtual}
+              onSelect={carouselDesktop.irParaSlide}
+            />
+          </div>
+          <div className="md:hidden">
+            <DestaquesCarousel
+              slides={carouselMobile.slides}
+              slideAtual={carouselMobile.slideAtual}
+              mobile
+              onSelect={carouselMobile.irParaSlide}
+            />
           </div>
         </Container>
       </ThemedSection>

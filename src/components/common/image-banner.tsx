@@ -35,6 +35,8 @@ export type ImageBannerProps = {
   priority?: boolean;
   /** Dica de tamanho para o `next/image`. Padrão: largura total da tela. */
   sizes?: string;
+  /** Classes adicionais para o botão do banner. */
+  buttonClassName?: string;
   className?: string;
 };
 
@@ -67,6 +69,7 @@ const buttonPositionClasses: Record<ImageBannerButtonPosition, string> = {
  */
 export function ImageBanner({
   buttonAriaLabel,
+  buttonClassName,
   buttonLabel,
   buttonPosition = "center",
   buttonVariant = "light",
@@ -114,6 +117,7 @@ export function ImageBanner({
         className={cn(
           "font-heading inline-flex h-11 min-w-40 items-center justify-center px-8 text-[0.7rem] font-medium tracking-[0.24em] uppercase transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none",
           buttonVariantClasses[buttonVariant],
+          buttonClassName,
         )}
       >
         {buttonLabel}

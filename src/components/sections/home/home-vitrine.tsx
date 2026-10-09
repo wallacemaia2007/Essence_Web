@@ -107,20 +107,120 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
   );
 }
 
+type VitrineCarouselProps = {
+  slides: ProdutoVitrine[][];
+  slideAtual: number;
+  mobile?: boolean;
+  onSelect: (index: number) => void;
+};
+
+function VitrineCarousel({
+  mobile = false,
+  onSelect,
+  slideAtual,
+  slides,
+}: VitrineCarouselProps) {
+  if (slides.length === 0) {
+    return null;
+  }
+
+  const indiceVisivel = slideAtual % slides.length;
+
+  return (
+    <div
+      role="region"
+      aria-roledescription="carrossel"
+      aria-label={
+        mobile
+          ? "Produtos em destaque, um produto por slide"
+          : "Produtos em destaque"
+      }
+    >
+      <div className="overflow-hidden">
+        <div
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+          style={{ transform: `translateX(-${indiceVisivel * 100}%)` }}
+        >
+          {slides.map((slide, slideIndex) => (
+            <ul
+              key={`slide-${slideIndex}`}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${slideIndex + 1} de ${slides.length}`}
+              aria-hidden={slideIndex !== indiceVisivel}
+              className={cn(
+                "grid w-full shrink-0 gap-x-4 gap-y-8 p-0",
+                mobile
+                  ? "grid-cols-1"
+                  : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6",
+              )}
+            >
+              {slide.map((produto) => (
+                <ProductCard key={produto.id} produto={produto} />
+              ))}
+            </ul>
+          ))}
+        </div>
+      </div>
+
+      {slides.length > 1 ? (
+        <div
+          role="group"
+          aria-label="Páginas da vitrine"
+          className="mt-7 flex items-center justify-center gap-2"
+        >
+          {slides.map((_, index) => (
+            <button
+              key={`indicator-${index}`}
+              type="button"
+              aria-label={`Ir para ${mobile ? "o produto" : "o grupo de produtos"} ${index + 1}`}
+              aria-current={indiceVisivel === index ? "page" : undefined}
+              onClick={() => onSelect(index)}
+              className={cn(
+                "h-1 transition-[width,background-color] duration-300 motion-reduce:transition-none",
+                indiceVisivel === index
+                  ? "w-8 bg-[#231f1b]"
+                  : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
+              )}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function HomeVitrine() {
-  const {
-    slides,
-    slideAtual,
-    irParaSlide,
-    pausarPorHover,
-    retomarPorHover,
-    pausarPorFoco,
-    retomarPorFoco,
-  } = useCarouselSlides(
+  const carouselDesktop = useCarouselSlides(
     produtosEmDestaque,
     VITRINE_PRODUTOS_POR_SLIDE,
     VITRINE_INTERVALO_MS,
   );
+  const carouselMobile = useCarouselSlides(
+    produtosEmDestaque,
+    1,
+    VITRINE_INTERVALO_MS,
+  );
+
+  function pausarPorHover() {
+    carouselDesktop.pausarPorHover();
+    carouselMobile.pausarPorHover();
+  }
+
+  function retomarPorHover() {
+    carouselDesktop.retomarPorHover();
+    carouselMobile.retomarPorHover();
+  }
+
+  function pausarPorFoco() {
+    carouselDesktop.pausarPorFoco();
+    carouselMobile.pausarPorFoco();
+  }
+
+  function retomarPorFoco() {
+    carouselDesktop.retomarPorFoco();
+    carouselMobile.retomarPorFoco();
+  }
 
   if (produtosEmDestaque.length === 0) {
     return null;
@@ -157,7 +257,7 @@ export function HomeVitrine() {
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
+          <div className="flex w-full flex-wrap items-center justify-between gap-3 self-start sm:w-auto sm:justify-end sm:self-auto">
             <Link
               href={routes.colecao}
               prefetch={false}
@@ -167,12 +267,41 @@ export function HomeVitrine() {
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
 
-            {slides.length > 1 ? (
-              <div className="ml-auto flex items-center gap-2 sm:ml-2">
+            {carouselMobile.slides.length > 1 ? (
+              <div className="ml-auto flex items-center gap-2 md:hidden">
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => irParaSlide(slideAtual - 1)}
+                  onClick={() =>
+                    carouselMobile.irParaSlide(carouselMobile.slideAtual - 1)
+                  }
+                  aria-label="Mostrar o produto anterior"
+                  className="size-11 cursor-pointer rounded-full"
+                >
+                  <ChevronLeft className="size-5" aria-hidden="true" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    carouselMobile.irParaSlide(carouselMobile.slideAtual + 1)
+                  }
+                  aria-label="Mostrar o próximo produto"
+                  className="size-11 cursor-pointer rounded-full"
+                >
+                  <ChevronRight className="size-5" aria-hidden="true" />
+                </Button>
+              </div>
+            ) : null}
+
+            {carouselDesktop.slides.length > 1 ? (
+              <div className="ml-auto hidden items-center gap-2 sm:ml-2 md:flex">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    carouselDesktop.irParaSlide(carouselDesktop.slideAtual - 1)
+                  }
                   aria-label="Mostrar os três produtos anteriores"
                   className="size-11 cursor-pointer rounded-full"
                 >
@@ -181,7 +310,9 @@ export function HomeVitrine() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => irParaSlide(slideAtual + 1)}
+                  onClick={() =>
+                    carouselDesktop.irParaSlide(carouselDesktop.slideAtual + 1)
+                  }
                   aria-label="Mostrar os três próximos produtos"
                   className="size-11 cursor-pointer rounded-full"
                 >
@@ -192,56 +323,20 @@ export function HomeVitrine() {
           </div>
         </div>
 
-        <div
-          role="region"
-          aria-roledescription="carrossel"
-          aria-label="Produtos em destaque da Essence"
-        >
-          <div className="overflow-hidden">
-            <div
-              className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-              style={{ transform: `translateX(-${slideAtual * 100}%)` }}
-            >
-              {slides.map((slide, slideIndex) => (
-                <ul
-                  key={`slide-${slideIndex}`}
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-label={`${slideIndex + 1} de ${slides.length}`}
-                  aria-hidden={slideIndex !== slideAtual}
-                  className="grid w-full shrink-0 grid-cols-1 gap-x-4 gap-y-8 p-0 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3 lg:gap-x-6"
-                >
-                  {slide.map((produto) => (
-                    <ProductCard key={produto.id} produto={produto} />
-                  ))}
-                </ul>
-              ))}
-            </div>
-          </div>
-
-          {slides.length > 1 ? (
-            <div
-              role="group"
-              aria-label="Páginas da vitrine"
-              className="mt-7 flex items-center justify-center gap-2"
-            >
-              {slides.map((_, index) => (
-                <button
-                  key={`indicator-${index}`}
-                  type="button"
-                  onClick={() => irParaSlide(index)}
-                  aria-label={`Ir para o grupo de produtos ${index + 1}`}
-                  aria-current={slideAtual === index ? "page" : undefined}
-                  className={cn(
-                    "h-1 transition-[width,background-color] duration-300 motion-reduce:transition-none",
-                    slideAtual === index
-                      ? "w-8 bg-[#231f1b]"
-                      : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
-                  )}
-                />
-              ))}
-            </div>
-          ) : null}
+        <div className="hidden md:block">
+          <VitrineCarousel
+            slides={carouselDesktop.slides}
+            slideAtual={carouselDesktop.slideAtual}
+            onSelect={carouselDesktop.irParaSlide}
+          />
+        </div>
+        <div className="md:hidden">
+          <VitrineCarousel
+            slides={carouselMobile.slides}
+            slideAtual={carouselMobile.slideAtual}
+            mobile
+            onSelect={carouselMobile.irParaSlide}
+          />
         </div>
       </Container>
     </ThemedSection>
