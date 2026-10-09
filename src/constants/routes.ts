@@ -2,6 +2,7 @@ export const routes = {
   home: "/",
   sobre: "/sobre",
   contato: "/contato",
+  atendimentoPersonalizado: "/atendimento-personalizado",
   login: "/login",
   conta: "/conta",
   pedidos: "/pedidos",

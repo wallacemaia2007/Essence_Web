@@ -1,3 +1,5 @@
+import { storeHours } from "./store-hours";
+
 const enderecoRua = "Avenida Comendador Francisco Avelino Maia, 3014";
 const cidade = "Passos";
 const estado = "MG";
@@ -9,8 +11,8 @@ export const localizacaoLoja = {
   endereco: [enderecoRua, `${cidade} — ${estado}`],
   cidade,
   estado,
-  horario: "Seg a sex, 9h às 18h",
-  openingHoursSchema: ["Mo-Fr 09:00-18:00"],
+  horario: storeHours.summary,
+  openingHoursSchema: storeHours.openingHoursSchema,
   geo: {
     latitude: -20.7253955,
     longitude: -46.6122795,

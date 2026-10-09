@@ -72,6 +72,10 @@ export const footerData = {
         { label: "Entrega e frete", href: routes.entregaFrete },
         { label: "Meus pedidos", href: routes.pedidos },
         { label: "Fale com a loja", href: routes.contato },
+        {
+          label: "Atendimento personalizado",
+          href: routes.atendimentoPersonalizado,
+        },
         { label: "WhatsApp", href: whatsappHref, external: true },
       ],
     },

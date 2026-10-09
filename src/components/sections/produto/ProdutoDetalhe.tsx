@@ -119,6 +119,12 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
                 >
                   Tirar dúvidas de tamanho com a equipe
                 </a>
+                <Link
+                  href={routes.atendimentoPersonalizado}
+                  className="mt-2 inline-flex min-h-8 items-center text-sm underline underline-offset-4 hover:text-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+                >
+                  Quer ajuda com o look? Agende seu atendimento.
+                </Link>
               </div>
             </div>
 
