@@ -71,7 +71,15 @@ function LegalSubsectionContent({
   );
 }
 
-export function LegalDocumentPage({ document }: { document: LegalDocument }) {
+type LegalRelatedLink = { label: string; href: string };
+
+export function LegalDocumentPage({
+  document,
+  relatedLinks = [],
+}: {
+  document: LegalDocument;
+  relatedLinks?: readonly LegalRelatedLink[];
+}) {
   const whatsapp = socialLinks.find((link) => link.platform === "whatsapp");
 
   return (
@@ -127,6 +135,23 @@ export function LegalDocumentPage({ document }: { document: LegalDocument }) {
                 <p className="mt-4 max-w-3xl !text-left text-sm leading-7 text-[#655e57] sm:text-base">
                   {document.description}
                 </p>
+                {relatedLinks.length > 0 ? (
+                  <p className="mt-4 text-sm text-[#655e57]">
+                    Leia também:{" "}
+                    {relatedLinks.map((link, index) => (
+                      <span key={link.href}>
+                        {index > 0 ? ", " : null}
+                        <Link
+                          href={link.href}
+                          className="font-medium text-[#171717] underline underline-offset-4 hover:text-[#8a6746] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171717]"
+                        >
+                          {link.label}
+                        </Link>
+                      </span>
+                    ))}
+                    .
+                  </p>
+                ) : null}
                 <div className="mt-5 flex flex-wrap gap-x-3 gap-y-1 text-xs leading-5 text-[#756d65] sm:text-sm">
                   <span>
                     Última atualização:{" "}

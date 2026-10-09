@@ -1,6 +1,7 @@
 "use client";
 
 import { Container, SocialLinks, ThemedSection } from "@/components/common";
+import { CookiePreferencesButton } from "@/components/consent/CookiePreferencesButton";
 import { routes } from "@/constants/routes";
 import { footerData, type FooterLink } from "@/data/footer";
 import { socialLinks } from "@/data/social";
@@ -118,6 +119,9 @@ export function Footer() {
                     </li>
                   ))}
                 </ul>
+                <CookiePreferencesButton className="mt-2 inline-flex min-h-11 items-center rounded-sm text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:ring-ring/50 focus-visible:ring-3 focus-visible:outline-none md:min-h-8">
+                  Preferências de cookies
+                </CookiePreferencesButton>
               </nav>
             </div>
 

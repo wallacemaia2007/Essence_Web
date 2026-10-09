@@ -45,6 +45,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     {
+      url: absoluteUrl(routes.politicaCookies),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
       url: absoluteUrl(routes.termosUso),
       changeFrequency: "yearly",
       priority: 0.3,

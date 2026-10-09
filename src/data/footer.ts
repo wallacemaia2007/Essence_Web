@@ -81,6 +81,7 @@ export const footerData = {
         { label: "Loja física em Passos", href: anchors.localizacao },
         { label: "Política de Privacidade", href: routes.politicaPrivacidade },
         { label: "Termos de Uso", href: routes.termosUso },
+        { label: "Política de Cookies", href: routes.politicaCookies },
       ],
     },
   ] satisfies FooterLinkGroup[],
@@ -100,6 +101,7 @@ export const footerData = {
 
   legal: [
     { label: "Política de Privacidade", href: routes.politicaPrivacidade },
+    { label: "Política de Cookies", href: routes.politicaCookies },
     { label: "Termos de Uso", href: routes.termosUso },
   ] satisfies FooterLink[],
 

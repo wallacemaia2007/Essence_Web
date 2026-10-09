@@ -7,6 +7,7 @@ import { Toaster } from "sonner";
 
 import { DemoAuthProvider } from "@/components/auth/DemoAuthProvider";
 import { SmoothScrollProvider } from "@/components/common";
+import { ConsentProvider } from "@/components/consent/ConsentProvider";
 
 type ProvidersProps = {
   children: ReactNode;
@@ -28,10 +29,12 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <QueryClientProvider client={queryClient}>
-        <DemoAuthProvider>
-          <SmoothScrollProvider>{children}</SmoothScrollProvider>
-        </DemoAuthProvider>
-        <Toaster richColors closeButton />
+        <ConsentProvider>
+          <DemoAuthProvider>
+            <SmoothScrollProvider>{children}</SmoothScrollProvider>
+          </DemoAuthProvider>
+          <Toaster richColors closeButton />
+        </ConsentProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

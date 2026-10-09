@@ -1,18 +1,32 @@
 {
   "routes": [
     { "path": "/", "title": "Essence Passos — Início" },
+    { "path": "/carrinho", "title": "Sacola" },
+    { "path": "/checkout", "title": "Finalizar compra" },
     { "path": "/colecao", "title": "Coleções" },
     { "path": "/colecao/:slug", "title": "Detalhe da coleção" },
     { "path": "/conjuntos", "title": "Conjuntos selecionados" },
+    { "path": "/conta", "title": "Minha conta" },
     { "path": "/contato", "title": "Contato" },
+    { "path": "/entrega-e-frete", "title": "Entrega e frete" },
     { "path": "/favoritos", "title": "Favoritos" },
+    { "path": "/finalizar-pedido", "title": "Finalizar pedido" },
+    { "path": "/guia-de-tamanhos", "title": "Guia de tamanhos" },
     { "path": "/login", "title": "Entrar" },
     { "path": "/login/forgot-password", "title": "Recuperar senha" },
+    { "path": "/meus-pedidos", "title": "Meus pedidos" },
+    { "path": "/pedido/:id", "title": "Confirmação do pedido" },
+    { "path": "/pedidos", "title": "Meus pedidos" },
+    { "path": "/pedidos/:id", "title": "Detalhes do pedido" },
+    { "path": "/perfil", "title": "Meu perfil" },
+    { "path": "/politica-de-cookies", "title": "Política de Cookies" },
     { "path": "/politica-de-privacidade", "title": "Política de Privacidade" },
+    { "path": "/produto/:id", "title": "Detalhes do produto" },
     { "path": "/redefinir-senha", "title": "Criar nova senha" },
     { "path": "/register", "title": "Criar conta" },
     { "path": "/sobre", "title": "Sobre a Essence" },
     { "path": "/termos-de-uso", "title": "Termos de Uso" },
+    { "path": "/trocas-e-devolucoes", "title": "Trocas e devoluções" },
     { "path": "/verificar-codigo", "title": "Confirmar e-mail" }
   ]
 }

@@ -21,5 +21,10 @@ export const metadata: Metadata = {
 };
 
 export default function PoliticaDePrivacidadePage() {
-  return <LegalDocumentPage document={politicaPrivacidade} />;
+  return (
+    <LegalDocumentPage
+      document={politicaPrivacidade}
+      relatedLinks={[{ label: "Política de Cookies", href: routes.politicaCookies }]}
+    />
+  );
 }

@@ -1,6 +1,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 
 import { Container, ThemedSection } from "@/components/common";
+import { ConsentGate } from "@/components/consent/ConsentGate";
 import { localizacaoLoja } from "@/data/localizacao";
 
 export function HomeLocation() {
@@ -13,14 +14,21 @@ export function HomeLocation() {
       <Container className="max-w-7xl">
         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)] md:gap-12 lg:gap-16">
           <div className="relative aspect-[4/3] min-h-[17rem] overflow-hidden rounded-2xl border border-[#231f1b]/15 bg-[#f5f5f5] shadow-xl md:min-h-[20rem]">
-            <iframe
-              src={localizacaoLoja.mapaIncorporadoUrl}
-              title="Mapa da loja Essence na Avenida Comendador Francisco Avelino Maia, em Passos, Minas Gerais"
-              className="absolute inset-0 size-full border-0"
-              loading="lazy"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            />
+            <ConsentGate
+              category="preferences"
+              title="Mapa da loja"
+              description="O Google Maps só será carregado após você permitir recursos da categoria Preferências."
+              className="absolute inset-0"
+            >
+              <iframe
+                src={localizacaoLoja.mapaIncorporadoUrl}
+                title="Mapa da loja Essence na Avenida Comendador Francisco Avelino Maia, em Passos, Minas Gerais"
+                className="absolute inset-0 size-full border-0"
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </ConsentGate>
           </div>
 
           <div className="max-w-lg">

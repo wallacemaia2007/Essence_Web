@@ -22,6 +22,7 @@ export const routes = {
   finalizarPedido: "/finalizar-pedido",
   politicaPrivacidade: "/politica-de-privacidade",
   termosUso: "/termos-de-uso",
+  politicaCookies: "/politica-de-cookies",
   guiaTamanhos: "/guia-de-tamanhos",
   trocasDevolucoes: "/trocas-e-devolucoes",
   entregaFrete: "/entrega-e-frete",

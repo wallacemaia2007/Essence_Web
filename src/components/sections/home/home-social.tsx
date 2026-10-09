@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa6";
 
 import { Container, ThemedSection } from "@/components/common";
+import { ConsentGate } from "@/components/consent/ConsentGate";
 import { externalLinks } from "@/constants/routes";
 import { contato } from "@/data/contato";
 import { cn } from "@/lib/utils";
@@ -67,34 +68,6 @@ const socialActions: SocialAction[] = [
 ];
 
 export function HomeSocial() {
-  const [reels, setReels] = useState<InstagramReel[]>([]);
-  const [status, setStatus] = useState<SocialStatus>("loading");
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch("/api/instagram/reels", { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Instagram indisponível");
-        return (await response.json()) as InstagramResponse;
-      })
-      .then((data) => {
-        setReels(data.reels.slice(0, 3));
-        setStatus(
-          !data.configured
-            ? "setup"
-            : data.reels.length > 0
-              ? "ready"
-              : "empty",
-        );
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setStatus("error");
-      });
-
-    return () => controller.abort();
-  }, []);
-
   return (
     <ThemedSection
       id="redes-sociais"
@@ -156,73 +129,106 @@ export function HomeSocial() {
                 rel="noopener noreferrer"
                 className="social-feature__all-link"
               >
-                Ver perfil{" "}
-                <ArrowUpRight aria-hidden="true" className="size-4" />
+                Ver perfil <ArrowUpRight aria-hidden="true" className="size-4" />
               </a>
             </div>
 
-            {status === "ready" ? (
-              <div
-                className="social-feature__reels"
-                aria-label="Três Reels mais recentes"
-              >
-                {reels.map((reel, index) => (
-                  <ReelCard key={reel.id} reel={reel} index={index} />
-                ))}
-              </div>
-            ) : status === "loading" ? (
-              <div
-                className="social-feature__reels"
-                aria-label="Carregando Reels"
-              >
-                {[0, 1, 2].map((item) => (
-                  <div
-                    key={item}
-                    className="social-feature__skeleton"
-                    aria-hidden="true"
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="social-feature__empty">
-                <FaInstagram aria-hidden="true" className="size-7" />
-                <p className="social-feature__empty-title">
-                  {status === "setup"
-                    ? "Conecte o Instagram da Essence."
-                    : status === "empty"
-                      ? "As novidades passam por aqui."
-                      : "Não foi possível carregar os Reels agora."}
-                </p>
-                <p className="social-feature__empty-copy">
-                  {status === "setup"
-                    ? "Os três Reels mais recentes aparecerão automaticamente quando a conexão da conta estiver configurada."
-                    : status === "empty"
-                      ? "Acompanhe os próximos Reels e publicações da loja."
-                      : "Tente novamente mais tarde ou veja as publicações diretamente no Instagram."}
-                </p>
-                {status === "setup" &&
-                  process.env.NODE_ENV === "development" && (
-                    <p className="social-feature__setup-hint">
-                      Configure <code>INSTAGRAM_USER_ID</code> e{" "}
-                      <code>INSTAGRAM_ACCESS_TOKEN</code> no arquivo{" "}
-                      <code>.env.local</code> do servidor.
-                    </p>
-                  )}
-                <a
-                  href={externalLinks.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-feature__empty-link"
-                >
-                  Abrir Instagram{" "}
-                  <ArrowUpRight aria-hidden="true" className="size-4" />
-                </a>
-              </div>
-            )}
+            <ConsentGate
+              category="marketing"
+              title="Carregar conteúdo do Instagram?"
+              description="Os Reels e suas miniaturas vêm da Instagram/Meta. Eles só serão solicitados depois que você permitir a categoria Marketing."
+              className="social-feature__empty"
+            >
+              <InstagramReelsFeed />
+            </ConsentGate>
           </div>
         </div>
       </Container>
     </ThemedSection>
+  );
+}
+
+function InstagramReelsFeed() {
+  const [reels, setReels] = useState<InstagramReel[]>([]);
+  const [status, setStatus] = useState<SocialStatus>("loading");
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("/api/instagram/reels", { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Instagram indisponível");
+        return (await response.json()) as InstagramResponse;
+      })
+      .then((data) => {
+        setReels(data.reels.slice(0, 3));
+        setStatus(
+          !data.configured
+            ? "setup"
+            : data.reels.length > 0
+              ? "ready"
+              : "empty",
+        );
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setStatus("error");
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  if (status === "ready") {
+    return (
+      <div className="social-feature__reels" aria-label="Três Reels mais recentes">
+        {reels.map((reel, index) => (
+          <ReelCard key={reel.id} reel={reel} index={index} />
+        ))}
+      </div>
+    );
+  }
+
+  if (status === "loading") {
+    return (
+      <div className="social-feature__reels" aria-label="Carregando Reels">
+        {[0, 1, 2].map((item) => (
+          <div key={item} className="social-feature__skeleton" aria-hidden="true" />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="social-feature__empty">
+      <FaInstagram aria-hidden="true" className="size-7" />
+      <p className="social-feature__empty-title">
+        {status === "setup"
+          ? "Conecte o Instagram da Essence."
+          : status === "empty"
+            ? "As novidades passam por aqui."
+            : "Não foi possível carregar os Reels agora."}
+      </p>
+      <p className="social-feature__empty-copy">
+        {status === "setup"
+          ? "Os três Reels mais recentes aparecerão automaticamente quando a conexão da conta estiver configurada."
+          : status === "empty"
+            ? "Acompanhe os próximos Reels e publicações da loja."
+            : "Tente novamente mais tarde ou veja as publicações diretamente no Instagram."}
+      </p>
+      {status === "setup" && process.env.NODE_ENV === "development" ? (
+        <p className="social-feature__setup-hint">
+          Configure <code>INSTAGRAM_USER_ID</code> e <code>INSTAGRAM_ACCESS_TOKEN</code> no
+          arquivo <code>.env.local</code> do servidor.
+        </p>
+      ) : null}
+      <a
+        href={externalLinks.instagram}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="social-feature__empty-link"
+      >
+        Abrir Instagram <ArrowUpRight aria-hidden="true" className="size-4" />
+      </a>
+    </div>
   );
 }
 
