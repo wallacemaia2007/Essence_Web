@@ -1,6 +1,7 @@
 import { ArrowDown } from "lucide-react";
 import type { Metadata } from "next";
 
+import { Testimonials } from "@/components/sections/Testimonials";
 import { FinalCta } from "@/components/sections/sobre/FinalCta";
 import { NossaHistoria } from "@/components/sections/sobre/NossaHistoria";
 import { PageHeader } from "@/components/sections/sobre/PageHeader";
@@ -78,6 +79,7 @@ export default function SobrePage() {
         <ScrollStory />
         <NossaHistoria />
         <ValoresMarca />
+        <Testimonials />
         <FinalCta />
       </main>
     </>

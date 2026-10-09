@@ -2536,7 +2536,7 @@ body:has(main.sobre-page) header [class*="text-[#"] {
 
   .sobre-history {
     overflow: hidden;
-    padding: clamp(5rem, 10vw, 9rem) 0;
+    padding: clamp(2rem, 4vw, 5.5rem) 0;
     background: #ffffff;
     color: #000000;
   }
@@ -2593,7 +2593,7 @@ body:has(main.sobre-page) header [class*="text-[#"] {
   }
 
   .sobre-values {
-    padding: clamp(4.5rem, 9vw, 7rem) 0;
+    padding: clamp(3.5rem, 6vw, 5rem) 0;
     background: #ffffff;
     color: #000000;
   }
@@ -2633,9 +2633,13 @@ body:has(main.sobre-page) header [class*="text-[#"] {
   }
 
   .sobre-final-cta {
-    padding: clamp(3.5rem, 7vw, 6.5rem) 0;
+    padding: clamp(2.75rem, 5vw, 4.5rem) 0;
     background: #000000;
     color: #ffffff;
+  }
+
+  .sobre-page #depoimentos {
+    padding-block: clamp(3.5rem, 6vw, 5rem);
   }
 
   .sobre-final-cta__inner {
@@ -2968,7 +2972,7 @@ body:has(main.sobre-page) header [class*="text-[#"] {
     }
 
     .sobre-history {
-      padding: 4.5rem 0;
+      padding: 3.5rem 0;
     }
 
     .sobre-history__inner {
@@ -2991,7 +2995,7 @@ body:has(main.sobre-page) header [class*="text-[#"] {
     }
 
     .sobre-values {
-      padding: 4.5rem 0;
+      padding: 3.5rem 0;
     }
 
     .sobre-values__grid {
