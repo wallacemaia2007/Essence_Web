@@ -25,7 +25,12 @@ import { CHECKOUT_CEP_STORAGE_KEY } from "@/constants/storage";
 import { localizacaoLoja } from "@/data/localizacao";
 import { produtosVitrine } from "@/data/vitrine";
 import { useCarrinho } from "@/hooks/useCarrinho";
-import { type CheckoutPaymentMethod, createOrder } from "@/lib/checkout";
+import {
+  type CheckoutPaymentMethod,
+  createOrder,
+  setCheckoutWhatsappMessage,
+} from "@/lib/checkout";
+import { montarMensagemPedidoWhatsapp } from "@/lib/checkout-whatsapp";
 import { formatarPreco } from "@/lib/produto";
 import { cn } from "@/lib/utils";
 
@@ -395,6 +400,10 @@ export function CheckoutConteudo() {
         paymentMethod: values.paymentMethod,
       });
 
+      setCheckoutWhatsappMessage(
+        order.id,
+        montarMensagemPedidoWhatsapp(order, values.cpf),
+      );
       setCreatedOrderNumber(order.number);
       isRedirectingToConfirmation.current = true;
       limpar();

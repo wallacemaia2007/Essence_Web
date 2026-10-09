@@ -54,6 +54,7 @@ export type CreateOrderInput = {
 const ORDER_TTL_MS = 24 * 60 * 60 * 1000;
 const ORDER_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const memoryOrders = new Map<string, CheckoutOrder>();
+const pendingWhatsappMessages = new Map<string, string>();
 
 function isPaymentMethod(value: unknown): value is CheckoutPaymentMethod {
   return value === "pix" || value === "card" || value === "boleto";
@@ -201,4 +202,14 @@ export function getCheckoutOrder(id: string): CheckoutOrder | null {
   const order = readSessionOrders().find((saved) => saved.id === id) ?? null;
   if (order) memoryOrders.set(order.id, order);
   return order;
+}
+
+/** Mantém a mensagem pré-preenchida apenas na memória durante a troca de rota. */
+export function setCheckoutWhatsappMessage(orderId: string, message: string) {
+  pendingWhatsappMessages.clear();
+  pendingWhatsappMessages.set(orderId, message);
+}
+
+export function getCheckoutWhatsappMessage(orderId: string) {
+  return pendingWhatsappMessages.get(orderId) ?? null;
 }

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 import { PedidoConfirmacao } from "@/components/sections/checkout/PedidoConfirmacao";
-import { PageHeader } from "@/components/sections/sobre/PageHeader";
 
 export const metadata: Metadata = {
-  title: "Confirmação do pedido | Essence",
-  description: "Consulte o resumo e os próximos passos do seu pedido Essence.",
+  title: "Pedido criado",
+  description:
+    "Confirme os dados do pedido demonstrativo e continue o atendimento da Essence pelo WhatsApp.",
   robots: { index: false, follow: false },
 };
 
@@ -18,11 +18,6 @@ export default async function PedidoPage({ params }: PedidoPageProps) {
 
   return (
     <main className="flex flex-1 flex-col">
-      <PageHeader
-        currentPage="Pedido criado"
-        title="Pedido criado"
-        description="Consulte o resumo demonstrativo e saiba quais são os próximos passos."
-      />
       <PedidoConfirmacao orderId={id} />
     </main>
   );
