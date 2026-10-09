@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./globals.scss";
 
 import type { Metadata } from "next";
 import { Bodoni_Moda, Geist_Mono } from "next/font/google";
