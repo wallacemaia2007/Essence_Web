@@ -16,6 +16,7 @@
     { "path": "/login/forgot-password", "title": "Recuperar senha" },
     { "path": "/meus-pedidos", "title": "Meus pedidos" },
     { "path": "/pedido/:id", "title": "Confirmação do pedido" },
+    { "path": "/outlet", "title": "Outlet" },
     { "path": "/pedidos", "title": "Meus pedidos" },
     { "path": "/pedidos/:id", "title": "Detalhes do pedido" },
     { "path": "/perfil", "title": "Meu perfil" },

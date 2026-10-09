@@ -17,6 +17,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    {
+      url: absoluteUrl(routes.outlet),
+      changeFrequency: "weekly",
+      priority: 0.75,
+    },
     ...conjuntosData.itens.map((conjunto) => ({
       url: absoluteUrl(`${routes.colecao}/${conjunto.id}`),
       changeFrequency: "weekly" as const,

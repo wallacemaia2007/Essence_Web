@@ -145,6 +145,14 @@ function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
           Ver catálogo completo
           <ArrowRight className="size-3.5" aria-hidden="true" />
         </Link>
+        <Link
+          href={routes.outlet}
+          onClick={onNavigate}
+          className="inline-flex min-h-10 items-center gap-2 text-[0.65rem] font-semibold tracking-[0.14em] text-[#171717] uppercase underline underline-offset-4 transition-opacity hover:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-black"
+        >
+          Ver ofertas no Outlet
+          <ArrowRight className="size-3.5" aria-hidden="true" />
+        </Link>
       </div>
 
       <div className="grid gap-6 border-t border-black/10 pt-5 md:grid-cols-3 md:gap-0 md:divide-x md:divide-black/10 md:border-t-0 md:pt-0">

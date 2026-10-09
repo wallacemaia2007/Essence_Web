@@ -109,6 +109,13 @@ function MobileCatalogSubmenu({ onNavigate }: { onNavigate: () => void }) {
       >
         Ver catálogo completo
       </Link>
+      <Link
+        href={routes.outlet}
+        onClick={onNavigate}
+        className="inline-flex min-h-10 items-center text-xs font-semibold text-[#171717] underline underline-offset-4"
+      >
+        Ver ofertas no Outlet
+      </Link>
     </div>
   );
 }

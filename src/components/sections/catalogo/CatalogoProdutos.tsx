@@ -8,12 +8,17 @@ import { useMemo, useState } from "react";
 
 import { Container, ThemedSection } from "@/components/common";
 import { FavoritoButton } from "@/components/common/favorito-button";
+import { PrecoProduto } from "@/components/sections/catalogo/PrecoProduto";
+import { routes } from "@/constants/routes";
+import { novidadesData } from "@/data/novidades";
+import { outletConditions } from "@/data/outlet";
 import {
   type CategoriaProduto,
   CATEGORIAS_PRODUTO,
   produtosVitrine,
   type ProdutoVitrine,
 } from "@/data/vitrine";
+import { emPromocao, percentualDesconto } from "@/lib/pricing";
 import { caminhoDoProduto } from "@/lib/produto";
 
 import { PaginacaoProdutos } from "../colecao/PaginacaoProdutos";
@@ -23,6 +28,7 @@ import {
 } from "./CatalogoFiltrosDrawer";
 
 const ITENS_POR_PAGINA = 18;
+type OrdenacaoOutlet = "desconto" | "preco" | "recentes";
 
 const filtrosIniciais: CatalogoFiltros = {
   precoMinimo: "",
@@ -31,19 +37,42 @@ const filtrosIniciais: CatalogoFiltros = {
   colecoes: [],
 };
 
+const produtosOutlet = produtosVitrine.filter(
+  (produto) => produto.outlet && emPromocao(produto),
+);
+const ordemOriginalCatalogo = new Map(
+  produtosVitrine.map((produto, indice) => [produto.id, indice]),
+);
+const ordemNovidades = new Map(
+  novidadesData.itens.map((item, indice) => [
+    item.href.split("/").pop() ?? item.id,
+    indice,
+  ]),
+);
+
+/** Prioriza a curadoria de Novidades; sem data cadastrada, usa a ordem do catálogo. */
+function compararMaisRecentes(a: ProdutoVitrine, b: ProdutoVitrine) {
+  const posicaoA = ordemNovidades.get(a.id);
+  const posicaoB = ordemNovidades.get(b.id);
+
+  if (posicaoA !== undefined || posicaoB !== undefined) {
+    if (posicaoA === undefined) return 1;
+    if (posicaoB === undefined) return -1;
+    if (posicaoA !== posicaoB) return posicaoA - posicaoB;
+  }
+
+  return (
+    (ordemOriginalCatalogo.get(b.id) ?? 0) -
+    (ordemOriginalCatalogo.get(a.id) ?? 0)
+  );
+}
+
 function normalizarTexto(value: string) {
   return value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("pt-BR")
     .trim();
-}
-
-function formatarPreco(preco: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(preco);
 }
 
 function precoNumerico(value: string) {
@@ -115,11 +144,10 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
               {produto.colecao}
             </p>
           ) : null}
-          <p className="mt-1 text-left text-xs text-[#51483f] sm:text-sm">
-            {produto.preco != null
-              ? formatarPreco(produto.preco)
-              : "Preço a cadastrar"}
-          </p>
+          <PrecoProduto
+            produto={produto}
+            className="mt-1 justify-start text-xs sm:text-sm"
+          />
         </div>
 
         <FavoritoButton produto={produto} className="relative z-10" />
@@ -130,11 +158,17 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
 
 export function CatalogoProdutos({
   categoriaInicial,
+  modo = "catalogo",
 }: {
   categoriaInicial?: CategoriaProduto;
+  modo?: "catalogo" | "outlet";
 }) {
+  const isOutlet = modo === "outlet";
+  const produtosDisponiveis = isOutlet ? produtosOutlet : produtosVitrine;
   const lenis = useLenis();
   const [busca, setBusca] = useState("");
+  const [ordenacaoOutlet, setOrdenacaoOutlet] =
+    useState<OrdenacaoOutlet>("desconto");
   const [filtros, setFiltros] = useState<CatalogoFiltros>(() => ({
     ...filtrosIniciais,
     categorias: categoriaInicial ? [categoriaInicial] : [],
@@ -143,18 +177,18 @@ export function CatalogoProdutos({
   const [paginaSolicitada, setPaginaSolicitada] = useState(1);
 
   const colecoes = useMemo(
-    () => [...new Set(produtosVitrine.map((produto) => produto.colecao))],
-    [],
+    () => [...new Set(produtosDisponiveis.map((produto) => produto.colecao))],
+    [produtosDisponiveis],
   );
   const categorias = useMemo(
     () =>
       CATEGORIAS_PRODUTO.map((nome) => ({
         nome,
-        quantidade: produtosVitrine.filter(
+        quantidade: produtosDisponiveis.filter(
           (produto) => produto.categoria === nome,
         ).length,
       })),
-    [],
+    [produtosDisponiveis],
   );
 
   const produtosFiltrados = useMemo(() => {
@@ -163,7 +197,7 @@ export function CatalogoProdutos({
     const precoMaximo = precoNumerico(filtros.precoMaximo);
     const temFiltroDePreco = precoMinimo !== null || precoMaximo !== null;
 
-    return produtosVitrine.filter((produto) => {
+    return produtosDisponiveis.filter((produto) => {
       const combinaNome = normalizarTexto(produto.nome).includes(termoBusca);
       const combinaColecao =
         filtros.colecoes.length === 0 ||
@@ -180,21 +214,43 @@ export function CatalogoProdutos({
 
       return true;
     });
-  }, [busca, filtros]);
+  }, [busca, filtros, produtosDisponiveis]);
+
+  const produtosOrdenados = useMemo(() => {
+    if (!isOutlet) return produtosFiltrados;
+
+    return [...produtosFiltrados].sort((a, b) => {
+      if (ordenacaoOutlet === "preco") {
+        return (
+          (a.preco ?? Number.POSITIVE_INFINITY) -
+            (b.preco ?? Number.POSITIVE_INFINITY) || compararMaisRecentes(a, b)
+        );
+      }
+      if (ordenacaoOutlet === "recentes") return compararMaisRecentes(a, b);
+
+      return (
+        percentualDesconto(b.precoOriginal ?? 0, b.preco ?? 0) -
+          percentualDesconto(a.precoOriginal ?? 0, a.preco ?? 0) ||
+        (a.preco ?? Number.POSITIVE_INFINITY) -
+          (b.preco ?? Number.POSITIVE_INFINITY) ||
+        compararMaisRecentes(a, b)
+      );
+    });
+  }, [isOutlet, ordenacaoOutlet, produtosFiltrados]);
 
   const filtrosAtivos =
     Number(Boolean(filtros.precoMinimo)) +
     Number(Boolean(filtros.precoMaximo)) +
     filtros.categorias.length +
     filtros.colecoes.length;
-  const totalDeProdutos = produtosFiltrados.length;
+  const totalDeProdutos = produtosOrdenados.length;
   const totalDePaginas = Math.max(
     1,
     Math.ceil(totalDeProdutos / ITENS_POR_PAGINA),
   );
   const paginaAtual = Math.min(paginaSolicitada, totalDePaginas);
   const indiceInicial = (paginaAtual - 1) * ITENS_POR_PAGINA;
-  const produtosDaPagina = produtosFiltrados.slice(
+  const produtosDaPagina = produtosOrdenados.slice(
     indiceInicial,
     indiceInicial + ITENS_POR_PAGINA,
   );
@@ -208,15 +264,43 @@ export function CatalogoProdutos({
       <Container className="max-w-[1600px] px-5 sm:px-7 lg:px-10">
         <header className="mb-8 border-b border-[#e5e5e5] pb-7 md:mb-10 md:pb-9">
           <p className="text-xs font-medium tracking-[0.22em] text-[#75695e] uppercase">
-            Essence — coleção
+            {isOutlet ? "Essence — ofertas" : "Essence — coleção"}
           </p>
+          {isOutlet ? (
+            <nav
+              aria-label="Breadcrumb"
+              className="mt-3 flex items-center gap-2 text-xs text-[#75695e]"
+            >
+              <Link
+                href={routes.home}
+                className="underline-offset-4 hover:underline"
+              >
+                Home
+              </Link>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page" className="text-[#231f1b]">
+                Outlet
+              </span>
+            </nav>
+          ) : null}
           <h1 className="font-heading mt-2 text-3xl leading-tight tracking-wide uppercase sm:text-4xl md:text-5xl">
-            Nosso catálogo
+            {isOutlet ? "Outlet" : "Nosso catálogo"}
           </h1>
           <p className="mt-3 max-w-2xl text-left text-sm leading-6 text-[#665b52] sm:text-base">
-            Explore as peças da coleção e encontre seu próximo look.
+            {isOutlet
+              ? "Encontre peças selecionadas com preços promocionais. Consulte as condições com a equipe Essence."
+              : "Explore as peças da coleção e encontre seu próximo look."}
           </p>
         </header>
+
+        {isOutlet ? (
+          <aside className="mb-7 border-l-2 border-[#b9afa5] bg-[#f8f7f5] px-4 py-3 text-xs leading-5 text-[#665b52]">
+            <p className="m-0">
+              Prazo das ofertas: {outletConditions.prazo}. Trocas de peças do
+              Outlet: {outletConditions.trocas}.
+            </p>
+          </aside>
+        ) : null}
 
         <div className="mb-7 flex flex-col gap-3 sm:mb-9 sm:flex-row">
           <label className="relative block min-w-0 flex-1">
@@ -258,23 +342,45 @@ export function CatalogoProdutos({
 
         <div className="mb-5 flex items-center justify-between gap-4">
           <p aria-live="polite" className="text-left text-sm text-[#665b52]">
-            {produtosFiltrados.length === 1
+            {produtosOrdenados.length === 1
               ? "1 peça"
-              : `${produtosFiltrados.length} peças`}
+              : `${produtosOrdenados.length} peças`}
           </p>
-          {filtrosAtivos > 0 || busca ? (
-            <button
-              type="button"
-              onClick={() => {
-                setBusca("");
-                setFiltros(filtrosIniciais);
-                setPaginaSolicitada(1);
-              }}
-              className="min-h-11 text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
-            >
-              Limpar busca e filtros
-            </button>
-          ) : null}
+          <div className="flex flex-wrap items-center justify-end gap-3">
+            {isOutlet ? (
+              <label className="flex min-h-11 items-center gap-2 text-xs text-[#665b52]">
+                <span>Ordenar:</span>
+                <select
+                  value={ordenacaoOutlet}
+                  onChange={(event) => {
+                    setOrdenacaoOutlet(event.target.value as OrdenacaoOutlet);
+                    setPaginaSolicitada(1);
+                  }}
+                  className="min-h-11 border border-[#dedede] bg-white px-3 text-xs text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+                >
+                  <option value="desconto">Maior desconto</option>
+                  <option value="preco">Menor preço</option>
+                  <option value="recentes">Mais recentes</option>
+                </select>
+              </label>
+            ) : null}
+            {filtrosAtivos > 0 || busca ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setBusca("");
+                  setFiltros({
+                    ...filtrosIniciais,
+                    categorias: categoriaInicial ? [categoriaInicial] : [],
+                  });
+                  setPaginaSolicitada(1);
+                }}
+                className="min-h-11 text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+              >
+                Limpar busca e filtros
+              </button>
+            ) : null}
+          </div>
         </div>
 
         {totalDeProdutos > 0 ? (
@@ -291,11 +397,25 @@ export function CatalogoProdutos({
         ) : (
           <div className="border border-dashed border-[#d7d7d7] bg-white px-6 py-16 text-center">
             <p className="text-left text-base text-[#231f1b]">
-              Nenhuma peça encontrada.
+              {isOutlet && produtosOutlet.length === 0
+                ? "Novas ofertas em breve"
+                : isOutlet
+                  ? "Nenhuma oferta encontrada."
+                  : "Nenhuma peça encontrada."}
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#665b52]">
-              Tente outro nome ou ajuste os filtros selecionados.
+              {isOutlet && produtosOutlet.length === 0
+                ? "Enquanto novas ofertas são cadastradas, explore o catálogo completo da Essence."
+                : "Tente outro nome ou ajuste os filtros selecionados."}
             </p>
+            {isOutlet && produtosOutlet.length === 0 ? (
+              <Link
+                href={routes.colecao}
+                className="mt-5 inline-flex min-h-11 items-center justify-center border border-[#231f1b] px-5 text-xs font-semibold tracking-[0.14em] uppercase transition-colors hover:bg-[#231f1b] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+              >
+                Ver catálogo
+              </Link>
+            ) : null}
           </div>
         )}
         <PaginacaoProdutos

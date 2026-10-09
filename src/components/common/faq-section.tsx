@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Script from "next/script";
 
 import { Container } from "@/components/common/container";
 import { SectionCTA } from "@/components/common/section-cta";
@@ -139,7 +140,8 @@ function FaqJsonLd({ groups }: { groups: readonly FaqGroup[] }) {
   };
 
   return (
-    <script
+    <Script
+      id="faq-structured-data"
       type="application/ld+json"
       // `<` escapado para que uma resposta nunca consiga fechar a tag <script>.
       dangerouslySetInnerHTML={{

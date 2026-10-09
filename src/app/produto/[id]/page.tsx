@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 
 import { ProdutoDetalhe } from "@/components/sections/produto/ProdutoDetalhe";
 import { produtosVitrine } from "@/data/vitrine";
@@ -88,7 +89,8 @@ export default async function ProdutoPage({ params }: ProdutoPageProps) {
     <main className="flex flex-1 flex-col bg-white">
       <ProdutoDetalhe detalhe={detalhe} />
       {jsonLd ? (
-        <script
+        <Script
+          id="product-structured-data"
           type="application/ld+json"
           // `<` escapado para que um texto nunca consiga fechar a tag <script>.
           dangerouslySetInnerHTML={{

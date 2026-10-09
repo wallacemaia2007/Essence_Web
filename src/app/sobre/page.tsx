@@ -1,5 +1,6 @@
 import { ArrowDown } from "lucide-react";
 import type { Metadata } from "next";
+import Script from "next/script";
 
 import { Testimonials } from "@/components/sections/Testimonials";
 import { FinalCta } from "@/components/sections/sobre/FinalCta";
@@ -69,7 +70,8 @@ const storeStructuredData = {
 export default function SobrePage() {
   return (
     <>
-      <script
+      <Script
+        id="store-structured-data"
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(storeStructuredData).replace(/</g, "\\u003c"),

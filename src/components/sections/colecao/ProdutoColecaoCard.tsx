@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { FavoritoButton } from "@/components/common/favorito-button";
+import { PrecoProduto } from "@/components/sections/catalogo/PrecoProduto";
 import type { ProdutoVitrine } from "@/data/vitrine";
 import { caminhoDoProduto } from "@/lib/produto";
 
@@ -11,17 +12,6 @@ type ProdutoColecaoCardProps = {
   priority?: boolean;
   hrefColecao?: string;
 };
-
-function formatarPreco(preco: number | null | undefined) {
-  if (preco == null) {
-    return "Preço a cadastrar";
-  }
-
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(preco);
-}
 
 export function ProdutoColecaoCard({
   produto,
@@ -102,9 +92,10 @@ export function ProdutoColecaoCard({
               {produto.nome}
             </Link>
           </h3>
-          <p className="mt-1 text-left text-xs text-[#51483f] sm:text-sm">
-            {formatarPreco(produto.preco)}
-          </p>
+          <PrecoProduto
+            produto={produto}
+            className="mt-1 justify-start text-xs sm:text-sm"
+          />
         </div>
 
         <FavoritoButton produto={produto} className="relative z-10" />

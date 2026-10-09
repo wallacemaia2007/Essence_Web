@@ -3,6 +3,7 @@ import "./globals.scss";
 
 import type { Metadata } from "next";
 import { Bodoni_Moda, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/Header";
@@ -73,7 +74,8 @@ export default function RootLayout({
       className={`${bodoniModa.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <script
+        <Script
+          id="website-structured-data"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({

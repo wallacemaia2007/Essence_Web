@@ -35,6 +35,10 @@ export type ProdutoVitrine = {
   alt: string;
   /** Preço em reais; os valores desta lista são fictícios para demonstração. */
   preco?: number | null;
+  /** Preço anterior demonstrativo; a loja deve confirmar antes de publicar. */
+  precoOriginal?: number;
+  /** Marca se a peça deve aparecer na página Outlet. */
+  outlet?: boolean;
   /** Produtos com `featured: true` podem aparecer na vitrine da home. */
   featured: boolean;
   /** Destaque exclusivo da página da própria coleção; não altera a vitrine da home. */
@@ -118,7 +122,11 @@ const colecoesDeDemonstracao = [
     nome: "Alfaiataria",
     itens: [
       { nome: "Blazer Luna", preco: 499, categoria: "Blazers" },
-      { nome: "Calça Pantalona de Alfaiataria", preco: 359, categoria: "Calças" },
+      {
+        nome: "Calça Pantalona de Alfaiataria",
+        preco: 359,
+        categoria: "Calças",
+      },
       { nome: "Colete Clássico", preco: 279, categoria: "Coletes" },
       { nome: "Conjunto Office", preco: 579, categoria: "Conjuntos" },
       { nome: "Blazer Maya", preco: 529, categoria: "Blazers" },
@@ -143,7 +151,11 @@ const colecoesDeDemonstracao = [
       { nome: "Blusa Brilho", preco: 289, categoria: "Blusas" },
       { nome: "Conjunto Dourado", preco: 489, categoria: "Conjuntos" },
       { nome: "Vestido Longo Aurora", preco: 699, categoria: "Vestidos" },
-      { nome: "Macacão Elegance", preco: 459, categoria: "Macacões e macaquinhos" },
+      {
+        nome: "Macacão Elegance",
+        preco: 459,
+        categoria: "Macacões e macaquinhos",
+      },
       { nome: "Vestido Midi Lúmina", preco: 579, categoria: "Vestidos" },
       { nome: "Vestido Festa Aurora", preco: 629, categoria: "Vestidos" },
       { nome: "Conjunto Cetim Jade", preco: 519, categoria: "Conjuntos" },
@@ -164,28 +176,48 @@ const colecoesDeDemonstracao = [
       { nome: "Shorts de Alfaiataria Casual", preco: 239, categoria: "Shorts" },
       { nome: "Blusa Tricot Soft", preco: 189, categoria: "Blusas" },
       { nome: "Camisa Casual Jade", preco: 209, categoria: "Camisas" },
-      { nome: "Macaquinho Leve Solar", preco: 249, categoria: "Macacões e macaquinhos" },
+      {
+        nome: "Macaquinho Leve Solar",
+        preco: 249,
+        categoria: "Macacões e macaquinhos",
+      },
     ],
   },
 ] satisfies readonly ColecaoDemonstracao[];
 
+// TODO: substituir estes preços anteriores demonstrativos pelos valores reais confirmados pela loja.
+const precosOriginaisOutletDemonstrativos: Record<string, number> = {
+  "vestidos-02": 359,
+  "vestidos-03": 279,
+  "conjuntos-verao-02": 399,
+  "conjuntos-inverno-02": 499,
+  "alfaiataria-03": 329,
+  "casual-04": 149,
+};
+
 export const produtosVitrine: readonly ProdutoVitrine[] =
   colecoesDeDemonstracao.flatMap((colecao, indiceColecao) =>
-    colecao.itens.map((item, indiceItem) => ({
-      id:
+    colecao.itens.map((item, indiceItem) => {
+      const id =
         indiceItem === 0
           ? `produto-${String(indiceColecao + 1).padStart(2, "0")}`
-          : `${colecao.id}-${String(indiceItem + 1).padStart(2, "0")}`,
-      nome: item.nome,
-      categoria: item.categoria,
-      colecao: colecao.nome,
-      imagem: null,
-      imagemHover: null,
-      alt: `Foto demonstrativa de ${item.nome}`,
-      preco: item.preco,
-      // Só o primeiro de cada conjunto entra na vitrine geral da home (6 no total).
-      featured: indiceItem === 0,
-      // Três peças por conjunto preenchem a prateleira de destaques individual.
-      destaqueColecao: indiceItem < VITRINE_PRODUTOS_POR_SLIDE,
-    })),
+          : `${colecao.id}-${String(indiceItem + 1).padStart(2, "0")}`;
+      const precoOriginal = precosOriginaisOutletDemonstrativos[id];
+
+      return {
+        id,
+        nome: item.nome,
+        categoria: item.categoria,
+        colecao: colecao.nome,
+        imagem: null,
+        imagemHover: null,
+        alt: `Foto demonstrativa de ${item.nome}`,
+        preco: item.preco,
+        ...(precoOriginal ? { precoOriginal, outlet: true } : {}),
+        // Só o primeiro de cada conjunto entra na vitrine geral da home (6 no total).
+        featured: indiceItem === 0,
+        // Três peças por conjunto preenchem a prateleira de destaques individual.
+        destaqueColecao: indiceItem < VITRINE_PRODUTOS_POR_SLIDE,
+      };
+    }),
   );

@@ -13,6 +13,7 @@ export const routes = {
   verifyCode: "/verificar-codigo",
   resetPassword: "/redefinir-senha",
   colecao: "/colecao",
+  outlet: "/outlet",
   conjuntos: "/conjuntos",
   produto: "/produto",
   favoritos: "/favoritos",
@@ -42,6 +43,7 @@ export const anchors = {
 
 export const navLinks = [
   { label: "Catálogo", href: routes.colecao },
+  { label: "Outlet", href: routes.outlet },
   { label: "Conjuntos", href: routes.conjuntos },
   { label: "Novidades", href: anchors.novidades },
   { label: "Sobre", href: routes.sobre },

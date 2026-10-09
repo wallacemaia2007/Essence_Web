@@ -12,13 +12,13 @@ import {
 import { routes } from "@/constants/routes";
 import { caminhoDaColecao } from "@/lib/colecao";
 import {
-  formatarPreco,
   linkBaseWhatsapp,
   type ProdutoDetalhado,
   produtosRelacionados,
 } from "@/lib/produto";
 import { mensagemDeAjuda, montarLinkWhatsapp } from "@/lib/whatsapp";
 
+import { PrecoProduto } from "../catalogo/PrecoProduto";
 import { ProdutoColecaoCard } from "../colecao/ProdutoColecaoCard";
 import { ProdutoCompra } from "./ProdutoCompra";
 import { ProdutoGaleria } from "./ProdutoGaleria";
@@ -84,7 +84,11 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
               <FavoritoButton produto={produto} className="mt-1" />
             </div>
 
-            <p className="mt-5 text-xl">{formatarPreco(produto.preco)}</p>
+            <PrecoProduto
+              produto={produto}
+              className="mt-5 justify-start"
+              precoAtualClassName="text-xl"
+            />
             <p className="mt-3 text-sm text-[#74685f]">Ref.: {referencia}</p>
 
             <hr className="my-6 border-[#e5e1dd]" />
