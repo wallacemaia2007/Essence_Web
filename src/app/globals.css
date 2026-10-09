@@ -185,6 +185,11 @@ body:has(main.sobre-page) header [class*="text-[#"] {
   color: #000000 !important;
 }
 
+body:has(main.sobre-page) .header-desktop-shell,
+body:has(main.sobre-page) .header-mobile-bar {
+  border-color: transparent !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
