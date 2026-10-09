@@ -54,6 +54,8 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
   const triggerClassName = compact
     ? "inline-flex size-11 items-center justify-center rounded-full p-1 text-[#000000] transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
     : "inline-flex h-10 items-center gap-2 rounded-full px-3 text-xs font-semibold tracking-wide text-[#000000] transition hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black";
+  const menuTriggerClassName =
+    "inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[#000000] transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black";
 
   if (!ready) {
     return (
@@ -89,15 +91,10 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
   }
 
   return (
-    <div ref={rootRef} className="relative z-[110]">
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-label={`Conta de ${user.name}`}
-        aria-haspopup="menu"
-        aria-expanded={isOpen}
-        aria-controls={menuId}
-        onClick={() => setIsOpen((current) => !current)}
+    <div ref={rootRef} className="relative z-[110] flex items-center gap-0.5">
+      <Link
+        href={routes.conta}
+        aria-label={`Abrir minha conta de ${user.name}`}
         className={triggerClassName}
       >
         <Image
@@ -108,20 +105,28 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
           className="size-8 shrink-0 rounded-full border border-black/10 object-cover"
         />
         {!compact && <span className="max-w-24 truncate">{firstName}</span>}
+      </Link>
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-label="Abrir opções da conta"
+        aria-expanded={isOpen}
+        aria-controls={menuId}
+        onClick={() => setIsOpen((current) => !current)}
+        className={menuTriggerClassName}
+      >
         <ChevronDown
           aria-hidden="true"
           className={cn(
-            "size-3.5 shrink-0 transition-transform duration-200",
-            compact && "sr-only",
+            "size-3.5 transition-transform duration-200",
             isOpen && "rotate-180",
           )}
         />
       </button>
 
       {isOpen && (
-        <div
+        <nav
           id={menuId}
-          role="menu"
           aria-label="Opções da conta"
           className="absolute top-full right-0 z-[110] mt-2 w-60 overflow-hidden rounded-2xl border border-black/10 bg-white p-1.5 text-[#171717] shadow-[0_18px_44px_rgba(0,0,0,0.16)]"
         >
@@ -133,17 +138,15 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
           </div>
           <div className="py-1.5">
             <Link
-              href={routes.perfil}
-              role="menuitem"
+              href={routes.conta}
               onClick={() => setIsOpen(false)}
               className={menuItemClassName}
             >
               <UserRound aria-hidden="true" className="size-4" />
-              Ver perfil
+              Minha conta
             </Link>
             <Link
-              href={routes.meusPedidos}
-              role="menuitem"
+              href={routes.pedidos}
               onClick={() => setIsOpen(false)}
               className={menuItemClassName}
             >
@@ -154,7 +157,6 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
           <div className="border-t border-black/8 pt-1.5">
             <button
               type="button"
-              role="menuitem"
               onClick={handleSignOut}
               className={cn(
                 menuItemClassName,
@@ -165,7 +167,7 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
               Sair da conta
             </button>
           </div>
-        </div>
+        </nav>
       )}
     </div>
   );

@@ -34,6 +34,7 @@ function parseDemoUser(value: string | null): DemoAuthUser | null {
     if (
       typeof user.name !== "string" ||
       typeof user.email !== "string" ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(user.email) ||
       typeof user.avatarUrl !== "string" ||
       (user.provider !== "email" && user.provider !== "google")
     ) {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { AuthExperience } from "@/components/auth/AuthExperience";
+import { getSingleSearchParam } from "@/lib/auth-redirect";
 
 export const metadata: Metadata = {
   title: "Confirmar e-mail",
@@ -8,7 +9,11 @@ export const metadata: Metadata = {
 };
 
 type VerifyCodePageProps = {
-  searchParams: Promise<{ email?: string; flow?: string }>;
+  searchParams: Promise<{
+    email?: string | string[];
+    flow?: string | string[];
+    redirectTo?: string | string[];
+  }>;
 };
 
 export default async function VerifyCodePage({
@@ -19,8 +24,9 @@ export default async function VerifyCodePage({
   return (
     <AuthExperience
       mode="verify"
-      initialEmail={params.email ?? ""}
-      initialFlow={params.flow}
+      initialEmail={getSingleSearchParam(params.email) ?? ""}
+      initialFlow={getSingleSearchParam(params.flow)}
+      initialRedirectTo={getSingleSearchParam(params.redirectTo)}
     />
   );
 }

@@ -15,6 +15,7 @@ import { type FormEvent, useState } from "react";
 
 import { useDemoAuth } from "@/components/auth/DemoAuthProvider";
 import { routes } from "@/constants/routes";
+import { getAuthReturnPath, withAuthReturnPath } from "@/lib/auth-redirect";
 import {
   clearPendingDemoRegistration,
   createDemoAuthUser,
@@ -31,6 +32,7 @@ type AuthExperienceProps = {
   mode: AuthMode;
   initialEmail?: string;
   initialFlow?: string;
+  initialRedirectTo?: string;
 };
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -168,8 +170,11 @@ function isDemoFlow(value: string | undefined): value is DemoFlow {
   );
 }
 
-function verificationHref(email: string, flow: DemoFlow) {
+function verificationHref(email: string, flow: DemoFlow, redirectTo?: string) {
   const params = new URLSearchParams({ email, flow });
+  if (redirectTo) {
+    params.set("redirectTo", getAuthReturnPath(redirectTo));
+  }
   return `${routes.verifyCode}?${params.toString()}`;
 }
 
@@ -177,6 +182,7 @@ export function AuthExperience({
   mode,
   initialEmail = "",
   initialFlow,
+  initialRedirectTo,
 }: AuthExperienceProps) {
   const router = useRouter();
   const { signIn } = useDemoAuth();
@@ -199,6 +205,28 @@ export function AuthExperience({
     ...rule,
     valid: rule.test(password),
   }));
+
+  if (mode === "verify" && !emailPattern.test(normalizedEmail)) {
+    return (
+      <div className="py-5 text-center sm:py-8">
+        <p className="m-0 text-[0.65rem] font-semibold tracking-[0.2em] text-black/50 uppercase">
+          CONFIRMAÇÃO INDISPONÍVEL
+        </p>
+        <h2 className="font-heading mt-4 mb-0 text-2xl font-medium text-[#171512]">
+          Não encontramos este e-mail
+        </h2>
+        <p className="mx-auto mt-3 mb-0 max-w-sm text-sm leading-6 text-[#686158]">
+          Volte ao login e reinicie o fluxo de confirmação.
+        </p>
+        <Link
+          href={withAuthReturnPath(routes.login, initialRedirectTo)}
+          className="mt-7 inline-flex min-h-11 items-center justify-center rounded-full bg-[#171512] px-5 text-xs font-semibold tracking-wide text-white uppercase transition hover:bg-[#39332d] focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-black"
+        >
+          Ir para o login
+        </Link>
+      </div>
+    );
+  }
 
   function setFieldError(field: string, message?: string) {
     setErrors((current) => {
@@ -283,16 +311,20 @@ export function AuthExperience({
     if (mode === "login") {
       if (isDemoEmailVerified(normalizedEmail)) {
         authenticateDemoUser(normalizedEmail);
-        router.replace(routes.home);
+        router.replace(getAuthReturnPath(initialRedirectTo));
         return;
       }
-      router.push(verificationHref(normalizedEmail, "login"));
+      router.push(
+        verificationHref(normalizedEmail, "login", initialRedirectTo),
+      );
       return;
     }
 
     if (mode === "register") {
       savePendingDemoRegistration(normalizedEmail, fullName.trim());
-      router.push(verificationHref(normalizedEmail, "register"));
+      router.push(
+        verificationHref(normalizedEmail, "register", initialRedirectTo),
+      );
       return;
     }
 
@@ -323,7 +355,7 @@ export function AuthExperience({
       } else {
         authenticateDemoUser(normalizedEmail);
       }
-      router.replace(routes.home);
+      router.replace(getAuthReturnPath(initialRedirectTo));
       return;
     }
 
@@ -336,10 +368,10 @@ export function AuthExperience({
   function startGoogleDemo() {
     if (mode === "login" && isDemoEmailVerified(demoGoogleEmail)) {
       authenticateDemoUser(demoGoogleEmail, "google", demoGoogleName);
-      router.replace(routes.home);
+      router.replace(getAuthReturnPath(initialRedirectTo));
       return;
     }
-    router.push(verificationHref(demoGoogleEmail, "google"));
+    router.push(verificationHref(demoGoogleEmail, "google", initialRedirectTo));
   }
 
   if (passwordResetComplete) {
@@ -377,7 +409,7 @@ export function AuthExperience({
         <Link
           href={
             mode === "register"
-              ? routes.login
+              ? withAuthReturnPath(routes.login, initialRedirectTo)
               : mode === "reset"
                 ? routes.verifyCode
                 : routes.login
@@ -501,6 +533,9 @@ export function AuthExperience({
                 }}
                 placeholder="••••••••"
                 aria-invalid={Boolean(errors.password)}
+                aria-describedby={
+                  errors.password ? "auth-password-error" : undefined
+                }
                 className="min-h-12 w-full rounded-xl border border-[#171512]/15 bg-white pr-12 pl-11 text-sm text-[#171512] transition outline-none placeholder:text-[#a49d94] focus:border-[#8a6746] focus:ring-2 focus:ring-[#8a6746]/15 aria-invalid:border-red-500"
               />
               <button
@@ -518,7 +553,11 @@ export function AuthExperience({
               </button>
             </div>
             {mode === "login" && errors.password && (
-              <p role="alert" className="mt-2 text-xs text-red-700">
+              <p
+                id="auth-password-error"
+                role="alert"
+                className="mt-2 text-xs text-red-700"
+              >
                 {errors.password}
               </p>
             )}
@@ -539,7 +578,11 @@ export function AuthExperience({
               </ul>
             )}
             {(mode === "register" || mode === "reset") && errors.password && (
-              <p role="alert" className="mt-2 text-xs text-red-700">
+              <p
+                id="auth-password-error"
+                role="alert"
+                className="mt-2 text-xs text-red-700"
+              >
                 {errors.password}
               </p>
             )}
@@ -571,6 +614,11 @@ export function AuthExperience({
                 }}
                 placeholder="Repita a senha"
                 aria-invalid={Boolean(errors.confirmPassword)}
+                aria-describedby={
+                  errors.confirmPassword
+                    ? "auth-confirm-password-error"
+                    : undefined
+                }
                 className="min-h-12 w-full rounded-xl border border-[#171512]/15 bg-white pr-12 pl-11 text-sm text-[#171512] transition outline-none placeholder:text-[#a49d94] focus:border-[#8a6746] focus:ring-2 focus:ring-[#8a6746]/15 aria-invalid:border-red-500"
               />
               <button
@@ -592,7 +640,11 @@ export function AuthExperience({
               </button>
             </div>
             {errors.confirmPassword && (
-              <p role="alert" className="mt-2 text-xs text-red-700">
+              <p
+                id="auth-confirm-password-error"
+                role="alert"
+                className="mt-2 text-xs text-red-700"
+              >
                 {errors.confirmPassword}
               </p>
             )}
@@ -686,10 +738,15 @@ export function AuthExperience({
               }}
               placeholder="000000"
               aria-invalid={Boolean(errors.code)}
+              aria-describedby={errors.code ? "auth-code-error" : undefined}
               className="min-h-14 w-full rounded-xl border border-[#171512]/15 bg-white px-4 text-center font-mono text-xl tracking-[0.55em] text-[#171512] transition outline-none placeholder:text-[#c3bdb4] focus:border-[#8a6746] focus:ring-2 focus:ring-[#8a6746]/15 aria-invalid:border-red-500"
             />
             {errors.code && (
-              <p role="alert" className="mt-2 text-xs text-red-700">
+              <p
+                id="auth-code-error"
+                role="alert"
+                className="mt-2 text-xs text-red-700"
+              >
                 {errors.code}
               </p>
             )}
@@ -737,7 +794,7 @@ export function AuthExperience({
         <p className="mt-7 mb-0 text-center text-xs text-[#686158]">
           Ainda não tem conta?{" "}
           <Link
-            href={routes.register}
+            href={withAuthReturnPath(routes.register, initialRedirectTo)}
             className="font-semibold text-[#171512] underline underline-offset-4"
           >
             Cadastre-se
@@ -748,7 +805,7 @@ export function AuthExperience({
         <p className="mt-7 mb-0 justify-center text-center text-xs text-[#686158]">
           Já tem uma conta?{" "}
           <Link
-            href={routes.login}
+            href={withAuthReturnPath(routes.login, initialRedirectTo)}
             className="font-semibold text-[#171512] underline underline-offset-4"
           >
             Entrar
