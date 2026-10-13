@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.1.107", "192.168.15.81", "192.168.1.106"],
+  allowedDevOrigins: [
+    "192.168.1.107",
+    "192.168.15.81",
+    "192.168.1.106",
+    "192.168.1.110",
+    "172.29.96.1",
+  ],
 
   // ⚡ CRÍTICO: HMR mais rápido e otimizações de build
   experimental: {
