@@ -52,10 +52,10 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
   }, [isOpen]);
 
   const triggerClassName = compact
-    ? "inline-flex size-11 items-center justify-center rounded-full p-1 text-[#000000] transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-    : "inline-flex h-10 items-center gap-2 rounded-full px-3 text-xs font-semibold tracking-wide text-[#000000] transition hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black";
+    ? "inline-flex size-11 items-center justify-center rounded-full p-1 text-[#000000] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+    : "inline-flex h-10 items-center gap-2 rounded-full px-3 text-xs font-semibold tracking-wide text-[#000000] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black";
   const menuTriggerClassName =
-    "inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[#000000] transition-colors hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black";
+    "inline-flex size-8 shrink-0 items-center justify-center rounded-full text-[#000000] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black";
 
   if (!ready) {
     return (
@@ -91,38 +91,40 @@ export function AccountMenu({ compact = false }: AccountMenuProps) {
   }
 
   return (
-    <div ref={rootRef} className="relative z-[110] flex items-center gap-0.5">
-      <Link
-        href={routes.conta}
-        aria-label={`Abrir minha conta de ${user.name}`}
-        className={triggerClassName}
-      >
-        <Image
-          src={user.avatarUrl}
-          alt=""
-          width={32}
-          height={32}
-          className="size-8 shrink-0 rounded-full border border-black/10 object-cover"
-        />
-        {!compact && <span className="max-w-24 truncate">{firstName}</span>}
-      </Link>
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-label="Abrir opções da conta"
-        aria-expanded={isOpen}
-        aria-controls={menuId}
-        onClick={() => setIsOpen((current) => !current)}
-        className={menuTriggerClassName}
-      >
-        <ChevronDown
-          aria-hidden="true"
-          className={cn(
-            "size-3.5 transition-transform duration-200",
-            isOpen && "rotate-180",
-          )}
-        />
-      </button>
+    <div ref={rootRef} className="relative z-[110]">
+      <div className="inline-flex items-center rounded-full transition-colors hover:bg-black/5">
+        <Link
+          href={routes.conta}
+          aria-label={`Abrir minha conta de ${user.name}`}
+          className={triggerClassName}
+        >
+          <Image
+            src={user.avatarUrl}
+            alt=""
+            width={32}
+            height={32}
+            className="size-8 shrink-0 rounded-full border border-black/10 object-cover"
+          />
+          {!compact && <span className="max-w-24 truncate">{firstName}</span>}
+        </Link>
+        <button
+          ref={triggerRef}
+          type="button"
+          aria-label="Abrir opções da conta"
+          aria-expanded={isOpen}
+          aria-controls={menuId}
+          onClick={() => setIsOpen((current) => !current)}
+          className={menuTriggerClassName}
+        >
+          <ChevronDown
+            aria-hidden="true"
+            className={cn(
+              "size-3.5 transition-transform duration-200",
+              isOpen && "rotate-180",
+            )}
+          />
+        </button>
+      </div>
 
       {isOpen && (
         <nav
