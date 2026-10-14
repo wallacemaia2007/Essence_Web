@@ -42,13 +42,13 @@ function MobileCatalogSubmenu({ onNavigate }: { onNavigate: () => void }) {
     <div className="mt-1 space-y-3 border-l border-black/15 py-2 pl-4">
       {mobileShelfSections.map((section) => (
         <section key={section.id} aria-label={section.label}>
-          <Link
+          <SamePageScrollLink
             href={section.href}
-            onClick={onNavigate}
+            onNavigate={onNavigate}
             className="inline-flex min-h-9 items-center text-[0.68rem] font-semibold tracking-[0.14em] text-[#171717] uppercase underline underline-offset-4"
           >
             {section.label}
-          </Link>
+          </SamePageScrollLink>
           <ul className="divide-y divide-black/10 p-0">
             {section.products.slice(0, 3).map((product) => (
               <li key={product.id} className="list-none p-0 before:hidden">

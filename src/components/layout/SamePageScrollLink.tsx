@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentProps } from "react";
 
+import { getCenteredScrollTarget } from "@/lib/scroll";
+
 type SamePageScrollLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
   href: string;
 };
@@ -47,9 +49,14 @@ export function SamePageScrollLink({
 
         if (!lenis) {
           if (hash) {
-            document
-              .getElementById(hash)
-              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            const element = document.getElementById(hash);
+
+            if (element) {
+              window.scrollTo({
+                top: getCenteredScrollTarget(element, window.scrollY),
+                behavior: "smooth",
+              });
+            }
           } else {
             window.scrollTo({ top: 0, behavior: "smooth" });
           }
@@ -57,9 +64,9 @@ export function SamePageScrollLink({
         }
 
         if (hash) {
-          const el = document.getElementById(hash);
-          if (el) {
-            lenis.scrollTo(el);
+          const element = document.getElementById(hash);
+          if (element) {
+            lenis.scrollTo(getCenteredScrollTarget(element, lenis.scroll));
             return;
           }
         }
