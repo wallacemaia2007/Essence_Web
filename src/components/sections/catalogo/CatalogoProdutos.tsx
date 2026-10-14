@@ -4,9 +4,9 @@ import { useLenis } from "lenis/react";
 import { ImagePlus, Search, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 
-import { Container, ThemedSection } from "@/components/common";
+import { Container, ImageBanner, ThemedSection } from "@/components/common";
 import { FavoritoButton } from "@/components/common/favorito-button";
 import { PrecoProduto } from "@/components/sections/catalogo/PrecoProduto";
 import { routes } from "@/constants/routes";
@@ -388,10 +388,42 @@ export function CatalogoProdutos({
             id="catalogo-produtos"
             className="grid list-none grid-cols-1 gap-x-5 gap-y-9 p-0 before:hidden sm:grid-cols-2 sm:gap-x-6 sm:gap-y-11 xl:grid-cols-3 xl:gap-x-8"
           >
-            {produtosDaPagina.map((produto) => (
-              <li key={produto.id} className="min-w-0 p-0 before:hidden">
-                <ProdutoCard produto={produto} />
-              </li>
+            {produtosDaPagina.map((produto, index) => (
+              <Fragment key={produto.id}>
+                <li className="min-w-0 p-0 before:hidden">
+                  <ProdutoCard produto={produto} />
+                </li>
+                {index === 5 ? (
+                  <li className="col-span-full hidden list-none p-0 before:hidden sm:block xl:hidden">
+                    <ImageBanner
+                      buttonAriaLabel="Consultar as condições das ofertas do Outlet"
+                      buttonClassName="mr-auto ml-5 sm:ml-8"
+                      buttonLabel="Consultar ofertas"
+                      buttonVariant="dark"
+                      href={routes.contato}
+                      imageAlt="Editorial de moda Essence com looks em tons neutros"
+                      imageSrc="/images/banners/essence-section-banner-01.jpg"
+                      overlay="soft"
+                      className="min-h-[12rem] sm:min-h-[15rem]"
+                    />
+                  </li>
+                ) : null}
+                {index === 8 ? (
+                  <li className="col-span-full hidden list-none p-0 before:hidden xl:block">
+                    <ImageBanner
+                      buttonAriaLabel="Consultar as condições das ofertas do Outlet"
+                      buttonClassName="mr-auto ml-5 sm:ml-8"
+                      buttonLabel="Consultar ofertas"
+                      buttonVariant="dark"
+                      href={routes.contato}
+                      imageAlt="Editorial de moda Essence com looks em tons neutros"
+                      imageSrc="/images/banners/essence-section-banner-01.jpg"
+                      overlay="soft"
+                      className="min-h-[12rem] xl:min-h-[15rem]"
+                    />
+                  </li>
+                ) : null}
+              </Fragment>
             ))}
           </ul>
         ) : (
