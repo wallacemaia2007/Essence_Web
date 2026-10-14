@@ -12,10 +12,7 @@ import {
 } from "react";
 
 import { heroMedia } from "@/constants/hero-media";
-import {
-  type Collection,
-  collections as defaultCollections,
-} from "@/data/collections";
+import { type Conjunto, conjuntosData } from "@/data/conjuntos";
 import { usePrefersReducedData } from "@/hooks/usePrefersReducedData";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { siteName } from "@/lib/seo";
@@ -25,8 +22,8 @@ type HomeHeroProps = {
   className?: string;
   /** Nome da loja usado no h1 acessível (invisível na tela). */
   title?: string;
-  /** Coleções da faixa. Troque pela API mantendo o tipo `Collection`. */
-  collections?: readonly Collection[];
+  /** Conjuntos exibidos na faixa; usa a mesma fonte da seção inferior. */
+  collections?: readonly Conjunto[];
 };
 
 /**
@@ -37,7 +34,7 @@ const MAX_TRACK_COPIES = 3;
 
 export function HomeHero({
   className,
-  collections = defaultCollections,
+  collections = conjuntosData.itens,
   title = siteName,
 }: HomeHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -163,74 +160,72 @@ export function HomeHero({
   const copies = Array.from({ length: trackCopies * 2 }, (_, index) => index);
 
   return (
-    <section
-      id="hero"
-      data-page-hero
-      aria-labelledby={headingId}
-      className={cn("hero", className)}
-    >
-      {/* Único conteúdo acessível do hero: nada é visível sobre o vídeo. */}
-      <h1 id={headingId} className="sr-only">
-        {title}
-      </h1>
-
-      <Image
-        src={heroMedia.poster}
-        alt=""
-        fill
-        sizes="100vw"
-        loading="eager"
-        fetchPriority="high"
-        className="hero__poster"
-      />
-
-      <video
-        ref={videoRef}
-        className="hero__video"
-        poster={heroMedia.poster}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden="true"
-        tabIndex={-1}
+    <>
+      <section
+        id="hero"
+        data-page-hero
+        aria-labelledby={headingId}
+        className={cn("hero", className)}
       >
-        {shouldPlayVideo ? (
-          <Fragment>
-            <source src={heroMedia.mp4} type="video/mp4" />
-            <source src={heroMedia.webm} type="video/webm" />
-          </Fragment>
-        ) : null}
-      </video>
+        {/* Único conteúdo acessível do hero: nada é visível sobre o vídeo. */}
+        <h1 id={headingId} className="sr-only">
+          {title}
+        </h1>
 
-      {/* Véu mínimo na base: só o suficiente para o rodapé ser legível. */}
-      <div className="hero__veil" aria-hidden="true" />
+        <Image
+          src={heroMedia.poster}
+          alt=""
+          fill
+          sizes="100vw"
+          loading="eager"
+          fetchPriority="high"
+          className="hero__poster"
+        />
 
-      <footer className="hero__footer">
+        <video
+          ref={videoRef}
+          className="hero__video"
+          poster={heroMedia.poster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          tabIndex={-1}
+        >
+          {shouldPlayVideo ? (
+            <Fragment>
+              <source src={heroMedia.mp4} type="video/mp4" />
+              <source src={heroMedia.webm} type="video/webm" />
+            </Fragment>
+          ) : null}
+        </video>
+      </section>
+
+      <div className="hero-collections">
         <div className="marquee">
           <ul ref={trackRef} className="marquee__track">
             {copies.map((copyIndex) => {
-              // Só a primeira cópia é "de verdade": é a única que aparece para
-              // leitores de tela e a única com links (nada de tab stop repetido).
-              // As cópias restantes usam texto puro, com a mesma métrica.
+              // Só a primeira cópia é acessível e tem links; as demais fecham
+              // a animação sem repetir paradas de teclado/leitura de tela.
               const isPrimaryCopy = copyIndex === 0;
 
               return (
                 <Fragment key={copyIndex}>
                   {collections.map((collection) => (
                     <li
-                      key={`${copyIndex}-${collection.slug}`}
+                      key={`${copyIndex}-${collection.id}`}
                       className="marquee__item"
                       aria-hidden={isPrimaryCopy ? undefined : true}
                     >
                       {isPrimaryCopy && collection.href ? (
                         <Link href={collection.href} className="marquee__link">
-                          {collection.name}
+                          {collection.titulo}
                         </Link>
                       ) : (
                         <span className="marquee__label">
-                          {collection.name}
+                          {collection.titulo}
                         </span>
                       )}
                     </li>
@@ -240,7 +235,7 @@ export function HomeHero({
             })}
           </ul>
         </div>
-      </footer>
-    </section>
+      </div>
+    </>
   );
 }

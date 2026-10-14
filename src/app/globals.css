@@ -523,29 +523,12 @@ body:has(main.sobre-page) .header-mobile-bar {
   }
 
   /* ------------------------------------------------------------------
-     Home hero: vídeo full-bleed + faixa de coleções em carrossel infinito.
-     Nenhum conteúdo visível sobre o vídeo — só o rodapé colado na base.
+     Home hero: vídeo full-bleed + faixa de coleções discreta no fluxo da página.
 
-     Ajustes rápidos (tudo declarado em .hero):
-       --hero-footer-height         altura do rodapé
-       --hero-footer-bg/-border     vidro e borda do rodapé
-       --hero-marquee-duration      velocidade do carrossel
-       --hero-marquee-gap           espaçamento entre os nomes
-       --hero-veil-color/-height    véu sutil da base
-       --hero-media-position        object-position do vídeo/poster
+     Variáveis: --hero-media-position fica em .hero; duração e espaçamento
+     do carrossel ficam em .hero-collections.
      ------------------------------------------------------------------ */
   .hero {
-    --hero-footer-height: 3rem;
-    --hero-footer-bg: rgb(0 0 0 / 0.34);
-    --hero-footer-border: rgb(255 255 255 / 0.16);
-    --hero-footer-blur: 8px;
-    --hero-footer-fg: #fff;
-    --hero-footer-weight: 600;
-    --hero-footer-tracking: 0.24em;
-    --hero-marquee-duration: 20s;
-    --hero-marquee-gap: 3rem;
-    --hero-veil-height: 32%;
-    --hero-veil-color: rgb(0 0 0 / 0.35);
     --hero-media-position: center;
 
     position: relative;
@@ -556,6 +539,20 @@ body:has(main.sobre-page) .header-mobile-bar {
     height: 100svh;
     overflow: hidden;
     background-color: #050505;
+  }
+
+  .hero-collections {
+    --hero-marquee-duration: 20s;
+    --hero-marquee-gap: 3rem;
+
+    padding-block: 0.65rem;
+    color: #000;
+    font-family: var(--font-bodoni-moda), Georgia, "Times New Roman", serif;
+    font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
   }
 
   .hero__poster,
@@ -574,48 +571,6 @@ body:has(main.sobre-page) .header-mobile-bar {
 
   .hero__video {
     z-index: 1;
-  }
-
-  /* Véu só na base: legibilidade do rodapé sem escurecer o resto do vídeo. */
-  .hero__veil {
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    z-index: 2;
-    height: var(--hero-veil-height);
-    pointer-events: none;
-    background-image: linear-gradient(to top,
-        var(--hero-veil-color),
-        transparent);
-  }
-
-  .hero__footer {
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    /* min-height (e não height) para a safe-area do iPhone somar à barra. */
-    min-height: var(--hero-footer-height);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    color: var(--hero-footer-fg);
-    font-family: var(--font-bodoni-moda), Georgia, "Times New Roman", serif;
-    font-size: clamp(0.8rem, 1.2vw, 1.1rem);
-    font-weight: var(--hero-footer-weight);
-    line-height: 1;
-    letter-spacing: var(--hero-footer-tracking);
-    text-transform: uppercase;
-    background-color: var(--hero-footer-bg);
-    border-top: 1px solid var(--hero-footer-border);
-    -webkit-backdrop-filter: blur(var(--hero-footer-blur));
-    backdrop-filter: blur(var(--hero-footer-blur));
-  }
-
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .hero__footer {
-      background-color: rgb(0 0 0 / 0.82);
-    }
   }
 
   .marquee {
@@ -667,22 +622,6 @@ body:has(main.sobre-page) .header-mobile-bar {
     outline-offset: 0.35em;
   }
 
-  /* Pausa no hover apenas onde existe cursor de verdade. */
-  @media (hover: hover) and (pointer: fine) {
-    .marquee:hover .marquee__track {
-      animation-play-state: paused;
-    }
-
-    .marquee__link:hover {
-      opacity: 0.72;
-    }
-  }
-
-  /* Com teclado (ou foco por toque) o track congela: o item focado não sai da tela. */
-  .marquee:focus-within .marquee__track {
-    animation-play-state: paused;
-  }
-
   @keyframes hero-marquee {
     from {
       transform: translate3d(0, 0, 0);
@@ -719,16 +658,14 @@ body:has(main.sobre-page) .header-mobile-bar {
   }
 
   @media (min-width: 768px) {
-    .hero {
-      --hero-footer-height: 4.25rem;
+    .hero-collections {
       --hero-marquee-duration: 30s;
       --hero-marquee-gap: 4.5rem;
     }
   }
 
   @media (min-width: 1440px) {
-    .hero {
-      --hero-footer-height: 4.5rem;
+    .hero-collections {
       --hero-marquee-duration: 40s;
     }
   }

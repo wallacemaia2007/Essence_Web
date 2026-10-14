@@ -15,6 +15,7 @@ import {
   VITRINE_MAX_PRODUTOS,
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
+import { useCarouselPointerDrag } from "@/hooks/useCarouselPointerDrag";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
 import { caminhoDoProduto } from "@/lib/produto";
 import { cn } from "@/lib/utils";
@@ -42,11 +43,12 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
                 alt={produto.alt}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                draggable={false}
                 className={cn(
-                  "!rounded-none object-cover !shadow-none transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none",
+                  "!rounded-none object-cover !shadow-none transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none",
                   produto.imagemHover
-                    ? "group-hover:scale-[1.025] group-hover:opacity-0"
-                    : "group-hover:scale-[1.035]",
+                    ? "group-hover:scale-105 group-hover:opacity-0"
+                    : "group-hover:scale-105",
                 )}
               />
               {produto.imagemHover ? (
@@ -56,7 +58,8 @@ function ProductCard({ produto }: { produto: ProdutoVitrine }) {
                   aria-hidden="true"
                   fill
                   sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="!rounded-none object-cover opacity-0 !shadow-none transition-[opacity,transform] duration-500 ease-out group-hover:scale-[1.025] group-hover:opacity-100 motion-reduce:transition-none"
+                  draggable={false}
+                  className="!rounded-none object-cover opacity-0 !shadow-none transition-[opacity,transform] duration-700 ease-out group-hover:scale-105 group-hover:opacity-100 motion-reduce:transition-none"
                 />
               ) : null}
             </>
@@ -120,6 +123,21 @@ function VitrineCarousel({
   slideAtual,
   slides,
 }: VitrineCarouselProps) {
+  const {
+    handleClickCapture,
+    handlePointerCancel,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    isDragging,
+    trackRef,
+    viewportRef,
+  } = useCarouselPointerDrag({
+    currentSlide: slides.length > 0 ? slideAtual % slides.length : 0,
+    slideCount: slides.length,
+    onSelect,
+  });
+
   if (slides.length === 0) {
     return null;
   }
@@ -136,8 +154,21 @@ function VitrineCarousel({
           : "Produtos em destaque"
       }
     >
-      <div className="overflow-hidden">
+      <div
+        ref={viewportRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        onClickCapture={handleClickCapture}
+        onDragStart={(event) => event.preventDefault()}
+        className={cn(
+          "touch-pan-y overflow-hidden select-none",
+          isDragging ? "cursor-grabbing" : "cursor-grab",
+        )}
+      >
         <div
+          ref={trackRef}
           className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
           style={{ transform: `translateX(-${indiceVisivel * 100}%)` }}
         >

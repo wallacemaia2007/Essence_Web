@@ -1,3 +1,47 @@
 li::before {
   display: none;
 }
+
+/* Faixa de coleções abaixo do hero: regras fora das camadas do Tailwind
+   garantem que espaçamento e respiro prevaleçam sobre resets/utilitários. */
+.hero-collections {
+  display: block;
+  min-height: 2.5rem;
+  padding-block: 0.75rem;
+  overflow: hidden;
+  color: #000;
+  padding-top: 25px;
+}
+
+.hero-collections .marquee {
+  width: 100%;
+  overflow: hidden;
+}
+
+.hero-collections .marquee__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-collections .marquee__item {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  margin-inline-end: clamp(2rem, 5vw, 4.5rem);
+  padding: 0;
+  white-space: nowrap;
+}
+
+.hero-collections .marquee__label,
+.hero-collections .marquee__link {
+  color: inherit;
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  line-height: 1.4;
+  letter-spacing: 0.2em;
+  text-decoration: none;
+  white-space: nowrap;
+}

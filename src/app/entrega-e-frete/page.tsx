@@ -67,7 +67,7 @@ export default function EntregaEFretePage() {
                 </p>
 
                 {method.id === "pickup" ? (
-                  <div className="mt-5 space-y-4 border-y border-black/10 py-4">
+                  <div className="mt-5 space-y-4 border-t border-black/10 pt-4">
                     <div className="flex items-start gap-3">
                       <MapPin
                         className="mt-0.5 size-4 shrink-0 text-[#666]"

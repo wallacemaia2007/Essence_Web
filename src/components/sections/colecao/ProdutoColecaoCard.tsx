@@ -11,13 +11,22 @@ type ProdutoColecaoCardProps = {
   produto: ProdutoVitrine;
   priority?: boolean;
   hrefColecao?: string;
+  hoverConjunto?: boolean;
 };
 
 export function ProdutoColecaoCard({
   produto,
   priority = false,
   hrefColecao,
+  hoverConjunto = false,
 }: ProdutoColecaoCardProps) {
+  const imageHoverClassName = hoverConjunto
+    ? "transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none"
+    : "transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transition-none";
+  const alternateImageHoverClassName = hoverConjunto
+    ? "transition-[opacity,transform] duration-700 ease-out group-hover:scale-105 group-hover:opacity-100 motion-reduce:transition-none"
+    : "transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none";
+
   const selo = (
     <span className="absolute top-3 left-3 bg-white/90 px-2.5 py-1 text-[0.58rem] tracking-[0.17em] text-[#51483f] uppercase">
       {produto.colecao}
@@ -36,7 +45,8 @@ export function ProdutoColecaoCard({
               sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
               quality={80}
               loading={priority ? "eager" : "lazy"}
-              className="!rounded-none object-cover !shadow-none transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transition-none"
+              draggable={!hoverConjunto}
+              className={`!rounded-none object-cover !shadow-none ${imageHoverClassName}`}
             />
             {produto.imagemHover ? (
               <Image
@@ -47,7 +57,8 @@ export function ProdutoColecaoCard({
                 sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
                 quality={80}
                 loading="lazy"
-                className="!rounded-none object-cover opacity-0 !shadow-none transition-opacity duration-500 group-hover:opacity-100 motion-reduce:transition-none"
+                draggable={!hoverConjunto}
+                className={`!rounded-none object-cover opacity-0 !shadow-none ${alternateImageHoverClassName}`}
               />
             ) : null}
           </>

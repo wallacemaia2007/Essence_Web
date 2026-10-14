@@ -23,6 +23,8 @@ type NovidadesCarouselProps = {
   slides: readonly NovidadeSlide[];
   currentIndex: number;
   mobile?: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
   onPrevious: () => void;
   onNext: () => void;
   onSelect: (index: number) => void;
@@ -31,6 +33,8 @@ type NovidadesCarouselProps = {
 function NovidadesCarousel({
   currentIndex,
   mobile = false,
+  onMouseEnter,
+  onMouseLeave,
   onNext,
   onPrevious,
   onSelect,
@@ -50,6 +54,8 @@ function NovidadesCarousel({
         mobile ? "Novidades, um item por slide" : "Novidades, pares de itens"
       }
       className="relative"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <div className="overflow-hidden">
         <div
@@ -149,9 +155,11 @@ export function HomeNovidades({
   const slidesMobile: NovidadeSlide[] = visiveis.map((item) => [item]);
   const [indiceMobile, setIndiceMobile] = useState(0);
   const [indiceDesktop, setIndiceDesktop] = useState(0);
+  const [hoverMobile, setHoverMobile] = useState(false);
+  const [hoverDesktop, setHoverDesktop] = useState(false);
 
   useEffect(() => {
-    if (slidesMobile.length <= 1) {
+    if (slidesMobile.length <= 1 || hoverMobile) {
       return;
     }
 
@@ -160,10 +168,10 @@ export function HomeNovidades({
     }, 5000);
 
     return () => window.clearInterval(interval);
-  }, [slidesMobile.length]);
+  }, [hoverMobile, slidesMobile.length]);
 
   useEffect(() => {
-    if (pares.length <= 1) {
+    if (pares.length <= 1 || hoverDesktop) {
       return;
     }
 
@@ -172,7 +180,7 @@ export function HomeNovidades({
     }, 5000);
 
     return () => window.clearInterval(interval);
-  }, [pares.length]);
+  }, [hoverDesktop, pares.length]);
 
   if (visiveis.length === 0) {
     return null;
@@ -182,7 +190,7 @@ export function HomeNovidades({
     <ThemedSection
       id="novidades"
       aria-labelledby="novidades-title"
-      className={cn("pt-16 md:pt-24", className)}
+      className={cn("pt-8 md:pt-12", className)}
     >
       <Container className="max-w-7xl">
         <div className="pb-8 md:pb-12">
@@ -203,6 +211,8 @@ export function HomeNovidades({
           slides={slidesMobile}
           currentIndex={indiceMobile}
           mobile
+          onMouseEnter={() => setHoverMobile(true)}
+          onMouseLeave={() => setHoverMobile(false)}
           onPrevious={() =>
             setIndiceMobile(
               (index) =>
@@ -219,6 +229,8 @@ export function HomeNovidades({
         <NovidadesCarousel
           slides={pares}
           currentIndex={indiceDesktop}
+          onMouseEnter={() => setHoverDesktop(true)}
+          onMouseLeave={() => setHoverDesktop(false)}
           onPrevious={() =>
             setIndiceDesktop(
               (index) => (index - 1 + pares.length) % pares.length,

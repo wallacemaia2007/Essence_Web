@@ -25,6 +25,7 @@ import {
   VITRINE_MAX_PRODUTOS,
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
+import { useCarouselPointerDrag } from "@/hooks/useCarouselPointerDrag";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
 import {
   alterarQuantidade,
@@ -191,6 +192,21 @@ function DestaquesCarousel({
   mobile?: boolean;
   onSelect: (index: number) => void;
 }) {
+  const {
+    handleClickCapture,
+    handlePointerCancel,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    isDragging,
+    trackRef,
+    viewportRef,
+  } = useCarouselPointerDrag({
+    currentSlide: slides.length > 0 ? slideAtual % slides.length : 0,
+    slideCount: slides.length,
+    onSelect,
+  });
+
   if (slides.length === 0) {
     return null;
   }
@@ -207,8 +223,21 @@ function DestaquesCarousel({
           : "Destaques da Essence"
       }
     >
-      <div className="overflow-hidden">
+      <div
+        ref={viewportRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        onClickCapture={handleClickCapture}
+        onDragStart={(event) => event.preventDefault()}
+        className={cn(
+          "touch-pan-y overflow-hidden select-none",
+          isDragging ? "cursor-grabbing" : "cursor-grab",
+        )}
+      >
         <div
+          ref={trackRef}
           className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
           style={{ transform: `translateX(-${indiceVisivel * 100}%)` }}
         >
@@ -233,6 +262,7 @@ function DestaquesCarousel({
                   <ProdutoColecaoCard
                     produto={produto}
                     priority={slideIndex === 0 && index === 0}
+                    hoverConjunto
                   />
                 </li>
               ))}
@@ -279,13 +309,11 @@ export function CarrinhoConteudo({
     produtosEmDestaque,
     VITRINE_PRODUTOS_POR_SLIDE,
     VITRINE_INTERVALO_MS,
-    { pauseOnHover: false },
   );
   const carouselMobile = useCarouselSlides(
     produtosEmDestaque,
     1,
     VITRINE_INTERVALO_MS,
-    { pauseOnHover: false },
   );
   const [cep, setCep] = useState("");
   const [mensagemFrete, setMensagemFrete] = useState("");
@@ -308,6 +336,16 @@ export function CarrinhoConteudo({
     (total, item) => total + item.quantidade,
     0,
   );
+
+  function pausarPorHover() {
+    carouselDesktop.pausarPorHover();
+    carouselMobile.pausarPorHover();
+  }
+
+  function retomarPorHover() {
+    carouselDesktop.retomarPorHover();
+    carouselMobile.retomarPorHover();
+  }
 
   function pausarPorFoco() {
     carouselDesktop.pausarPorFoco();
@@ -508,6 +546,8 @@ export function CarrinhoConteudo({
       <ThemedSection
         aria-labelledby="carrinho-destaques"
         className="border-t border-[#e5e1dd] bg-[#f7f5f2] py-12 text-[#231f1b] md:py-16"
+        onMouseEnter={pausarPorHover}
+        onMouseLeave={retomarPorHover}
         onFocusCapture={pausarPorFoco}
         onBlurCapture={(event) => {
           if (
