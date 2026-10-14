@@ -16,7 +16,7 @@ export const heroMedia = {
   mp4: "/videos/hero-essence.mp4",
   /** VP9. Segundo <source>: mesma resolução, ~30-50% menor. */
   webm: "/videos/hero-essence.webm",
-  /** Imagem do primeiro frame — evita tela preta e protege o LCP. */
+  /** Imagem estática usada somente quando a reprodução é desativada por preferência. */
   poster: "/images/hero/hero-essence-poster.webp",
 } as const;
 

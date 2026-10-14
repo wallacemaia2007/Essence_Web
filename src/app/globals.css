@@ -634,7 +634,7 @@ body:has(main.sobre-page) .header-mobile-bar {
 
   @media (prefers-reduced-motion: reduce) {
 
-    /* Ví some já na primeira pintura; o poster (<img>) fica no lugar — sem JS. */
+    /* Evita reproduzir o vídeo quando o usuário prefere movimento reduzido. */
     .hero__video {
       visibility: hidden;
     }

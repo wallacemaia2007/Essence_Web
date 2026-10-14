@@ -10,6 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { preload } from "react-dom";
 
 import { heroMedia } from "@/constants/hero-media";
 import { type Conjunto, conjuntosData } from "@/data/conjuntos";
@@ -114,7 +115,7 @@ export function HomeHero({
 
     video.muted = true;
     video.play().catch(() => {
-      // Autoplay bloqueado: o poster continua na tela, nada quebra.
+      // Autoplay bloqueado: o fundo escuro permanece sem mostrar placeholder.
     });
   }, [shouldPlayVideo]);
 
@@ -159,6 +160,14 @@ export function HomeHero({
   // emenda entre a primeira e a segunda cópia da lista.
   const copies = Array.from({ length: trackCopies * 2 }, (_, index) => index);
 
+  if (shouldPlayVideo) {
+    preload(heroMedia.mp4, {
+      as: "video",
+      type: "video/mp4",
+      fetchPriority: "high",
+    });
+  }
+
   return (
     <>
       <section
@@ -172,20 +181,21 @@ export function HomeHero({
           {title}
         </h1>
 
-        <Image
-          src={heroMedia.poster}
-          alt=""
-          fill
-          sizes="100vw"
-          loading="eager"
-          fetchPriority="high"
-          className="hero__poster"
-        />
+        {!shouldPlayVideo ? (
+          <Image
+            src={heroMedia.poster}
+            alt=""
+            fill
+            sizes="100vw"
+            loading="eager"
+            fetchPriority="high"
+            className="hero__poster"
+          />
+        ) : null}
 
         <video
           ref={videoRef}
           className="hero__video"
-          poster={heroMedia.poster}
           autoPlay
           muted
           loop

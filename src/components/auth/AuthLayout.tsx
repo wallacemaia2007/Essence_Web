@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
+import { preload } from "react-dom";
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
@@ -16,6 +17,13 @@ export function AuthLayout({ children }: AuthLayoutProps) {
   const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
+
+  preload("/videos/video_auth.mp4", {
+    as: "video",
+    type: "video/mp4",
+    media: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)",
+    fetchPriority: "high",
+  });
 
   return (
     <main className="auth-screen relative isolate flex min-h-max flex-1 items-start overflow-x-clip overflow-y-visible bg-white px-4 pt-24 pb-16 text-[#171512] sm:px-6 sm:pt-28 sm:pb-20">
@@ -37,11 +45,9 @@ export function AuthLayout({ children }: AuthLayoutProps) {
               muted
               loop
               playsInline
-              preload="metadata"
-              poster="/images/hero/hero-essence-poster.webp"
+              preload="auto"
               className="auth-visual__video absolute inset-0 z-0 size-full object-cover motion-reduce:hidden"
             >
-              <source src="/videos/video_auth.webm" type="video/webm" />
               <source src="/videos/video_auth.mp4" type="video/mp4" />
             </video>
           )}
