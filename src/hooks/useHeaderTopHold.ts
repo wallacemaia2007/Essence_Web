@@ -10,8 +10,10 @@ type HeaderTopHoldOptions = {
   isAtTop: boolean;
   /** O header estaria visível agora, sem considerar este atraso. */
   isVisible: boolean;
-  /** A geometria da página já foi medida (evita agir na carga inicial). */
+  /** Geometria da página já foi medida (evita agir na carga inicial). */
   hasMeasured: boolean;
+  /** Mantém o header visível por um instante na primeira medição no topo. */
+  holdOnInitialTop?: boolean;
   delayMs?: number;
 };
 
@@ -32,6 +34,7 @@ export function useHeaderTopHold({
   isAtTop,
   isVisible,
   hasMeasured,
+  holdOnInitialTop = false,
   delayMs = HEADER_TOP_HOLD_MS,
 }: HeaderTopHoldOptions): boolean {
   const [isHolding, setIsHolding] = useState(false);
@@ -51,7 +54,12 @@ export function useHeaderTopHold({
     setPrevious({ isAtTop, isVisible, hasMeasured });
 
     if (previous.isAtTop !== isAtTop) {
-      setIsHolding(isAtTop && previous.hasMeasured && previous.isVisible);
+      const isInitialHomeReveal = holdOnInitialTop && !previous.hasMeasured;
+      setIsHolding(
+        isAtTop &&
+          previous.isVisible &&
+          (previous.hasMeasured || isInitialHomeReveal),
+      );
     }
   }
 

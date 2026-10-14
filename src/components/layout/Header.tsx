@@ -37,11 +37,9 @@ export function Header() {
     threshold: 9,
     topOffset: 80,
   });
-  // No topo do hero o header fica recolhido; ao descer um pouco ele aparece
-  // e permanece visível enquanto o hero ocupa o topo. Ao voltar ao topo ele
-  // não some na hora: espera 2 s e só então recolhe. Fora do hero vale o
-  // padrão: some ao descer e reaparece ao subir. Ele permanece aberto
-  // enquanto um painel está ativo.
+  // Na Home, o header aparece brevemente no primeiro carregamento e depois
+  // recolhe no topo do hero. Ao voltar ao topo ele também espera 2 s. Fora do
+  // hero vale o padrão: some ao descer e reaparece ao subir; painéis o mantêm.
   const isAtHeroTop = !hasPassedHero && isAtTop;
   const isPanelOpen = isSidebarOpen || isSearchOpen || activeMegaMenu !== null;
   const shouldHide =
@@ -51,6 +49,7 @@ export function Header() {
     isAtTop: isAtHeroTop,
     isVisible: !shouldHide,
     hasMeasured,
+    holdOnInitialTop: pathname === routes.home,
   });
   const isHidden = shouldHide && !isHoldingAtTop;
   const headerTheme = hasPassedHero ? "default" : "intro";
