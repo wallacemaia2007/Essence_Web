@@ -18,7 +18,7 @@ export default function Home() {
       <HomeAbout />
       <HomeLocation />
       <ImageBanner
-        imageSrc="/images/hero/hero-essence-poster.webp"
+        imageSrc="/images/banners/footer_home.png"
         imageAlt=""
         buttonLabel="Contato"
         buttonAriaLabel="Ir para a página de contato"
