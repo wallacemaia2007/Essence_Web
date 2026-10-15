@@ -2,6 +2,7 @@
 
 import { MapPin, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
+import type { MouseEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Container } from "@/components/common";
@@ -131,7 +132,9 @@ export function Header() {
     setIsSidebarOpen(false);
   }, []);
 
-  const openSearch = useCallback(() => {
+  const openSearch = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    // Use o acionador clicado: a outra variante responsiva pode estar oculta no DOM.
+    searchButtonRef.current = event.currentTarget;
     setIsSidebarOpen(false);
     setActiveMegaMenu(null);
     setIsSearchOpen(true);
@@ -174,7 +177,6 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <button
-              ref={searchButtonRef}
               type="button"
               aria-label="Buscar no site"
               aria-haspopup="dialog"
@@ -209,7 +211,6 @@ export function Header() {
             isSearchOpen={isSearchOpen}
             isMenuOpen={isSidebarOpen}
             menuButtonRef={menuButtonRef}
-            searchButtonRef={searchButtonRef}
           />
         </div>
       </header>

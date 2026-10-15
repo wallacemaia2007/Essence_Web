@@ -2,7 +2,7 @@
 
 import { Menu, Search } from "lucide-react";
 import Image from "next/image";
-import type { RefObject } from "react";
+import type { MouseEvent, RefObject } from "react";
 
 import { routes } from "@/constants/routes";
 import { cn } from "@/lib/utils";
@@ -15,11 +15,10 @@ import { SamePageScrollLink } from "./SamePageScrollLink";
 
 type MobileHeaderProps = {
   onOpenMenu: () => void;
-  onOpenSearch: () => void;
+  onOpenSearch: (event: MouseEvent<HTMLButtonElement>) => void;
   isSearchOpen: boolean;
   isMenuOpen: boolean;
   menuButtonRef: RefObject<HTMLButtonElement | null>;
-  searchButtonRef?: RefObject<HTMLButtonElement | null>;
   className?: string;
 };
 
@@ -42,7 +41,6 @@ export function MobileHeader({
   isSearchOpen,
   isMenuOpen,
   menuButtonRef,
-  searchButtonRef,
   className,
 }: MobileHeaderProps) {
   return (
@@ -68,7 +66,6 @@ export function MobileHeader({
         </button>
 
         <button
-          ref={searchButtonRef}
           type="button"
           aria-label="Buscar no site"
           aria-haspopup="dialog"
