@@ -28,7 +28,7 @@ export type ProdutoVitrine = {
   nome: string;
   categoria: CategoriaProduto;
   colecao: string;
-  /** URL local em `public/`; nula até a foto real ser adicionada. */
+  /** URL local em `public/`; null enquanto não houver uma imagem associada. */
   imagem: string | null;
   /** Segunda foto do mesmo produto, exibida suavemente no hover. */
   imagemHover?: string | null;
@@ -59,15 +59,15 @@ type ColecaoDemonstracao = {
 
 /**
  * Catálogo de demonstração: 12 peças por conjunto (72 no total).
- * Nomes e preços são fictícios; as fotos ficam pendentes até receber os arquivos
- * reais. Substitua estes dados antes de publicar o catálogo da loja.
+ * Nomes, preços e algumas imagens são demonstrativos; confirme os dados reais
+ * da loja antes de publicar o catálogo.
  */
 const colecoesDeDemonstracao = [
   {
     id: "vestidos",
     nome: "Vestidos",
     itens: [
-      { nome: "Vestido Aurora", preco: 249, categoria: "Vestidos" },
+      { nome: "Vestido Midi Aurora", preco: 249, categoria: "Vestidos" },
       { nome: "Vestido Midi Serena", preco: 289, categoria: "Vestidos" },
       { nome: "Vestido Laise Floral", preco: 219, categoria: "Vestidos" },
       { nome: "Vestido de Linho Clara", preco: 329, categoria: "Vestidos" },
@@ -195,6 +195,51 @@ const precosOriginaisOutletDemonstrativos: Record<string, number> = {
   "casual-04": 149,
 };
 
+const imagensDemonstrativasPorId: Readonly<
+  Record<string, { imagem: string; alt: string }>
+> = {
+  "produto-01": {
+    imagem: "/images/products/vestido-aurora-01.webp",
+    alt: "Modelo usando vestido midi marfim com estampa botânica delicada",
+  },
+  "vestidos-02": {
+    imagem: "/images/products/vestido-serena-midi.webp",
+    alt: "Modelo usando vestido midi rosa com faixa na cintura",
+  },
+  "vestidos-03": {
+    imagem: "/images/products/vestido-laise-floral.webp",
+    alt: "Modelo usando vestido branco bordado em laise floral",
+  },
+  "vestidos-04": {
+    imagem: "/images/products/vestido-linho-clara.webp",
+    alt: "Modelo usando vestido midi bege com cinto e decote quadrado",
+  },
+  "produto-02": {
+    imagem: "/images/products/conjunto-sol.webp",
+    alt: "Modelo usando conjunto amarelo de blusa e calça ampla",
+  },
+  "produto-03": {
+    imagem: "/images/products/conjunto-tricot-aurora.webp",
+    alt: "Modelo usando conjunto canelado de tricot em tom canela",
+  },
+  "conjuntos-verao-02": {
+    imagem: "/images/products/conjunto-linho-capri.webp",
+    alt: "Modelo usando conjunto natural de colete e calça ampla",
+  },
+  "conjuntos-inverno-02": {
+    imagem: "/images/products/conjunto-veludo-serena.webp",
+    alt: "Modelo usando conjunto de veludo vinho com blazer e calça",
+  },
+  "alfaiataria-03": {
+    imagem: "/images/products/colete-classico.webp",
+    alt: "Modelo usando colete taupe de alfaiataria sobre blusa clara",
+  },
+  "casual-04": {
+    imagem: "/images/products/t-shirt-minimal.webp",
+    alt: "Modelo usando camiseta clara minimalista com jeans escuro",
+  },
+};
+
 export const produtosVitrine: readonly ProdutoVitrine[] =
   colecoesDeDemonstracao.flatMap((colecao, indiceColecao) =>
     colecao.itens.map((item, indiceItem) => {
@@ -203,15 +248,16 @@ export const produtosVitrine: readonly ProdutoVitrine[] =
           ? `produto-${String(indiceColecao + 1).padStart(2, "0")}`
           : `${colecao.id}-${String(indiceItem + 1).padStart(2, "0")}`;
       const precoOriginal = precosOriginaisOutletDemonstrativos[id];
+      const fotografia = imagensDemonstrativasPorId[id];
 
       return {
         id,
         nome: item.nome,
         categoria: item.categoria,
         colecao: colecao.nome,
-        imagem: null,
+        imagem: fotografia?.imagem ?? null,
         imagemHover: null,
-        alt: `Foto demonstrativa de ${item.nome}`,
+        alt: fotografia?.alt ?? `Foto demonstrativa de ${item.nome}`,
         preco: item.preco,
         ...(precoOriginal ? { precoOriginal, outlet: true } : {}),
         // Só o primeiro de cada conjunto entra na vitrine geral da home (6 no total).

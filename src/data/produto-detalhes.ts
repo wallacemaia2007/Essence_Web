@@ -55,8 +55,8 @@ export const textosPadrao = {
 /**
  * Detalhes por peça, indexados pelo `id` de `src/data/vitrine.ts`.
  *
- * Exemplo abaixo (peça `produto-01`): GG indisponível, para você ver como o
- * tamanho esgotado aparece. Troque pelos dados reais ou apague o exemplo.
+ * Os textos e tamanhos abaixo são demonstrativos. Confirme os dados da loja
+ * antes de publicar; `produto-01` também exemplifica um tamanho indisponível.
  *
  * Para incluir fotos:
  *   fotos: [
@@ -67,6 +67,12 @@ export const textosPadrao = {
  */
 export const detalhesPorProduto: Readonly<Record<string, DetalhesProduto>> = {
   "produto-01": {
+    sobre:
+      "Vestido midi de decote quadrado, mangas curtas levemente bufantes e cintura marcada. A saia fluida e a estampa botânica em tons suaves compõem um visual delicado para diferentes ocasiões.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta da peça. Evite alvejantes e prefira secagem à sombra para preservar as cores.",
     tamanhos: [
       { rotulo: "PP", disponivel: true },
       { rotulo: "P", disponivel: true },
@@ -74,5 +80,77 @@ export const detalhesPorProduto: Readonly<Record<string, DetalhesProduto>> = {
       { rotulo: "G", disponivel: true },
       { rotulo: "GG", disponivel: false },
     ],
+  },
+  "vestidos-02": {
+    sobre:
+      "Vestido midi Serena em tom rosa suave, com decote em V, mangas curtas e faixa para marcar a cintura. A silhueta transpassada traz movimento ao look.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta da peça. Lave com cores semelhantes e evite alvejantes.",
+  },
+  "vestidos-03": {
+    sobre:
+      "Vestido midi branco com bordado vazado inspirado em motivos florais, decote arredondado e mangas curtas. Uma peça leve com textura e acabamento delicado.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Por ter detalhes bordados, manuseie com cuidado e siga as instruções de lavagem da etiqueta.",
+  },
+  "vestidos-04": {
+    sobre:
+      "Vestido midi Clara em tom areia, sem mangas, com decote quadrado e cinto do mesmo tecido. O corte simples destaca a linha da cintura e mantém o visual versátil.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta da peça. Seque à sombra e passe conforme a recomendação do tecido.",
+  },
+  "produto-02": {
+    sobre:
+      "Conjunto Sol de duas peças em amarelo manteiga, composto por blusa de mangas curtas e calça de cintura alta com perna ampla. Use as peças juntas ou combine-as separadamente.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta. Lave as peças com cores semelhantes e seque à sombra.",
+  },
+  "produto-03": {
+    sobre:
+      "Conjunto Tricot Aurora em tom canela, formado por blusa sem mangas e calça reta coordenada. A textura canelada cria um conjunto confortável e fácil de combinar.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Para preservar a forma da malha, siga a etiqueta e prefira secagem na horizontal, sem torcer a peça.",
+  },
+  "conjuntos-verao-02": {
+    sobre:
+      "Conjunto de Linho Capri em tom natural, com colete abotoado sem mangas e calça de perna ampla. As duas peças podem ser usadas juntas ou em combinações diferentes.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta. O aspecto naturalmente texturizado pode apresentar vincos próprios do tecido.",
+  },
+  "conjuntos-inverno-02": {
+    sobre:
+      "Conjunto Veludo Serena em tom vinho, composto por blazer de corte suave e calça reta coordenada. A textura aveludada dá destaque à peça em produções de clima ameno.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta. Para conservar a textura, evite atrito e não use alvejantes.",
+  },
+  "alfaiataria-03": {
+    sobre:
+      "Colete Clássico de alfaiataria em tom taupe, com abotoamento frontal e recorte ajustado. Na imagem, aparece combinado com blusa clara e calça de alfaiataria.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta. Preserve o formato dos recortes e botões durante a lavagem e a guarda.",
+  },
+  "casual-04": {
+    sobre:
+      "T-shirt Minimal de gola redonda e mangas curtas, em tom claro e modelagem essencial. Uma base versátil para compor looks casuais com jeans, saias ou alfaiataria.",
+    composicao:
+      "Composição demonstrativa: confirme a fibra e a proporção exatas na etiqueta ou com a equipe Essence antes da compra.",
+    cuidados:
+      "Siga as instruções da etiqueta. Lave com cores semelhantes e evite temperaturas elevadas ao passar.",
   },
 };
