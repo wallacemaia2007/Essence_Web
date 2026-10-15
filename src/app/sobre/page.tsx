@@ -1,46 +1,44 @@
-import { ArrowDown } from "lucide-react";
 import type { Metadata } from "next";
 import Script from "next/script";
 
-import { Testimonials } from "@/components/sections/Testimonials";
-import { FinalCta } from "@/components/sections/sobre/FinalCta";
-import { NossaHistoria } from "@/components/sections/sobre/NossaHistoria";
+import { HomeAbout } from "@/components/sections/home/home-about";
 import { PageHeader } from "@/components/sections/sobre/PageHeader";
-import { ScrollStory } from "@/components/sections/sobre/ScrollStory";
-import { ValoresMarca } from "@/components/sections/sobre/ValoresMarca";
 import { externalLinks, routes } from "@/constants/routes";
 import { localizacaoLoja } from "@/data/localizacao";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, ogImage, pages, siteName, siteTagline } from "@/lib/seo";
+import { ScrollStory } from "@/components/sections/sobre/ScrollStory";
+import { NossaHistoria } from "@/components/sections/sobre/NossaHistoria";
+import { ValoresMarca } from "@/components/sections/sobre/ValoresMarca";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { FinalCta } from "@/components/sections/sobre/FinalCta";
 
-const pageTitle = "Sobre a Essence | Moda feminina em Passos";
-const pageDescription =
-  "Conheça a Essence Passos: uma curadoria de moda feminina, atendimento próximo e uma experiência pensada para descobrir peças com a sua cara.";
-const socialImage = "/images/conjuntos/hero-conjuntos-essence.webp";
+const page = pages.sobre;
+const socialImage = page.ogImage ?? ogImage;
 
 export const metadata: Metadata = {
-  title: { absolute: pageTitle },
-  description: pageDescription,
-  alternates: { canonical: routes.sobre },
+  title: { absolute: page.title },
+  description: page.description,
+  alternates: { canonical: page.path },
   openGraph: {
-    title: pageTitle,
-    description: pageDescription,
-    url: absoluteUrl(routes.sobre),
-    siteName: "Essence Passos",
+    title: page.title,
+    description: page.description,
+    url: absoluteUrl(page.path),
+    siteName,
     locale: "pt_BR",
     type: "website",
     images: [
       {
         url: socialImage,
-        width: 2688,
-        height: 1152,
-        alt: "Editorial de moda feminina da Essence Passos",
+        width: 1920,
+        height: 1280,
+        alt: "Interior da loja Essence Passos",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: pageTitle,
-    description: pageDescription,
+    title: page.title,
+    description: page.description,
     images: [socialImage],
   },
 };

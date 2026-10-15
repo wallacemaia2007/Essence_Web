@@ -1,6 +1,7 @@
 import {
   ArrowUpRight,
   Clock3,
+  Mail,
   MapPin,
   MessageCircle,
   Phone,
@@ -19,6 +20,7 @@ const mensagemInicial = encodeURIComponent(
   "Olá, vim pelo site da Essence e gostaria de atendimento.",
 );
 const whatsappHref = `https://wa.me/${telefoneWhatsApp}?text=${mensagemInicial}`;
+const telefoneHref = `tel:+${telefoneWhatsApp}`;
 const instagram = socialLinks.find((link) => link.platform === "instagram");
 const facebook = socialLinks.find((link) => link.platform === "facebook");
 
@@ -49,10 +51,7 @@ export function CanaisContato() {
         </div>
       </a>
 
-      <a
-        href={`tel:${contato.telefone.replace(/[^\d+]/g, "")}`}
-        className={cardClassName}
-      >
+      <a href={telefoneHref} className={cardClassName}>
         <div className="flex items-start justify-between gap-4">
           <span className="inline-flex size-11 items-center justify-center border border-[#dedede] text-black">
             <Phone className="size-5" aria-hidden="true" />
@@ -70,6 +69,29 @@ export function CanaisContato() {
           <p className="mt-1 mb-0 text-sm text-[#656565]">{contato.telefone}</p>
         </div>
       </a>
+
+      {contato.email ? (
+        <a href={`mailto:${contato.email}`} className={cardClassName}>
+          <div className="flex items-start justify-between gap-4">
+            <span className="inline-flex size-11 items-center justify-center border border-[#dedede] text-black">
+              <Mail className="size-5" aria-hidden="true" />
+            </span>
+            <ArrowUpRight
+              className="size-4 text-[#7a7a7a] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              aria-hidden="true"
+            />
+          </div>
+          <div className="mt-8">
+            <p className="m-0 text-[0.65rem] font-semibold tracking-[0.16em] text-[#777777] uppercase">
+              E-mail
+            </p>
+            <h3 className="mt-2 mb-0 text-lg font-semibold">
+              Escreva para a loja
+            </h3>
+            <p className="mt-1 mb-0 text-sm text-[#656565]">{contato.email}</p>
+          </div>
+        </a>
+      ) : null}
 
       <section className="border border-[#dedede] bg-white p-5 sm:col-span-2 sm:p-6">
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">

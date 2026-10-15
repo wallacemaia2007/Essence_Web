@@ -37,7 +37,7 @@ export function PageHeader({
           className={`text-muted-foreground flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase ${compact ? "mt-2" : "mt-6"}`}
         >
           <Link href={routes.home} className="hover:text-primary transition">
-            Home
+            Início
           </Link>
           <span aria-hidden="true">/</span>
           <span className="text-foreground">{currentPage}</span>

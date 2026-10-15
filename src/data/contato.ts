@@ -1,5 +1,7 @@
+import { contactEmail } from "@/lib/seo";
+
 export const contato = {
-  email: "contato@example.com",
+  email: contactEmail,
   whatsapp: "5535992050341",
   telefone: "+55 (35) 99205-0341",
 };

@@ -20,14 +20,12 @@ export function FavoritosLink({ className }: FavoritosLinkProps) {
   return (
     <SamePageScrollLink
       href={routes.favoritos}
-      aria-label={
-        temFavoritos
-          ? `Abrir favoritos (${total} ${total === 1 ? "peça" : "peças"})`
-          : "Abrir favoritos"
-      }
+      aria-label="Favoritos"
+      title="Favoritos"
       className={cn("relative", className)}
     >
       <Heart aria-hidden="true" className="size-5" strokeWidth={1.75} />
+      <span className="sr-only">Favoritos</span>
       {temFavoritos ? (
         <span
           aria-hidden="true"

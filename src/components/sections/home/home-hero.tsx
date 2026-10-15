@@ -16,12 +16,12 @@ import { heroMedia } from "@/constants/hero-media";
 import { type Conjunto, conjuntosData } from "@/data/conjuntos";
 import { usePrefersReducedData } from "@/hooks/usePrefersReducedData";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { siteName } from "@/lib/seo";
+import { pages, siteTagline } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 type HomeHeroProps = {
   className?: string;
-  /** Nome da loja usado no h1 acessível (invisível na tela). */
+  /** Nome da loja exibido no H1 do hero. */
   title?: string;
   /** Conjuntos exibidos na faixa; usa a mesma fonte da seção inferior. */
   collections?: readonly Conjunto[];
@@ -36,7 +36,7 @@ const MAX_TRACK_COPIES = 3;
 export function HomeHero({
   className,
   collections = conjuntosData.itens,
-  title = siteName,
+  title = pages.home.title,
 }: HomeHeroProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const trackRef = useRef<HTMLUListElement>(null);
@@ -176,11 +176,6 @@ export function HomeHero({
         aria-labelledby={headingId}
         className={cn("hero", className)}
       >
-        {/* Único conteúdo acessível do hero: nada é visível sobre o vídeo. */}
-        <h1 id={headingId} className="sr-only">
-          {title}
-        </h1>
-
         {!shouldPlayVideo ? (
           <Image
             src={heroMedia.poster}

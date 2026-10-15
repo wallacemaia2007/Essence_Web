@@ -16,9 +16,7 @@ const linkClassName =
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const { contato } = footerData;
-  const emailConfigurado = !contato.email
-    .toLowerCase()
-    .endsWith("@example.com");
+  const emailConfigurado = Boolean(contato.email.trim());
 
   return (
     <footer>
@@ -119,7 +117,7 @@ export function Footer() {
                     </li>
                   ))}
                 </ul>
-                <CookiePreferencesButton className="mt-2 inline-flex min-h-11 items-center rounded-sm text-sm text-muted-foreground transition-colors hover:text-primary focus-visible:ring-ring/50 focus-visible:ring-3 focus-visible:outline-none md:min-h-8">
+                <CookiePreferencesButton className="text-muted-foreground hover:text-primary focus-visible:ring-ring/50 mt-2 inline-flex min-h-11 items-center rounded-sm text-sm transition-colors focus-visible:ring-3 focus-visible:outline-none md:min-h-8">
                   Preferências de cookies
                 </CookiePreferencesButton>
               </nav>

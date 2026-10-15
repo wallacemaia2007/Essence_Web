@@ -18,6 +18,10 @@ import { cn } from "@/lib/utils";
 
 type HomeAboutProps = {
   className?: string;
+  cta?: {
+    label: string;
+    href: string;
+  };
 };
 
 const textContainer: Variants = {
@@ -39,7 +43,7 @@ const textItem: Variants = {
  * escurece progressivamente para a direita — é na área escura que fica o
  * texto. No mobile o degradê vira vertical e o texto desce para a base.
  */
-export function HomeAbout({ className }: HomeAboutProps) {
+export function HomeAbout({ className, cta = aboutData.cta }: HomeAboutProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const headingId = useId();
   const reduceMotion = useReducedMotion();
@@ -106,8 +110,8 @@ export function HomeAbout({ className }: HomeAboutProps) {
             </motion.div>
 
             <motion.div variants={textItem}>
-              <Link href={aboutData.cta.href} className="about__cta">
-                {aboutData.cta.label}
+              <Link href={cta.href} className="about__cta">
+                {cta.label}
               </Link>
             </motion.div>
           </motion.div>

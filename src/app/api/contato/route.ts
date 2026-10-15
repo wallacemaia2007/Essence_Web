@@ -34,14 +34,14 @@ export async function POST(request: Request) {
 
     const resendApiKey = process.env.RESEND_API_KEY;
     const from = process.env.CONTACT_EMAIL_FROM;
-    const to = process.env.CONTACT_EMAIL_TO ?? contato.email;
+    const to = process.env.CONTACT_EMAIL_TO?.trim() || contato.email;
 
-    if (!resendApiKey || !from) {
+    if (!resendApiKey || !from || !to) {
       return NextResponse.json(
         {
           success: false,
           error:
-            "O envio ainda não está configurado. Defina RESEND_API_KEY e CONTACT_EMAIL_FROM no ambiente.",
+            "O envio ainda não está configurado. Defina RESEND_API_KEY, CONTACT_EMAIL_FROM e CONTACT_EMAIL_TO no ambiente.",
         },
         { status: 503 },
       );

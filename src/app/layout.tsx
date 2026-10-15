@@ -26,9 +26,10 @@ export const metadata: Metadata = {
   metadataBase: baseUrl,
   title: {
     default: pages.home.title,
-    template: "%s | Essence Web Template",
+    template: "%s | Essence",
   },
   description: siteDescription,
+  alternates: { canonical: pages.home.path },
   icons: {
     icon: [
       { url: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
@@ -48,9 +49,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: "Essence Web Template",
+        width: 1920,
+        height: 1280,
+        alt: "Interior da loja Essence Passos",
       },
     ],
   },

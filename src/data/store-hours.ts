@@ -1,3 +1,5 @@
+// TODO: confirmar com a loja se este horário continua atualizado antes de
+// tratá-lo como definitivo.
 export const storeHours = {
   summary: "Seg a sex, 9h às 18h",
   openWeekdays: [1, 2, 3, 4, 5] as const,

@@ -1,26 +1,29 @@
+import { externalLinks } from "@/constants/routes";
+
 const configuredSiteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.example.com";
+  process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
+  "https://homolog-essence.vercel.app";
 
 export const baseUrl = new URL(configuredSiteUrl);
-
-if (baseUrl.hostname === "example.com") {
-  baseUrl.hostname = "www.example.com";
-}
 
 export function absoluteUrl(path = "/") {
   return new URL(path, baseUrl).toString();
 }
 
-export const siteName = "Essence Web Template";
+export const siteName = "Essence";
+export const siteTagline = "Moda que expressa quem você é.";
 export const siteDescription =
-  "Um template moderno Next.js com Tailwind CSS, tipografia personalizada e sistema de temas alternados.";
+  "Moda feminina para expressar quem você é. Essence Passos.";
 
-export const ogImage = "/images/og-template.svg";
+// TODO: substituir pela foto oficial da loja quando a Essence enviar a imagem.
+export const ogImage = "/images/about/about-essence.webp";
+
+// TODO: confirmar com a loja e configurar o e-mail oficial de atendimento.
+export const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() ?? "";
 
 export const socialLinks = [
-  "https://github.com",
-  "https://twitter.com",
-  "https://linkedin.com",
+  externalLinks.instagram,
+  externalLinks.facebook,
 ] as const;
 
 export type PageSeo = {
@@ -33,7 +36,7 @@ export type PageSeo = {
 
 export const pages: Record<string, PageSeo> = {
   home: {
-    title: "Essence Web Template",
+    title: "Essence Passos",
     description: siteDescription,
     path: "/",
     ogImage,
@@ -42,15 +45,15 @@ export const pages: Record<string, PageSeo> = {
   sobre: {
     title: "Sobre a Essence Passos | Moda feminina",
     description:
-      "Conheça a curadoria, a loja física e a experiência da Essence em Passos, Minas Gerais.",
+      "Conheça a Essence Passos e a proposta de moda que expressa quem você é.",
     path: "/sobre",
-    ogImage: "/images/conjuntos/hero-conjuntos-essence.webp",
+    ogImage,
     type: "website",
   },
   contato: {
     title: "Contato",
     description:
-      "Fale com a equipe da Essence Passos sobre produtos, pedidos, entregas ou uma visita à loja física.",
+      "Fale com a equipe da Essence Passos sobre produtos, pedidos, trocas, entregas ou uma visita à loja.",
     path: "/contato",
     ogImage,
     type: "website",

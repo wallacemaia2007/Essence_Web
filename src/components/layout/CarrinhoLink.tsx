@@ -18,14 +18,12 @@ export function CarrinhoLink({ className }: CarrinhoLinkProps) {
   return (
     <Link
       href={routes.carrinho}
-      aria-label={
-        temItens
-          ? `Abrir sacola (${quantidadeTotal} ${quantidadeTotal === 1 ? "peça" : "peças"})`
-          : "Abrir sacola"
-      }
+      aria-label="Sacola"
+      title="Sacola"
       className={cn("relative", className)}
     >
       <ShoppingBag aria-hidden="true" className="size-5" strokeWidth={1.75} />
+      <span className="sr-only">Sacola</span>
       {temItens ? (
         <span
           aria-hidden="true"

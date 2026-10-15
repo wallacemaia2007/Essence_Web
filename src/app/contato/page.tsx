@@ -7,7 +7,7 @@ import { CanaisContato } from "@/components/sections/contato/CanaisContato";
 import { ContatoForm } from "@/components/sections/contato/ContatoForm";
 import { routes } from "@/constants/routes";
 import { contato } from "@/data/contato";
-import { pages } from "@/lib/seo";
+import { pages, siteName } from "@/lib/seo";
 
 export function generateMetadata(): Metadata {
   const page = pages.contato;
@@ -19,13 +19,14 @@ export function generateMetadata(): Metadata {
       title: page.title,
       description: page.description,
       url: page.path,
+      siteName,
       type: "website",
       images: [
         {
           url: page.ogImage!,
-          width: 1200,
-          height: 630,
-          alt: "Contato da loja Essence Passos",
+          width: 1920,
+          height: 1280,
+          alt: "Interior da loja Essence Passos",
         },
       ],
     },
@@ -58,7 +59,7 @@ export default function ContatoPage() {
                   href={routes.home}
                   className="transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
-                  Home
+                  Início
                 </Link>
                 <span aria-hidden="true">/</span>
                 <span aria-current="page" className="text-white">
@@ -73,8 +74,8 @@ export default function ContatoPage() {
                 A gente está aqui para você.
               </h1>
               <p className="mt-6 mb-0 max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
-                Dúvidas sobre uma peça, seu pedido ou uma visita à loja? Escolha
-                o canal que combina com você e fale com a Essence.
+                Dúvidas sobre produtos, pedidos, entregas ou trocas? Escolha um
+                canal e fale com a equipe da Essence Passos.
               </p>
               <a
                 href="#canais"
@@ -90,15 +91,12 @@ export default function ContatoPage() {
                 <p className="m-0 text-[0.62rem] font-semibold tracking-[0.17em] text-[#666666] uppercase">
                   Atendimento direto
                 </p>
-                <span className="text-[0.65rem] tracking-[0.12em] text-[#777777]">
-                  01 / 04
-                </span>
               </div>
               <h2 className="font-heading mt-7 mb-0 text-3xl leading-tight sm:text-4xl">
                 Comece pelo WhatsApp.
               </h2>
               <p className="mt-4 mb-0 text-sm leading-6 text-[#656565]">
-                Para conversar com a equipe sobre produtos, pedidos ou
+                Para conversar com a equipe sobre produtos, pedidos, trocas ou
                 atendimento na loja.
               </p>
               <a
@@ -110,9 +108,6 @@ export default function ContatoPage() {
                 Conversar no WhatsApp
                 <ArrowUpRight className="size-4" aria-hidden="true" />
               </a>
-              <p className="mt-4 mb-0 text-xs text-[#777777]">
-                {contato.telefone}
-              </p>
             </aside>
           </div>
         </Container>
