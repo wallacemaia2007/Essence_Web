@@ -16,7 +16,7 @@ import { heroMedia } from "@/constants/hero-media";
 import { type Conjunto, conjuntosData } from "@/data/conjuntos";
 import { usePrefersReducedData } from "@/hooks/usePrefersReducedData";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { pages, siteTagline } from "@/lib/seo";
+import { pages } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 type HomeHeroProps = {
@@ -176,6 +176,10 @@ export function HomeHero({
         aria-labelledby={headingId}
         className={cn("hero", className)}
       >
+        <h1 id={headingId} className="sr-only">
+          {title}
+        </h1>
+
         {!shouldPlayVideo ? (
           <Image
             src={heroMedia.poster}

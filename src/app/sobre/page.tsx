@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 
-import { HomeAbout } from "@/components/sections/home/home-about";
-import { PageHeader } from "@/components/sections/sobre/PageHeader";
-import { externalLinks, routes } from "@/constants/routes";
-import { localizacaoLoja } from "@/data/localizacao";
-import { absoluteUrl, ogImage, pages, siteName, siteTagline } from "@/lib/seo";
-import { ScrollStory } from "@/components/sections/sobre/ScrollStory";
+import { FinalCta } from "@/components/sections/sobre/FinalCta";
 import { NossaHistoria } from "@/components/sections/sobre/NossaHistoria";
+import { ScrollStory } from "@/components/sections/sobre/ScrollStory";
 import { ValoresMarca } from "@/components/sections/sobre/ValoresMarca";
 import { Testimonials } from "@/components/sections/Testimonials";
-import { FinalCta } from "@/components/sections/sobre/FinalCta";
+import { externalLinks } from "@/constants/routes";
+import { localizacaoLoja } from "@/data/localizacao";
+import { absoluteUrl, ogImage, pages, siteName } from "@/lib/seo";
 
 const page = pages.sobre;
 const socialImage = page.ogImage ?? ogImage;
