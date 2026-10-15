@@ -1,139 +1,191 @@
 "use client";
 
-import { ChevronDown, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-export type CatalogoFiltros = {
-  precoMinimo: string;
-  precoMaximo: string;
-  categorias: string[];
-  colecoes: string[];
-};
+import type { CategoriaProduto } from "@/data/vitrine";
+import {
+  type CatalogoAtributo,
+  type CatalogoFiltros,
+  type CatalogoOpcao,
+  type CatalogoOpcaoCor,
+  criarFiltrosVazios,
+} from "@/lib/catalogo-filtros";
 
 type CategoriaFiltro = {
-  nome: string;
+  nome: CategoriaProduto;
   quantidade: number;
 };
 
 type CatalogoFiltrosDrawerProps = {
   categorias: CategoriaFiltro[];
   colecoes: string[];
+  tamanhos: CatalogoOpcao[];
+  cores: CatalogoOpcaoCor[];
+  atributos: CatalogoAtributo[];
   filtrosAtuais: CatalogoFiltros;
+  contarResultados: (filtros: CatalogoFiltros) => number;
   onAplicar: (filtros: CatalogoFiltros) => void;
   onFechar: () => void;
 };
 
-const filtrosVazios: CatalogoFiltros = {
-  precoMinimo: "",
-  precoMaximo: "",
-  categorias: [],
-  colecoes: [],
-};
+function CheckboxOpcao({
+  checked,
+  disabled = false,
+  label,
+  quantity,
+  swatch,
+  onChange,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  label: string;
+  quantity?: number;
+  swatch?: string;
+  onChange: () => void;
+}) {
+  return (
+    <label
+      className={`flex min-h-11 items-center gap-3 text-sm text-[#51483f] ${
+        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+      }`}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        disabled={disabled}
+        onChange={onChange}
+        className="size-4 accent-[#231f1b]"
+      />
+      {swatch ? (
+        <span
+          aria-hidden="true"
+          className="size-4 shrink-0 rounded-full border border-black/15"
+          style={{ backgroundColor: swatch }}
+        />
+      ) : null}
+      <span className="flex-1">{label}</span>
+      {quantity !== undefined ? (
+        <span
+          aria-hidden="true"
+          className="text-xs text-[#75695e] tabular-nums"
+        >
+          {quantity}
+        </span>
+      ) : null}
+    </label>
+  );
+}
 
 export function CatalogoFiltrosDrawer({
   categorias,
   colecoes,
+  tamanhos,
+  cores,
+  atributos,
   filtrosAtuais,
+  contarResultados,
   onAplicar,
   onFechar,
 }: CatalogoFiltrosDrawerProps) {
   const [rascunho, setRascunho] = useState<CatalogoFiltros>(filtrosAtuais);
-  const [categoriasAbertas, setCategoriasAbertas] = useState(true);
-  const [colecoesAbertas, setColecoesAbertas] = useState(true);
-  const painelRef = useRef<HTMLElement>(null);
-  const fecharRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const precoMinimo = rascunho.precoMinimo
-    ? Number(rascunho.precoMinimo)
+    ? Number(rascunho.precoMinimo.replace(",", "."))
     : null;
   const precoMaximo = rascunho.precoMaximo
-    ? Number(rascunho.precoMaximo)
+    ? Number(rascunho.precoMaximo.replace(",", "."))
     : null;
   const faixaInvalida =
     precoMinimo !== null && precoMaximo !== null && precoMinimo > precoMaximo;
+  const atributosVisiveis = atributos.filter((atributo) =>
+    atributo.categorias.some((categoria) =>
+      rascunho.categorias.includes(categoria),
+    ),
+  );
 
   useEffect(() => {
-    const elementoAnterior =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
     const overflowAnterior = document.body.style.overflow;
-
     document.body.style.overflow = "hidden";
-    fecharRef.current?.focus();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        onFechar();
-        return;
-      }
-
-      if (event.key !== "Tab" || !painelRef.current) return;
-
-      const focaveis = painelRef.current.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
-      const primeiro = focaveis.item(0);
-      const ultimo = focaveis.item(focaveis.length - 1);
-
-      if (!primeiro || !ultimo) return;
-
-      if (event.shiftKey && document.activeElement === primeiro) {
-        event.preventDefault();
-        ultimo.focus();
-      } else if (!event.shiftKey && document.activeElement === ultimo) {
-        event.preventDefault();
-        primeiro.focus();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
+    dialog.showModal();
 
     return () => {
+      if (dialog.open) dialog.close();
       document.body.style.overflow = overflowAnterior;
-      document.removeEventListener("keydown", handleKeyDown);
-      elementoAnterior?.focus();
     };
-  }, [onFechar]);
+  }, []);
 
-  const setFaixa = (campo: "precoMinimo" | "precoMaximo", valor: string) => {
-    setRascunho((atual) => ({ ...atual, [campo]: valor }));
-  };
-
-  const alternarColecao = (colecao: string) => {
+  const alternarLista = (
+    campo: "colecoes" | "cores" | "tamanhos",
+    valor: string,
+  ) => {
     setRascunho((atual) => ({
       ...atual,
-      colecoes: atual.colecoes.includes(colecao)
-        ? atual.colecoes.filter((item) => item !== colecao)
-        : [...atual.colecoes, colecao],
+      [campo]: atual[campo].includes(valor)
+        ? atual[campo].filter((item) => item !== valor)
+        : [...atual[campo], valor],
     }));
   };
 
-  const alternarCategoria = (categoria: string) => {
-    setRascunho((atual) => ({
-      ...atual,
-      categorias: atual.categorias.includes(categoria)
+  const alternarCategoria = (categoria: CategoriaProduto) => {
+    setRascunho((atual) => {
+      const categoriasAtualizadas = atual.categorias.includes(categoria)
         ? atual.categorias.filter((item) => item !== categoria)
-        : [...atual.categorias, categoria],
-    }));
+        : [...atual.categorias, categoria];
+      const chavesVisiveis = new Set(
+        atributos
+          .filter((atributo) =>
+            atributo.categorias.some((item) =>
+              categoriasAtualizadas.includes(item),
+            ),
+          )
+          .map((atributo) => atributo.chave),
+      );
+
+      return {
+        ...atual,
+        categorias: categoriasAtualizadas,
+        atributos: Object.fromEntries(
+          Object.entries(atual.atributos).filter(([chave]) =>
+            chavesVisiveis.has(chave),
+          ),
+        ),
+      };
+    });
+  };
+
+  const alternarAtributo = (chave: string, valor: string) => {
+    setRascunho((atual) => {
+      const valores = atual.atributos[chave] ?? [];
+      const atualizados = valores.includes(valor)
+        ? valores.filter((item) => item !== valor)
+        : [...valores, valor];
+      const atributosAtualizados = { ...atual.atributos };
+
+      if (atualizados.length > 0) atributosAtualizados[chave] = atualizados;
+      else delete atributosAtualizados[chave];
+
+      return { ...atual, atributos: atributosAtualizados };
+    });
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[100] bg-[#231f1b]/45"
-      role="presentation"
-      onMouseDown={(event) => {
+    <dialog
+      ref={dialogRef}
+      aria-labelledby="catalogo-filtros-title"
+      className="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none border-0 bg-transparent p-0 text-left text-[#231f1b] backdrop:bg-[#231f1b]/50"
+      onCancel={(event) => {
+        event.preventDefault();
+        onFechar();
+      }}
+      onClick={(event) => {
         if (event.target === event.currentTarget) onFechar();
       }}
     >
-      <aside
-        ref={painelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="catalogo-filtros-title"
-        tabIndex={-1}
-        className="motion-safe:animate-in motion-safe:slide-in-from-right absolute inset-y-0 right-0 grid h-dvh w-full max-w-[26rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white text-[#231f1b] shadow-2xl outline-none motion-safe:duration-300"
-      >
+      <section className="motion-safe:animate-in motion-safe:slide-in-from-right absolute inset-y-0 right-0 grid h-dvh w-full max-w-[28rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white shadow-2xl motion-safe:duration-300">
         <header className="flex items-center justify-between border-b border-[#e5e5e5] px-6 py-5">
           <div>
             <p className="text-[0.65rem] font-medium tracking-[0.2em] text-[#75695e] uppercase">
@@ -147,7 +199,6 @@ export function CatalogoFiltrosDrawer({
             </h2>
           </div>
           <button
-            ref={fecharRef}
             type="button"
             onClick={onFechar}
             aria-label="Fechar filtros"
@@ -159,7 +210,7 @@ export function CatalogoFiltrosDrawer({
 
         <div
           data-lenis-prevent
-          className="min-h-0 space-y-8 overflow-y-auto overscroll-y-contain px-6 py-7 touch-pan-y [-webkit-overflow-scrolling:touch]"
+          className="min-h-0 touch-pan-y space-y-7 overflow-y-auto overscroll-y-contain px-6 py-6 [-webkit-overflow-scrolling:touch]"
         >
           <fieldset className="space-y-4 border-0 p-0">
             <legend className="text-sm font-semibold tracking-[0.08em] uppercase">
@@ -179,7 +230,10 @@ export function CatalogoFiltrosDrawer({
                     inputMode="decimal"
                     value={rascunho.precoMinimo}
                     onChange={(event) =>
-                      setFaixa("precoMinimo", event.target.value)
+                      setRascunho((atual) => ({
+                        ...atual,
+                        precoMinimo: event.target.value,
+                      }))
                     }
                     aria-label="Preço mínimo em reais"
                     placeholder="0,00"
@@ -200,7 +254,10 @@ export function CatalogoFiltrosDrawer({
                     inputMode="decimal"
                     value={rascunho.precoMaximo}
                     onChange={(event) =>
-                      setFaixa("precoMaximo", event.target.value)
+                      setRascunho((atual) => ({
+                        ...atual,
+                        precoMaximo: event.target.value,
+                      }))
                     }
                     aria-label="Preço máximo em reais"
                     placeholder="Qualquer valor"
@@ -213,159 +270,163 @@ export function CatalogoFiltrosDrawer({
               Preencha um valor mínimo, máximo ou ambos.
             </p>
             {faixaInvalida ? (
-              <p
-                id="catalogo-preco-error"
-                role="alert"
-                className="text-xs leading-5 text-red-800"
-              >
+              <p role="alert" className="text-xs leading-5 text-red-800">
                 O preço mínimo deve ser menor ou igual ao máximo.
               </p>
             ) : null}
           </fieldset>
 
-          <fieldset className="space-y-1 border-t border-[#e5e5e5] p-0 pt-7">
-            <legend className="sr-only">
+          <fieldset className="space-y-1 border-t border-[#e5e5e5] p-0 pt-6">
+            <legend className="pb-2 text-sm font-semibold tracking-[0.08em] uppercase">
               Categorias
             </legend>
-            <button
-              type="button"
-              onClick={() => setCategoriasAbertas((abertas) => !abertas)}
-              aria-expanded={categoriasAbertas}
-              aria-controls="catalogo-categorias-opcoes"
-              aria-label={
-                categoriasAbertas ? "Recolher categorias" : "Expandir categorias"
-              }
-              className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 py-2 text-left text-sm font-semibold tracking-[0.08em] text-[#231f1b] uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
-            >
-              <span>Categorias</span>
-              <ChevronDown
-                className={`size-4 transition-transform motion-reduce:transition-none ${
-                  categoriasAbertas ? "rotate-180" : ""
-                }`}
-                aria-hidden="true"
+            {categorias.map(({ nome, quantidade }) => (
+              <CheckboxOpcao
+                key={nome}
+                checked={rascunho.categorias.includes(nome)}
+                disabled={quantidade === 0}
+                label={nome}
+                quantity={quantidade}
+                onChange={() => alternarCategoria(nome)}
               />
-            </button>
-            <div
-              id="catalogo-categorias-opcoes"
-              hidden={!categoriasAbertas}
-            >
-              {categorias.length > 0 ? (
-                <ul className="space-y-1 p-0">
-                  {categorias.map(({ nome, quantidade }) => {
-                    const selecionada = rascunho.categorias.includes(nome);
-                    const indisponivel = quantidade === 0;
-
-                    return (
-                      <li key={nome} className="list-none p-0 before:hidden">
-                        <label
-                          className={`flex min-h-11 items-center gap-3 text-sm text-[#51483f] ${
-                            indisponivel
-                              ? "cursor-not-allowed opacity-50"
-                              : "cursor-pointer"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selecionada}
-                            disabled={indisponivel}
-                            onChange={() => alternarCategoria(nome)}
-                            className="size-4 accent-[#231f1b]"
-                          />
-                          <span className="flex-1">{nome}</span>
-                          <span
-                            aria-label={`${quantidade} peças nesta categoria`}
-                            className="text-xs tabular-nums text-[#75695e]"
-                          >
-                            {quantidade}
-                          </span>
-                        </label>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="text-sm text-[#75695e]">
-                  Nenhuma categoria cadastrada ainda.
-                </p>
-              )}
-            </div>
+            ))}
           </fieldset>
 
-          <fieldset className="space-y-4 border-t border-[#e5e5e5] p-0 pt-7">
-            <legend className="sr-only">
+          <fieldset className="space-y-1 border-t border-[#e5e5e5] p-0 pt-6">
+            <legend className="pb-2 text-sm font-semibold tracking-[0.08em] uppercase">
               Coleções
             </legend>
-            <button
-              type="button"
-              onClick={() => setColecoesAbertas((abertas) => !abertas)}
-              aria-expanded={colecoesAbertas}
-              aria-controls="catalogo-colecoes-opcoes"
-              aria-label={
-                colecoesAbertas ? "Recolher coleções" : "Expandir coleções"
-              }
-              className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 py-2 text-left text-sm font-semibold tracking-[0.08em] text-[#231f1b] uppercase focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
-            >
-              <span>Coleções</span>
-              <ChevronDown
-                className={`size-4 transition-transform motion-reduce:transition-none ${
-                  colecoesAbertas ? "rotate-180" : ""
-                }`}
-                aria-hidden="true"
+            {colecoes.map((colecao) => (
+              <CheckboxOpcao
+                key={colecao}
+                checked={rascunho.colecoes.includes(colecao)}
+                label={colecao}
+                onChange={() => alternarLista("colecoes", colecao)}
               />
-            </button>
-            <div id="catalogo-colecoes-opcoes" hidden={!colecoesAbertas}>
-              {colecoes.length > 0 ? (
-                <ul className="space-y-1 p-0">
-                  {colecoes.map((colecao) => {
-                    const selecionada = rascunho.colecoes.includes(colecao);
-
-                    return (
-                      <li key={colecao} className="list-none p-0 before:hidden">
-                        <label className="flex min-h-11 cursor-pointer items-center gap-3 text-sm text-[#51483f]">
-                          <input
-                            type="checkbox"
-                            checked={selecionada}
-                            onChange={() => alternarColecao(colecao)}
-                            className="size-4 accent-[#231f1b]"
-                          />
-                          <span>{colecao}</span>
-                        </label>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="text-sm text-[#75695e]">
-                  Nenhuma coleção cadastrada ainda.
-                </p>
-              )}
-            </div>
+            ))}
           </fieldset>
+
+          <fieldset className="space-y-1 border-t border-[#e5e5e5] p-0 pt-6">
+            <legend className="pb-2 text-sm font-semibold tracking-[0.08em] uppercase">
+              Tamanho
+            </legend>
+            {tamanhos.length > 0 ? (
+              tamanhos.map(({ nome, quantidade }) => (
+                <CheckboxOpcao
+                  key={nome}
+                  checked={rascunho.tamanhos.includes(nome)}
+                  label={nome}
+                  quantity={quantidade}
+                  onChange={() => alternarLista("tamanhos", nome)}
+                />
+              ))
+            ) : (
+              <p className="text-sm text-[#75695e]">
+                Tamanhos ainda não cadastrados.
+              </p>
+            )}
+            <p className="pt-1 text-xs leading-5 text-[#75695e]">
+              Estoque e grade de tamanhos demonstrativos; confirme com a loja.
+            </p>
+          </fieldset>
+
+          <fieldset className="space-y-1 border-t border-[#e5e5e5] p-0 pt-6">
+            <legend className="pb-2 text-sm font-semibold tracking-[0.08em] uppercase">
+              Cor
+            </legend>
+            {cores.length > 0 ? (
+              cores.map(({ nome, quantidade, hex }) => (
+                <CheckboxOpcao
+                  key={nome}
+                  checked={rascunho.cores.includes(nome)}
+                  label={nome}
+                  quantity={quantidade}
+                  swatch={hex}
+                  onChange={() => alternarLista("cores", nome)}
+                />
+              ))
+            ) : (
+              <p className="text-sm text-[#75695e]">
+                Cores ainda não cadastradas.
+              </p>
+            )}
+          </fieldset>
+
+          <fieldset className="space-y-1 border-t border-[#e5e5e5] p-0 pt-6">
+            <legend className="pb-2 text-sm font-semibold tracking-[0.08em] uppercase">
+              Disponibilidade
+            </legend>
+            <CheckboxOpcao
+              checked={rascunho.promocao}
+              label="Em promoção"
+              onChange={() =>
+                setRascunho((atual) => ({
+                  ...atual,
+                  promocao: !atual.promocao,
+                }))
+              }
+            />
+            <CheckboxOpcao
+              checked={rascunho.disponivel}
+              label="Disponível"
+              onChange={() =>
+                setRascunho((atual) => ({
+                  ...atual,
+                  disponivel: !atual.disponivel,
+                }))
+              }
+            />
+            <p className="pt-1 text-xs leading-5 text-[#75695e]">
+              “Disponível” considera apenas peças com estoque informado.
+            </p>
+          </fieldset>
+
+          {atributosVisiveis.map((atributo) => (
+            <fieldset
+              key={atributo.chave}
+              className="space-y-1 border-t border-[#e5e5e5] p-0 pt-6"
+            >
+              <legend className="pb-2 text-sm font-semibold tracking-[0.08em] uppercase">
+                {atributo.rotulo}
+              </legend>
+              {atributo.opcoes.map(({ nome, quantidade }) => (
+                <CheckboxOpcao
+                  key={nome}
+                  checked={(rascunho.atributos[atributo.chave] ?? []).includes(
+                    nome,
+                  )}
+                  label={nome}
+                  quantity={quantidade}
+                  onChange={() => alternarAtributo(atributo.chave, nome)}
+                />
+              ))}
+            </fieldset>
+          ))}
         </div>
 
-        <footer className="border-t border-[#e5e5e5] bg-white px-6 py-5">
-          <div className="mb-4">
+        <footer className="border-t border-[#e5e5e5] bg-white px-6 py-4">
+          <div className="mb-3 flex items-center justify-between gap-4">
             <button
               type="button"
-              onClick={() => setRascunho(filtrosVazios)}
-              className="cursor-pointer min-h-11 text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+              onClick={() => setRascunho(criarFiltrosVazios())}
+              className="min-h-11 text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
             >
-              Limpar filtros
+              Limpar tudo
             </button>
+            <span className="text-xs text-[#665b52]">
+              {contarResultados(rascunho)} peças
+            </span>
           </div>
           <button
             type="button"
             onClick={() => onAplicar(rascunho)}
             disabled={faixaInvalida}
-            aria-describedby={
-              faixaInvalida ? "catalogo-preco-error" : undefined
-            }
-            className="cursor-pointer flex h-12 w-full items-center justify-center bg-[#231f1b] px-4 text-xs font-semibold tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] motion-reduce:transition-none"
+            className="flex h-12 w-full items-center justify-center bg-[#231f1b] px-4 text-xs font-semibold tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none"
           >
-            Aplicar filtros
+            Ver {contarResultados(rascunho)} peças
           </button>
         </footer>
-      </aside>
-    </div>
+      </section>
+    </dialog>
   );
 }

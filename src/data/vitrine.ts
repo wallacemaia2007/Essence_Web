@@ -29,6 +29,8 @@ export type ProdutoCor = {
   images?: string[];
 };
 
+export type ProdutoEstoque = "ok" | "low" | "out";
+
 export type ProdutoVitrine = {
   id: string;
   nome: string;
@@ -42,6 +44,10 @@ export type ProdutoVitrine = {
   images: string[];
   /** TODO: cadastrar cores, tons e fotos de cada variante somente após confirmação da loja. */
   colors?: ProdutoCor[];
+  /** Atributos específicos da categoria (ex.: comprimento); confirmar com a loja. */
+  attributes?: Record<string, string[]>;
+  /** TODO: substituir o estoque demonstrativo por disponibilidade confirmada pela loja. */
+  stock?: ProdutoEstoque;
   /** IDs explícitos para completar o look; vazio usa itens da mesma coleção. */
   lookWith?: string[];
   alt: string;
@@ -252,6 +258,71 @@ const imagensDemonstrativasPorId: Readonly<
   },
 };
 
+type DadosDemonstrativosCatalogo = Partial<
+  Pick<ProdutoVitrine, "attributes" | "colors" | "stock">
+>;
+
+// TODO: confirmar variantes de cor, comprimentos e disponibilidade com a loja antes de publicar.
+const dadosDemonstrativosCatalogo: Readonly<
+  Record<string, DadosDemonstrativosCatalogo>
+> = {
+  "produto-01": {
+    colors: [
+      { name: "Marfim", hex: "#eee7d9" },
+      { name: "Vinho", hex: "#743746" },
+    ],
+    attributes: { comprimento: ["Midi"] },
+    stock: "low",
+  },
+  "vestidos-02": {
+    colors: [
+      { name: "Rosa", hex: "#c9828c" },
+      { name: "Preto", hex: "#292725" },
+    ],
+    attributes: { comprimento: ["Midi"] },
+    stock: "out",
+  },
+  "vestidos-03": {
+    colors: [
+      { name: "Branco", hex: "#f6f2e9" },
+      { name: "Verde", hex: "#62745a" },
+    ],
+    attributes: { comprimento: ["Midi"] },
+    stock: "ok",
+  },
+  "vestidos-07": {
+    colors: [
+      { name: "Canela", hex: "#99654d" },
+      { name: "Preto", hex: "#292725" },
+    ],
+    attributes: { comprimento: ["Longo"] },
+    stock: "low",
+  },
+  "produto-02": {
+    colors: [
+      { name: "Amarelo", hex: "#d9c46e" },
+      { name: "Verde", hex: "#62745a" },
+    ],
+    stock: "low",
+  },
+  "produto-03": {
+    colors: [
+      { name: "Canela", hex: "#99654d" },
+      { name: "Vinho", hex: "#743746" },
+    ],
+    stock: "out",
+  },
+  "conjuntos-verao-02": { stock: "ok" },
+  "casual-05": {
+    colors: [
+      { name: "Vinho", hex: "#743746" },
+      { name: "Preto", hex: "#292725" },
+    ],
+    attributes: { comprimento: ["Midi"] },
+    stock: "ok",
+  },
+};
+
 export const produtosVitrine: readonly ProdutoVitrine[] =
   colecoesDeDemonstracao.flatMap((colecao, indiceColecao) =>
     colecao.itens.map((item, indiceItem) => {
@@ -261,6 +332,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] =
           : `${colecao.id}-${String(indiceItem + 1).padStart(2, "0")}`;
       const precoOriginal = precosOriginaisOutletDemonstrativos[id];
       const fotografia = imagensDemonstrativasPorId[id];
+      const dadosCatalogo = dadosDemonstrativosCatalogo[id];
 
       return {
         id,
@@ -273,6 +345,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] =
         alt: fotografia?.alt ?? `Foto demonstrativa de ${item.nome}`,
         preco: item.preco,
         ...(precoOriginal ? { precoOriginal, outlet: true } : {}),
+        ...dadosCatalogo,
         // Só o primeiro de cada conjunto entra na vitrine geral da home (6 no total).
         featured: indiceItem === 0,
         // Três peças por conjunto preenchem a prateleira de destaques individual.

@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 
 import { CatalogoProdutos } from "@/components/sections/catalogo/CatalogoProdutos";
 import { routes } from "@/constants/routes";
-import { CATEGORIAS_PRODUTO } from "@/data/vitrine";
 
-export const metadata: Metadata = {
+const metadataBase: Metadata = {
   title: "Catálogo",
   description:
     "Explore as peças e coleções da Essence. Encontre vestidos, conjuntos e novos looks.",
@@ -21,26 +20,37 @@ export const metadata: Metadata = {
 };
 
 type ColecaoPageProps = {
-  searchParams: Promise<{ categoria?: string | string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default async function ColecaoPage({
+function possuiQueryAtiva(
+  searchParams: Record<string, string | string[] | undefined>,
+) {
+  return Object.keys(searchParams).length > 0;
+}
+
+export async function generateMetadata({
   searchParams,
-}: ColecaoPageProps) {
+}: ColecaoPageProps): Promise<Metadata> {
   const parametros = await searchParams;
-  const categoriaParam = Array.isArray(parametros.categoria)
-    ? undefined
-    : parametros.categoria;
-  const categoriaInicial = CATEGORIAS_PRODUTO.find(
-    (categoria) => categoria === categoriaParam,
-  );
+  if (!possuiQueryAtiva(parametros)) return metadataBase;
+
+  return {
+    ...metadataBase,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  };
+}
+
+export default async function ColecaoPage({ searchParams }: ColecaoPageProps) {
+  // A leitura da API de request torna a rota dinâmica e mantém useSearchParams sincronizado.
+  await searchParams;
 
   return (
     <main className="flex flex-1 flex-col">
-      <CatalogoProdutos
-        key={categoriaInicial ?? "todas-as-categorias"}
-        categoriaInicial={categoriaInicial}
-      />
+      <CatalogoProdutos />
     </main>
   );
 }
