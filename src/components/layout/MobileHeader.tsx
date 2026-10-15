@@ -16,6 +16,7 @@ import { SamePageScrollLink } from "./SamePageScrollLink";
 type MobileHeaderProps = {
   onOpenMenu: () => void;
   onOpenSearch: () => void;
+  isSearchOpen: boolean;
   isMenuOpen: boolean;
   menuButtonRef: RefObject<HTMLButtonElement | null>;
   searchButtonRef?: RefObject<HTMLButtonElement | null>;
@@ -38,6 +39,7 @@ const actionClassName = cn(
 export function MobileHeader({
   onOpenMenu,
   onOpenSearch,
+  isSearchOpen,
   isMenuOpen,
   menuButtonRef,
   searchButtonRef,
@@ -70,6 +72,7 @@ export function MobileHeader({
           type="button"
           aria-label="Buscar no site"
           aria-haspopup="dialog"
+          aria-expanded={isSearchOpen}
           onClick={onOpenSearch}
           className={actionClassName}
         >

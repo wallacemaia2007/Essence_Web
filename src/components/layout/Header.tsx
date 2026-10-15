@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -173,6 +173,21 @@ export function Header() {
           />
 
           <div className="flex items-center gap-2">
+            <button
+              ref={searchButtonRef}
+              type="button"
+              aria-label="Buscar no site"
+              aria-haspopup="dialog"
+              aria-expanded={isSearchOpen}
+              onClick={openSearch}
+              className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            >
+              <Search
+                aria-hidden="true"
+                className="size-5"
+                strokeWidth={1.75}
+              />
+            </button>
             <FavoritosLink className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100" />
             <CarrinhoLink className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100" />
             <AccountMenu />
@@ -191,6 +206,7 @@ export function Header() {
           <MobileHeader
             onOpenMenu={openSidebar}
             onOpenSearch={openSearch}
+            isSearchOpen={isSearchOpen}
             isMenuOpen={isSidebarOpen}
             menuButtonRef={menuButtonRef}
             searchButtonRef={searchButtonRef}
