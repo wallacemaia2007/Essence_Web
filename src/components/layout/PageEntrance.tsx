@@ -29,7 +29,8 @@ export function PageEntrance({ children }: PageEntranceProps) {
   const pathname = usePathname();
   const transitionKey = getTransitionKey(pathname);
   const [finishedPath, setFinishedPath] = useState<string | null>(null);
-  const isEntering = finishedPath !== transitionKey;
+  const isHomePage = pathname === routes.home;
+  const isEntering = !isHomePage && finishedPath !== transitionKey;
 
   function finishEntrance(event: AnimationEvent<HTMLDivElement>) {
     if (event.target === event.currentTarget) {
