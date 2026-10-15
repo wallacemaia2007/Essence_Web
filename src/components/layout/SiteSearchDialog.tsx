@@ -109,7 +109,7 @@ export function SiteSearchDialog({
         type="button"
         aria-label="Fechar busca"
         onClick={onClose}
-        className="absolute inset-0 bg-black/50"
+        className="drawer-enter-backdrop absolute inset-0 bg-black/50"
       />
 
       <div
@@ -117,7 +117,7 @@ export function SiteSearchDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="absolute inset-x-0 top-0 border-b border-[rgb(35_31_27_/_0.1)] bg-white px-4 pt-4 pb-5 text-[#231f1b] shadow-xl"
+        className="drawer-enter-top absolute inset-x-0 top-0 border-b border-[rgb(35_31_27_/_0.1)] bg-white px-4 pt-4 pb-5 text-[#231f1b] shadow-xl"
       >
         <div className="mb-3 flex items-center justify-between gap-3">
           <h2 id={titleId} className="text-sm font-semibold tracking-wide">
