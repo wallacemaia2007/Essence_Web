@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -27,7 +27,7 @@ export function Header() {
   const [activeMegaMenu, setActiveMegaMenu] =
     useState<DesktopMegaMenuId | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const searchButtonRef = useRef<HTMLButtonElement>(null);
+  const searchReturnFocusRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const { hasMeasured, hasPassedHero } = useHasPassedHero(
     HEADER_HEIGHT,
@@ -100,7 +100,8 @@ export function Header() {
     setIsSidebarOpen(false);
   }, []);
 
-  const openSearch = useCallback(() => {
+  const openSearch = useCallback((trigger: HTMLButtonElement) => {
+    searchReturnFocusRef.current = trigger;
     setIsSidebarOpen(false);
     setActiveMegaMenu(null);
     setIsSearchOpen(true);
@@ -141,6 +142,17 @@ export function Header() {
           />
 
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Buscar produtos e páginas"
+              aria-haspopup="dialog"
+              aria-expanded={isSearchOpen}
+              aria-controls="site-search-dialog"
+              onClick={(event) => openSearch(event.currentTarget)}
+              className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100"
+            >
+              <Search aria-hidden="true" className="size-4" />
+            </button>
             <FavoritosLink className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100" />
             <CarrinhoLink className="inline-flex size-10 items-center justify-center rounded-full text-[#000000] transition-colors duration-300 hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#000000] active:scale-[0.97] motion-reduce:transition-none motion-reduce:active:scale-100" />
             <AccountMenu />
@@ -159,9 +171,9 @@ export function Header() {
           <MobileHeader
             onOpenMenu={openSidebar}
             onOpenSearch={openSearch}
+            isSearchOpen={isSearchOpen}
             isMenuOpen={isSidebarOpen}
             menuButtonRef={menuButtonRef}
-            searchButtonRef={searchButtonRef}
           />
         </div>
       </header>
@@ -178,7 +190,7 @@ export function Header() {
         key={isSearchOpen ? "site-search-open" : "site-search-closed"}
         isOpen={isSearchOpen}
         onClose={closeSearch}
-        returnFocusRef={searchButtonRef}
+        returnFocusRef={searchReturnFocusRef}
       />
     </>
   );

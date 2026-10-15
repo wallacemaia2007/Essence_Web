@@ -1,6 +1,7 @@
 export const routes = {
   home: "/",
   sobre: "/sobre",
+  clube: "/clube",
   contato: "/contato",
   atendimentoPersonalizado: "/atendimento-personalizado",
   login: "/login",
@@ -40,6 +41,7 @@ export const anchors = {
   sobre: `${routes.home}#sobre-a-loja`,
   localizacao: `${routes.home}#localizacao`,
   faq: `${routes.home}#faq`,
+  depoimentos: `${routes.sobre}#depoimentos`,
 } as const;
 
 export const navLinks = [

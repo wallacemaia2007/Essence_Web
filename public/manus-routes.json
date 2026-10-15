@@ -3,6 +3,7 @@
     { "path": "/", "title": "Essence Passos — Início" },
     { "path": "/carrinho", "title": "Sacola" },
     { "path": "/checkout", "title": "Finalizar compra" },
+    { "path": "/clube", "title": "Clube da Essence" },
     { "path": "/colecao", "title": "Coleções" },
     { "path": "/colecao/:slug", "title": "Detalhe da coleção" },
     { "path": "/conjuntos", "title": "Conjuntos selecionados" },

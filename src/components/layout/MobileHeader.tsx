@@ -15,10 +15,10 @@ import { SamePageScrollLink } from "./SamePageScrollLink";
 
 type MobileHeaderProps = {
   onOpenMenu: () => void;
-  onOpenSearch: () => void;
+  onOpenSearch: (trigger: HTMLButtonElement) => void;
+  isSearchOpen: boolean;
   isMenuOpen: boolean;
   menuButtonRef: RefObject<HTMLButtonElement | null>;
-  searchButtonRef?: RefObject<HTMLButtonElement | null>;
   className?: string;
 };
 
@@ -38,9 +38,9 @@ const actionClassName = cn(
 export function MobileHeader({
   onOpenMenu,
   onOpenSearch,
+  isSearchOpen,
   isMenuOpen,
   menuButtonRef,
-  searchButtonRef,
   className,
 }: MobileHeaderProps) {
   return (
@@ -66,11 +66,12 @@ export function MobileHeader({
         </button>
 
         <button
-          ref={searchButtonRef}
           type="button"
-          aria-label="Buscar no site"
+          aria-label="Buscar produtos e páginas"
           aria-haspopup="dialog"
-          onClick={onOpenSearch}
+          aria-expanded={isSearchOpen}
+          aria-controls="site-search-dialog"
+          onClick={(event) => onOpenSearch(event.currentTarget)}
           className={actionClassName}
         >
           <Search aria-hidden="true" className="size-5" strokeWidth={1.75} />

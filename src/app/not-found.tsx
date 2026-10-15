@@ -1,7 +1,11 @@
 import Link from "next/link";
 
 import { Container, ThemedSection } from "@/components/common";
-import { routes } from "@/constants/routes";
+import { SamePageScrollLink } from "@/components/layout/SamePageScrollLink";
+import { anchors, routes } from "@/constants/routes";
+import { contato } from "@/data/contato";
+
+const whatsappHref = `https://wa.me/${contato.whatsapp.replace(/\D/g, "")}`;
 
 export default function NotFound() {
   return (
@@ -14,28 +18,42 @@ export default function NotFound() {
           <h1 className="font-heading mt-6 text-6xl leading-none tracking-wide uppercase sm:text-8xl md:text-9xl">
             Erro <span className="text-[#8e8175]">404</span>
           </h1>
-          <span
-            aria-hidden="true"
-            className="mt-8 h-px w-16 bg-[#b9aea3]"
-          />
+          <span aria-hidden="true" className="mt-8 h-px w-16 bg-[#b9aea3]" />
           <p className="mt-7 max-w-xl text-sm leading-7 text-[#655e57] sm:text-base sm:leading-8">
             Não encontramos esta página. O endereço pode ter mudado ou já não
             estar disponível.
           </p>
-          <div className="mt-9 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row sm:gap-4">
-            <Link
-              href={routes.home}
+          <nav
+            aria-label="Atalhos para continuar no site"
+            className="mt-9 grid w-full gap-3 sm:max-w-2xl sm:grid-cols-2"
+          >
+            <SamePageScrollLink
+              href={routes.colecao}
               className="inline-flex min-h-12 items-center justify-center bg-[#231f1b] px-7 text-xs font-semibold tracking-[0.16em] text-white uppercase transition-colors hover:bg-[#51483f] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
             >
-              Voltar ao início
-            </Link>
+              Catálogo
+            </SamePageScrollLink>
             <Link
-              href={routes.colecao}
+              href={routes.outlet}
               className="inline-flex min-h-12 items-center justify-center border border-[#231f1b] px-7 text-xs font-semibold tracking-[0.16em] text-[#231f1b] uppercase transition-colors hover:bg-[#f1efec] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
             >
-              Explorar catálogo
+              Outlet
             </Link>
-          </div>
+            <SamePageScrollLink
+              href={anchors.novidades}
+              className="inline-flex min-h-12 items-center justify-center border border-[#231f1b] px-7 text-xs font-semibold tracking-[0.16em] text-[#231f1b] uppercase transition-colors hover:bg-[#f1efec] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+            >
+              Novidades
+            </SamePageScrollLink>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 items-center justify-center border border-[#231f1b] px-7 text-xs font-semibold tracking-[0.16em] text-[#231f1b] uppercase transition-colors hover:bg-[#f1efec] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+            >
+              WhatsApp
+            </a>
+          </nav>
         </Container>
       </ThemedSection>
     </main>

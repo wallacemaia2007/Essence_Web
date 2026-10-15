@@ -155,7 +155,7 @@ function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
         </Link>
       </div>
 
-      <div className="grid gap-6 border-t border-black/10 pt-5 md:grid-cols-3 md:gap-0 md:divide-x md:divide-black/10 md:border-t-0 md:pt-0">
+      <div className="grid gap-6 border-t border-black/10 pt-5 md:grid-cols-2 md:gap-0 md:divide-x md:divide-black/10 md:border-t-0 md:pt-0 lg:grid-cols-4">
         <ProductShelf
           id="novidades"
           title="Novidades"
@@ -176,30 +176,64 @@ function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
           className="border-t border-black/10 pt-5 md:border-t-0 md:px-6 md:pt-0"
         />
         <section
-          aria-labelledby="mega-shelf-outras-pecas"
-          className="border-t border-black/10 pt-5 md:border-t-0 md:pt-0 md:pl-6"
+          aria-labelledby="mega-shelf-roupas"
+          className="border-t border-black/10 pt-5 md:px-6 md:pt-5 lg:border-t-0 lg:pt-0 lg:pl-6"
         >
           <div className="mb-3">
             <p className="text-[0.58rem] font-semibold tracking-[0.2em] text-[#75695e] uppercase">
-              Mais para descobrir
+              Explore por tipo
             </p>
             <h3
-              id="mega-shelf-outras-pecas"
+              id="mega-shelf-roupas"
               className="font-heading mt-1 text-lg tracking-wide text-[#171717] uppercase"
             >
-              Outras peças
+              Roupas
             </h3>
           </div>
-          <ul className="grid list-none grid-cols-2 gap-x-3 gap-y-1 border-t border-black/10 p-0 pt-2">
+          <ul className="m-0 list-none divide-y divide-black/10 border-t border-black/10 p-0">
             {megaMenuCategories.map((categoria) => (
               <li key={categoria} className="list-none p-0 before:hidden">
                 <Link
                   href={`${routes.colecao}?categoria=${encodeURIComponent(categoria)}`}
                   prefetch={false}
                   onClick={onNavigate}
-                  className="group flex min-h-10 items-center justify-between gap-2 border-b border-black/5 py-2 text-[0.72rem] text-[#222222] transition-colors hover:text-[#75695e] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black"
+                  className="group flex min-h-10 items-center justify-between gap-2 py-2 text-[0.72rem] text-[#222222] transition-colors hover:text-[#75695e] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black"
                 >
                   <span>{categoria}</span>
+                  <ArrowRight
+                    className="size-3 shrink-0 text-[#8b8178] opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section
+          aria-labelledby="mega-shelf-looks-completos"
+          className="border-t border-black/10 pt-5 md:pt-5 md:pl-6 lg:border-t-0 lg:pt-0"
+        >
+          <div className="mb-3">
+            <p className="text-[0.58rem] font-semibold tracking-[0.2em] text-[#75695e] uppercase">
+              Combinações Essence
+            </p>
+            <h3
+              id="mega-shelf-looks-completos"
+              className="font-heading mt-1 text-lg tracking-wide text-[#171717] uppercase"
+            >
+              Looks completos
+            </h3>
+          </div>
+          <ul className="m-0 list-none divide-y divide-black/10 border-t border-black/10 p-0">
+            {conjuntosData.itens.map((conjunto) => (
+              <li key={conjunto.id} className="list-none p-0 before:hidden">
+                <Link
+                  href={conjunto.href ?? `${routes.colecao}/${conjunto.id}`}
+                  prefetch={false}
+                  onClick={onNavigate}
+                  className="group flex min-h-10 items-center justify-between gap-2 py-2 text-[0.72rem] text-[#222222] transition-colors hover:text-[#75695e] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black"
+                >
+                  <span className="min-w-0 truncate">{conjunto.titulo}</span>
                   <ArrowRight
                     className="size-3 shrink-0 text-[#8b8178] opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 motion-reduce:transition-none"
                     aria-hidden="true"
@@ -226,7 +260,7 @@ function ConjuntosMegaPanel({ onNavigate }: { onNavigate: () => void }) {
             id="mega-menu-heading-conjuntos"
             className="font-heading mt-1 text-2xl tracking-wide text-[#171717] uppercase"
           >
-            Todos os conjuntos
+            Looks completos
           </h2>
         </div>
         <Link

@@ -50,6 +50,13 @@ export const pages: Record<string, PageSeo> = {
     ogImage,
     type: "website",
   },
+  clube: {
+    title: "Clube da Essence",
+    description: "Informações institucionais sobre o Clube da Essence.",
+    path: "/clube",
+    ogImage,
+    type: "website",
+  },
   contato: {
     title: "Contato",
     description:

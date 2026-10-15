@@ -21,12 +21,13 @@ export const metadata: Metadata = {
 };
 
 type ColecaoPageProps = {
-  searchParams: Promise<{ categoria?: string | string[] }>;
+  searchParams: Promise<{
+    categoria?: string | string[];
+    busca?: string | string[];
+  }>;
 };
 
-export default async function ColecaoPage({
-  searchParams,
-}: ColecaoPageProps) {
+export default async function ColecaoPage({ searchParams }: ColecaoPageProps) {
   const parametros = await searchParams;
   const categoriaParam = Array.isArray(parametros.categoria)
     ? undefined
@@ -34,12 +35,16 @@ export default async function ColecaoPage({
   const categoriaInicial = CATEGORIAS_PRODUTO.find(
     (categoria) => categoria === categoriaParam,
   );
+  const buscaInicial = Array.isArray(parametros.busca)
+    ? ""
+    : (parametros.busca?.trim() ?? "");
 
   return (
     <main className="flex flex-1 flex-col">
       <CatalogoProdutos
-        key={categoriaInicial ?? "todas-as-categorias"}
+        key={`${categoriaInicial ?? "todas-as-categorias"}:${buscaInicial}`}
         categoriaInicial={categoriaInicial}
+        buscaInicial={buscaInicial}
       />
     </main>
   );

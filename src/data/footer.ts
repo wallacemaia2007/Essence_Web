@@ -2,6 +2,7 @@ import { anchors, routes } from "@/constants/routes";
 import { conjuntosData } from "@/data/conjuntos";
 import { contato } from "@/data/contato";
 import { localizacaoLoja } from "@/data/localizacao";
+import { testimonials } from "@/data/testimonials";
 
 export type FooterLink = {
   label: string;
@@ -53,6 +54,9 @@ export const footerData = {
         { label: "Catálogo completo", href: routes.colecao },
         { label: "Outlet", href: routes.outlet },
         { label: "Conjuntos", href: routes.conjuntos },
+        ...(testimonials.some((item) => item.published)
+          ? [{ label: "Depoimentos", href: anchors.depoimentos }]
+          : []),
         { label: "Instagram", href: anchors.instagram },
       ],
     },
@@ -72,6 +76,7 @@ export const footerData = {
         { label: "Entrega e frete", href: routes.entregaFrete },
         { label: "Meus pedidos", href: routes.pedidos },
         { label: "Fale com a loja", href: routes.contato },
+        { label: "Clube da Essence", href: routes.clube },
         {
           label: "Atendimento personalizado",
           href: routes.atendimentoPersonalizado,

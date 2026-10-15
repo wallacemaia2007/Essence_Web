@@ -158,15 +158,17 @@ function ProdutoCard({ produto }: { produto: ProdutoVitrine }) {
 
 export function CatalogoProdutos({
   categoriaInicial,
+  buscaInicial = "",
   modo = "catalogo",
 }: {
   categoriaInicial?: CategoriaProduto;
+  buscaInicial?: string;
   modo?: "catalogo" | "outlet";
 }) {
   const isOutlet = modo === "outlet";
   const produtosDisponiveis = isOutlet ? produtosOutlet : produtosVitrine;
   const lenis = useLenis();
-  const [busca, setBusca] = useState("");
+  const [busca, setBusca] = useState(buscaInicial);
   const [ordenacaoOutlet, setOrdenacaoOutlet] =
     useState<OrdenacaoOutlet>("desconto");
   const [filtros, setFiltros] = useState<CatalogoFiltros>(() => ({
@@ -198,7 +200,9 @@ export function CatalogoProdutos({
     const temFiltroDePreco = precoMinimo !== null || precoMaximo !== null;
 
     return produtosDisponiveis.filter((produto) => {
-      const combinaNome = normalizarTexto(produto.nome).includes(termoBusca);
+      const combinaBusca = [produto.nome, produto.categoria].some((campo) =>
+        normalizarTexto(campo).includes(termoBusca),
+      );
       const combinaColecao =
         filtros.colecoes.length === 0 ||
         filtros.colecoes.includes(produto.colecao);
@@ -206,7 +210,7 @@ export function CatalogoProdutos({
         filtros.categorias.length === 0 ||
         filtros.categorias.includes(produto.categoria);
 
-      if (!combinaNome || !combinaColecao || !combinaCategoria) return false;
+      if (!combinaBusca || !combinaColecao || !combinaCategoria) return false;
       if (!temFiltroDePreco) return true;
       if (produto.preco == null) return false;
       if (precoMinimo !== null && produto.preco < precoMinimo) return false;
