@@ -9,6 +9,7 @@ type PageHeaderProps = {
   description: string;
   currentPage: string;
   compact?: boolean;
+  compactBottom?: boolean;
   children?: ReactNode;
 };
 
@@ -18,13 +19,16 @@ export function PageHeader({
   description,
   title,
   compact = false,
+  compactBottom = false,
 }: PageHeaderProps) {
   return (
     <ThemedSection
       className={
         compact
           ? "sobre-page__page-header border-b pt-24 pb-5 md:pt-28 md:pb-6"
-          : "border-b py-16 md:py-20"
+          : compactBottom
+            ? "border-b pt-16 pb-6 md:pt-20 md:pb-8"
+            : "border-b py-16 md:py-20"
       }
     >
       <Container>

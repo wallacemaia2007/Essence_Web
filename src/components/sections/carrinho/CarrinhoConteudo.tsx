@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { type FormEvent, useMemo, useState } from "react";
 
 import { Container, ThemedSection } from "@/components/common";
+import { CarrinhoContagem } from "@/components/sections/carrinho/CarrinhoContagem";
 import { ProdutoColecaoCard } from "@/components/sections/colecao/ProdutoColecaoCard";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
@@ -387,7 +388,7 @@ export function CarrinhoConteudo({
     <>
       <ThemedSection
         aria-label="Sacola de compras"
-        className="min-h-[55vh] bg-white py-12 text-[#231f1b] sm:py-16 md:py-20"
+        className="min-h-[55vh] bg-white pt-6 pb-12 text-[#231f1b] sm:pt-8 sm:pb-16 md:pt-10 md:pb-20"
       >
         <Container className="max-w-7xl">
           {avisoCheckout ? (
@@ -398,19 +399,22 @@ export function CarrinhoConteudo({
               {avisoCheckout}
             </p>
           ) : null}
-          <div className="mb-6 flex justify-end">
-            <Link
-              href={routes.trocasDevolucoes}
-              className="inline-flex min-h-11 items-center text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
-            >
-              Trocas e devoluções
-            </Link>
-            <Link
-              href={routes.entregaFrete}
-              className="inline-flex min-h-11 items-center text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
-            >
-              Entrega e frete
-            </Link>
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <CarrinhoContagem />
+            <div className="flex flex-wrap justify-end gap-x-4 gap-y-1">
+              <Link
+                href={routes.trocasDevolucoes}
+                className="inline-flex min-h-11 items-center text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+              >
+                Trocas e devoluções
+              </Link>
+              <Link
+                href={routes.entregaFrete}
+                className="inline-flex min-h-11 items-center text-xs font-semibold tracking-[0.12em] text-[#51483f] uppercase underline underline-offset-4 hover:text-[#231f1b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#231f1b]"
+              >
+                Entrega e frete
+              </Link>
+            </div>
           </div>
           {!hidratado ? null : linhas.length === 0 ? (
             <div className="border border-dashed border-[#d7d1ca] px-6 py-14 text-center sm:py-20">
