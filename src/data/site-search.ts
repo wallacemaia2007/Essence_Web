@@ -11,6 +11,7 @@ export type SiteSearchEntry = {
   description: string;
   href: string;
   kind: "Peça" | "Categoria" | "Conjunto" | "Coleção" | "Página";
+  image?: string | null;
   keywords?: readonly string[];
 };
 
@@ -111,6 +112,7 @@ const productEntries: SiteSearchEntry[] = produtosVitrine.map((produto) => ({
   description: `${produto.categoria} · ${produto.colecao}`,
   href: `${routes.produto}/${encodeURIComponent(produto.id)}`,
   kind: "Peça",
+  image: produto.imagem,
   keywords: [produto.categoria, produto.colecao, produto.id],
 }));
 
