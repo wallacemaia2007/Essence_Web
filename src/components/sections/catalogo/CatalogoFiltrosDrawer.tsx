@@ -175,6 +175,7 @@ export function CatalogoFiltrosDrawer({
   return (
     <dialog
       ref={dialogRef}
+      data-drawer="filters"
       aria-labelledby="catalogo-filtros-title"
       className="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none border-0 bg-transparent p-0 text-left text-[#231f1b] backdrop:bg-[#231f1b]/50"
       onCancel={(event) => {
@@ -185,7 +186,7 @@ export function CatalogoFiltrosDrawer({
         if (event.target === event.currentTarget) onFechar();
       }}
     >
-      <section className="motion-safe:animate-in motion-safe:slide-in-from-right absolute inset-y-0 right-0 grid h-dvh w-full max-w-[28rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white shadow-2xl motion-safe:duration-300">
+      <section className="drawer-enter-right absolute inset-y-0 right-0 grid h-dvh w-full max-w-[28rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white shadow-2xl">
         <header className="flex items-center justify-between border-b border-[#e5e5e5] px-6 py-5">
           <div>
             <p className="text-[0.65rem] font-medium tracking-[0.2em] text-[#75695e] uppercase">
