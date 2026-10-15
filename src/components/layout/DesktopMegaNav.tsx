@@ -25,6 +25,7 @@ type DesktopMegaNavProps = {
 };
 
 const MAX_MENU_PRODUCTS = 4;
+const MAX_FEATURED_CATEGORIES = 5;
 
 function getMenuId(href: string): DesktopMegaMenuId | null {
   if (href === routes.colecao) return "catalogo";
@@ -122,7 +123,66 @@ function ProductShelf({
   );
 }
 
+function CategoryShelf({
+  id,
+  title,
+  description,
+  categories,
+  onNavigate,
+  className,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  categories: readonly string[];
+  onNavigate: () => void;
+  className?: string;
+}) {
+  return (
+    <section aria-labelledby={`mega-shelf-${id}`} className={className}>
+      <div className="mb-3">
+        <p className="text-[0.58rem] font-semibold tracking-[0.2em] text-[#75695e] uppercase">
+          {description}
+        </p>
+        <h3
+          id={`mega-shelf-${id}`}
+          className="font-heading mt-1 text-lg tracking-wide text-[#171717] uppercase"
+        >
+          {title}
+        </h3>
+      </div>
+      <ul className="m-0 divide-y divide-black/10 border-t border-black/10 p-0">
+        {categories.map((categoria) => (
+          <li key={categoria} className="min-w-0 list-none p-0 before:hidden">
+            <Link
+              href={`${routes.colecao}?categoria=${encodeURIComponent(categoria)}`}
+              prefetch={false}
+              onClick={onNavigate}
+              title={categoria}
+              className="group flex min-h-10 min-w-0 items-center justify-between gap-2 py-2 text-[0.72rem] text-[#222222] transition-colors hover:text-[#75695e] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black"
+            >
+              <span className="min-w-0 truncate whitespace-nowrap">
+                {categoria}
+              </span>
+              <ArrowRight
+                className="size-3 shrink-0 text-[#8b8178] opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 motion-reduce:transition-none"
+                aria-hidden="true"
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
+  const featuredCategories = megaMenuCategories.slice(
+    0,
+    MAX_FEATURED_CATEGORIES,
+  );
+  const otherCategories = megaMenuCategories.slice(MAX_FEATURED_CATEGORIES);
+
   return (
     <Container className="max-w-7xl py-6 sm:py-7">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
@@ -155,7 +215,7 @@ function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
         </Link>
       </div>
 
-      <div className="grid gap-6 border-t border-black/10 pt-5 md:grid-cols-3 md:gap-0 md:divide-x md:divide-black/10 md:border-t-0 md:pt-0">
+      <div className="grid gap-6 border-t border-black/10 pt-5 md:grid-cols-2 md:gap-0 md:border-t-0 md:pt-0 lg:grid-cols-4">
         <ProductShelf
           id="novidades"
           title="Novidades"
@@ -164,7 +224,7 @@ function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
           products={megaMenuProducts.novidades}
           showNewBadge
           onNavigate={onNavigate}
-          className="md:pr-6"
+          className="md:pr-6 lg:pr-4"
         />
         <ProductShelf
           id="destaques"
@@ -173,42 +233,24 @@ function CatalogoMegaPanel({ onNavigate }: { onNavigate: () => void }) {
           href={anchors.vitrine}
           products={megaMenuProducts.destaques}
           onNavigate={onNavigate}
-          className="border-t border-black/10 pt-5 md:border-t-0 md:px-6 md:pt-0"
+          className="border-t border-black/10 pt-5 md:col-start-2 md:row-start-1 md:border-t-0 md:border-l md:px-6 md:pt-0 lg:px-4"
         />
-        <section
-          aria-labelledby="mega-shelf-outras-pecas"
-          className="border-t border-black/10 pt-5 md:border-t-0 md:pt-0 md:pl-6"
-        >
-          <div className="mb-3">
-            <p className="text-[0.58rem] font-semibold tracking-[0.2em] text-[#75695e] uppercase">
-              Mais para descobrir
-            </p>
-            <h3
-              id="mega-shelf-outras-pecas"
-              className="font-heading mt-1 text-lg tracking-wide text-[#171717] uppercase"
-            >
-              Outras peças
-            </h3>
-          </div>
-          <ul className="grid list-none grid-cols-2 gap-x-3 gap-y-1 border-t border-black/10 p-0 pt-2">
-            {megaMenuCategories.map((categoria) => (
-              <li key={categoria} className="list-none p-0 before:hidden">
-                <Link
-                  href={`${routes.colecao}?categoria=${encodeURIComponent(categoria)}`}
-                  prefetch={false}
-                  onClick={onNavigate}
-                  className="group flex min-h-10 items-center justify-between gap-2 border-b border-black/5 py-2 text-[0.72rem] text-[#222222] transition-colors hover:text-[#75695e] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-black"
-                >
-                  <span>{categoria}</span>
-                  <ArrowRight
-                    className="size-3 shrink-0 text-[#8b8178] opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 motion-reduce:transition-none"
-                    aria-hidden="true"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <CategoryShelf
+          id="tipos-destaque"
+          title="Tipos em destaque"
+          description="Explore por tipo"
+          categories={featuredCategories}
+          onNavigate={onNavigate}
+          className="border-t border-black/10 pt-5 md:col-start-1 md:row-start-2 md:pt-5 md:pr-6 lg:col-start-3 lg:row-start-1 lg:border-t-0 lg:border-l lg:px-4 lg:pt-0"
+        />
+        <CategoryShelf
+          id="outras-pecas"
+          title="Outras peças"
+          description="Mais para descobrir"
+          categories={otherCategories}
+          onNavigate={onNavigate}
+          className="border-t border-black/10 pt-5 md:col-start-2 md:row-start-2 md:border-l md:pt-5 md:pl-6 lg:col-start-4 lg:row-start-1 lg:border-t-0 lg:pt-0 lg:pl-4"
+        />
       </div>
     </Container>
   );
