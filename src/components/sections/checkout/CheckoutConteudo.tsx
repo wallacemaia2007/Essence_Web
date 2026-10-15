@@ -15,6 +15,7 @@ import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { type FieldPath, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 
+import { useDemoAuth } from "@/components/auth/DemoAuthProvider";
 import { Container, ThemedSection } from "@/components/common";
 import {
   CheckoutResumo,
@@ -144,6 +145,18 @@ const checkoutSchema = z
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
+type CheckoutPrefillField =
+  | "name"
+  | "email"
+  | "phone"
+  | "cep"
+  | "street"
+  | "addressNumber"
+  | "complement"
+  | "district"
+  | "city"
+  | "state";
+
 const defaultValues: CheckoutFormValues = {
   name: "",
   email: "",
@@ -251,6 +264,7 @@ function CheckoutSteps({ currentStep }: { currentStep: number }) {
 }
 
 export function CheckoutConteudo() {
+  const { ready: authReady, user: authenticatedUser } = useDemoAuth();
   const { itens, hidratado, limpar } = useCarrinho();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
@@ -262,8 +276,9 @@ export function CheckoutConteudo() {
     handleSubmit,
     trigger,
     setValue,
+    getValues,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, dirtyFields },
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues,
@@ -313,6 +328,42 @@ export function CheckoutConteudo() {
       // O CEP é opcional até a etapa de entrega e pode ser digitado novamente.
     }
   }, [setValue]);
+
+  useEffect(() => {
+    if (!authReady || !authenticatedUser) return;
+
+    const savedAddresses = Array.isArray(authenticatedUser.addresses)
+      ? authenticatedUser.addresses.filter(
+          (address) => address && typeof address === "object",
+        )
+      : [];
+    const primaryAddress =
+      savedAddresses.find((address) => address.isDefault) ?? savedAddresses[0];
+    const stringOrEmpty = (value: unknown) =>
+      typeof value === "string" ? value : "";
+    const profileValues: [CheckoutPrefillField, string][] = [
+      ["name", stringOrEmpty(authenticatedUser.name).trim()],
+      ["email", stringOrEmpty(authenticatedUser.email).trim()],
+      ["phone", mascararTelefone(stringOrEmpty(authenticatedUser.phone))],
+      ["cep", mascararCep(stringOrEmpty(primaryAddress?.cep))],
+      ["street", stringOrEmpty(primaryAddress?.street).trim()],
+      ["addressNumber", stringOrEmpty(primaryAddress?.number).trim()],
+      ["complement", stringOrEmpty(primaryAddress?.complement).trim()],
+      ["district", stringOrEmpty(primaryAddress?.neighborhood).trim()],
+      ["city", stringOrEmpty(primaryAddress?.city).trim()],
+      ["state", stringOrEmpty(primaryAddress?.state).trim().toUpperCase()],
+    ];
+
+    for (const [field, value] of profileValues) {
+      if (!value || dirtyFields[field] || getValues(field).trim()) continue;
+
+      setValue(field, value, {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    }
+  }, [authReady, authenticatedUser, dirtyFields, getValues, setValue]);
 
   useEffect(() => {
     if (!hidratado || isRedirectingToConfirmation.current) return;
