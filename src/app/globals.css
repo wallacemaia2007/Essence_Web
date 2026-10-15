@@ -497,7 +497,7 @@ body:has(main.sobre-page) .header-mobile-bar {
   /* Primeiro paint: em páginas com hero, a cápsula nasce oculta enquanto o JS
      mede a geometria para evitar um flash; após a medida, fica disponível
      também sobre o hero. Páginas sem hero já aparecem no SSR. */
-  body:has(#site-content [data-page-hero]) .header-glass[data-hero-state="pending"] {
+  body:has(#site-content [data-page-hero]) .header-glass[data-hero-state="pending"]:not([data-pointer-over="true"]) {
     visibility: hidden;
     transform: translate3d(0, calc(-100% - 1px), 0);
     pointer-events: none;

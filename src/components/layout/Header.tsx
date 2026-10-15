@@ -20,10 +20,12 @@ import { SamePageScrollLink } from "./SamePageScrollLink";
 import { SiteSearchDialog } from "./SiteSearchDialog";
 
 const HEADER_HEIGHT = 64;
+const HEADER_REVEAL_ZONE_PX = 96;
 
 export function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isPointerNearHeader, setIsPointerNearHeader] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] =
     useState<DesktopMegaMenuId | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
@@ -37,6 +39,34 @@ export function Header() {
     threshold: 9,
     topOffset: 80,
   });
+
+  useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+
+      const isNearHeader = event.clientY <= HEADER_REVEAL_ZONE_PX;
+      setIsPointerNearHeader((current) =>
+        current === isNearHeader ? current : isNearHeader,
+      );
+    };
+
+    const handlePointerOut = (event: PointerEvent) => {
+      if (event.relatedTarget === null) {
+        setIsPointerNearHeader(false);
+      }
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, {
+      passive: true,
+    });
+    window.addEventListener("pointerout", handlePointerOut);
+
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerout", handlePointerOut);
+    };
+  }, []);
+
   // Na Home, o header aparece brevemente no primeiro carregamento e depois
   // recolhe no topo do hero. Ao voltar ao topo ele também espera 2 s. Fora do
   // hero vale o padrão: some ao descer e reaparece ao subir; painéis o mantêm.
@@ -44,7 +74,8 @@ export function Header() {
   const isPanelOpen = isSidebarOpen || isSearchOpen || activeMegaMenu !== null;
   const shouldHide =
     (isAtHeroTop || (hasPassedHero && !isAtTop && direction !== "up")) &&
-    !isPanelOpen;
+    !isPanelOpen &&
+    !isPointerNearHeader;
   const isHoldingAtTop = useHeaderTopHold({
     isAtTop: isAtHeroTop,
     isVisible: !shouldHide,
@@ -117,6 +148,7 @@ export function Header() {
         data-variant={hasPassedHero ? "site" : "intro"}
         data-state={isHidden ? "hidden" : "visible"}
         data-hero-state={hasMeasured ? "measured" : "pending"}
+        data-pointer-over={isPointerNearHeader ? "true" : "false"}
         inert={isHidden && !isSidebarOpen && !isSearchOpen ? true : undefined}
         className="header-glass fixed inset-x-0 top-0 z-[90]"
       >
