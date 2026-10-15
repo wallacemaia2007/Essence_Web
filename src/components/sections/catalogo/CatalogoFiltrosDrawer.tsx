@@ -11,7 +11,6 @@ import {
   type CatalogoOpcaoCor,
   criarFiltrosVazios,
 } from "@/lib/catalogo-filtros";
-import { cn } from "@/lib/utils";
 
 type CategoriaFiltro = {
   nome: CategoriaProduto;
@@ -192,10 +191,10 @@ export function CatalogoFiltrosDrawer({
       }}
     >
       <section
-        className={cn(
-          "absolute inset-y-0 right-0 grid h-dvh w-full max-w-[28rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white shadow-2xl",
-          hasEntered && "drawer-enter-right",
-        )}
+        style={
+          hasEntered ? undefined : { opacity: 0, transform: "translateX(100%)" }
+        }
+        className="absolute inset-y-0 right-0 grid h-dvh w-full max-w-[28rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white shadow-2xl"
       >
         <header className="flex items-center justify-between border-b border-[#e5e5e5] px-6 py-5">
           <div>
