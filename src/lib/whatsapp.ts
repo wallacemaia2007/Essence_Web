@@ -28,6 +28,15 @@ export function mensagemDeInteresse({
   return `Olá! Tenho interesse na peça "${nome}" (Ref. ${referencia})${complemento}. Ainda está disponível?`;
 }
 
+/** Pedido de aviso quando um tamanho indisponível voltar ao estoque. */
+export function mensagemDeReposicao({
+  nome,
+  referencia,
+  tamanho,
+}: Peca & { tamanho: string }) {
+  return `Olá! Gostaria de receber um aviso quando a peça "${nome}" (Ref. ${referencia}), tamanho ${tamanho}, estiver disponível novamente.`;
+}
+
 /** Mensagem para tirar dúvidas (tamanho, combinações) sobre a peça. */
 export function mensagemDeAjuda({ nome, referencia }: Peca) {
   return `Olá! Preciso de ajuda com a peça "${nome}" (Ref. ${referencia}).`;

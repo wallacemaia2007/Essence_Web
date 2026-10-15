@@ -10,8 +10,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { routes } from "@/constants/routes";
+import { localizacaoLoja } from "@/data/localizacao";
 import { caminhoDaColecao } from "@/lib/colecao";
 import {
+  formatarPreco,
   linkBaseWhatsapp,
   type ProdutoDetalhado,
   produtosRelacionados,
@@ -20,8 +22,12 @@ import { mensagemDeAjuda, montarLinkWhatsapp } from "@/lib/whatsapp";
 
 import { PrecoProduto } from "../catalogo/PrecoProduto";
 import { ProdutoColecaoCard } from "../colecao/ProdutoColecaoCard";
+import { ProdutoCompartilhar } from "./ProdutoCompartilhar";
 import { ProdutoCompra } from "./ProdutoCompra";
+import { ProdutoFrete } from "./ProdutoFrete";
 import { ProdutoGaleria } from "./ProdutoGaleria";
+import { ProdutoPagamento } from "./ProdutoPagamento";
+import { ProdutoVistosRecentemente } from "./ProdutoVistosRecentemente";
 
 const gatilhoClasse = "py-3.5 text-sm tracking-wide md:text-base";
 
@@ -33,7 +39,7 @@ function Paragrafos({ texto }: { texto: string }) {
 
 /** Página de detalhe da peça: galeria, preço, tamanhos, informações e relacionadas. */
 export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
-  const { composicao, cuidados, fotos, produto, referencia, sobre, tamanhos } =
+  const { composicao, cuidados, images, produto, referencia, sobre, tamanhos } =
     detalhe;
   const whatsappBase = linkBaseWhatsapp();
   const hrefColecao = caminhoDaColecao(produto.colecao);
@@ -45,11 +51,16 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
   return (
     <ThemedSection
       aria-label={produto.nome}
-      className="bg-white pt-28 pb-16 text-[#231f1b] md:pt-32 md:pb-24"
+      className="bg-white pt-28 pb-28 text-[#231f1b] md:pt-32 md:pb-24"
     >
       <Container className="max-w-7xl">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-12 xl:gap-16">
-          <ProdutoGaleria nome={produto.nome} fotos={fotos} />
+          <ProdutoGaleria
+            key={produto.id}
+            nome={produto.nome}
+            images={images}
+            cores={produto.colors}
+          />
 
           <div className="min-w-0">
             <nav
@@ -89,7 +100,18 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
               className="mt-5 justify-start"
               precoAtualClassName="text-xl"
             />
-            <p className="mt-3 text-sm text-[#74685f]">Ref.: {referencia}</p>
+            <ProdutoPagamento preco={produto.preco} />
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+              <p className="m-0 text-sm text-[#74685f]">Ref.: {referencia}</p>
+              <ProdutoCompartilhar nome={produto.nome} />
+            </div>
+
+            <ProdutoFrete />
+            {/* TODO: confirmar com a loja disponibilidade e condições de retirada. */}
+            <p className="mt-4 border-l-2 border-[#b7aa9b] pl-3 text-sm leading-6 text-[#51483f]">
+              Retire na loja em {localizacaoLoja.cidade}. Consulte a equipe para
+              confirmar as condições.
+            </p>
 
             <hr className="my-6 border-[#e5e1dd]" />
 
@@ -98,6 +120,7 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
               nome={produto.nome}
               referencia={referencia}
               tamanhos={tamanhos}
+              precoFormatado={formatarPreco(produto.preco)}
               whatsappBase={whatsappBase}
             />
 
@@ -167,7 +190,7 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
               id="produto-relacionados"
               className="font-heading text-2xl tracking-wide uppercase md:text-3xl"
             >
-              Você também pode gostar
+              Complete o look
             </h2>
             <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4">
               {relacionados.map((item) => (
@@ -176,6 +199,7 @@ export function ProdutoDetalhe({ detalhe }: { detalhe: ProdutoDetalhado }) {
             </div>
           </section>
         ) : null}
+        <ProdutoVistosRecentemente produtoAtualId={produto.id} />
       </Container>
     </ThemedSection>
   );

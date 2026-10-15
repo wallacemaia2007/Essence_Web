@@ -23,6 +23,12 @@ export const CATEGORIAS_PRODUTO = [
 
 export type CategoriaProduto = (typeof CATEGORIAS_PRODUTO)[number];
 
+export type ProdutoCor = {
+  name: string;
+  hex: string;
+  images?: string[];
+};
+
 export type ProdutoVitrine = {
   id: string;
   nome: string;
@@ -32,6 +38,12 @@ export type ProdutoVitrine = {
   imagem: string | null;
   /** Segunda foto do mesmo produto, exibida suavemente no hover. */
   imagemHover?: string | null;
+  /** Fotos da galeria, em ordem. Use [] até a loja fornecer fotos reais. */
+  images: string[];
+  /** TODO: cadastrar cores, tons e fotos de cada variante somente após confirmação da loja. */
+  colors?: ProdutoCor[];
+  /** IDs explícitos para completar o look; vazio usa itens da mesma coleção. */
+  lookWith?: string[];
   alt: string;
   /** Preço em reais; os valores desta lista são fictícios para demonstração. */
   preco?: number | null;
@@ -257,6 +269,7 @@ export const produtosVitrine: readonly ProdutoVitrine[] =
         colecao: colecao.nome,
         imagem: fotografia?.imagem ?? null,
         imagemHover: null,
+        images: fotografia ? [fotografia.imagem] : [],
         alt: fotografia?.alt ?? `Foto demonstrativa de ${item.nome}`,
         preco: item.preco,
         ...(precoOriginal ? { precoOriginal, outlet: true } : {}),
