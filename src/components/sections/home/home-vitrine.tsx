@@ -4,7 +4,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, ImagePlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Container, ThemedSection } from "@/components/common";
+import { Carousel, Container, ThemedSection } from "@/components/common";
 import { FavoritoButton } from "@/components/common/favorito-button";
 import { Button } from "@/components/ui/button";
 import { routes } from "@/constants/routes";
@@ -15,7 +15,6 @@ import {
   VITRINE_MAX_PRODUTOS,
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
-import { useCarouselPointerDrag } from "@/hooks/useCarouselPointerDrag";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
 import { caminhoDoProduto } from "@/lib/produto";
 import { cn } from "@/lib/utils";
@@ -115,109 +114,47 @@ type VitrineCarouselProps = {
   slideAtual: number;
   mobile?: boolean;
   onSelect: (index: number) => void;
+  onDragStateChange: (isDragging: boolean) => void;
 };
 
 function VitrineCarousel({
   mobile = false,
+  onDragStateChange,
   onSelect,
   slideAtual,
   slides,
 }: VitrineCarouselProps) {
-  const {
-    handleClickCapture,
-    handlePointerCancel,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    isDragging,
-    trackRef,
-    viewportRef,
-  } = useCarouselPointerDrag({
-    currentSlide: slides.length > 0 ? slideAtual % slides.length : 0,
-    slideCount: slides.length,
-    onSelect,
-  });
-
-  if (slides.length === 0) {
-    return null;
-  }
-
-  const indiceVisivel = slideAtual % slides.length;
-
   return (
-    <div
-      role="region"
-      aria-roledescription="carrossel"
-      aria-label={
+    <Carousel
+      ariaLabel={
         mobile
           ? "Produtos em destaque, um produto por slide"
           : "Produtos em destaque"
       }
-    >
-      <div
-        ref={viewportRef}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
-        onClickCapture={handleClickCapture}
-        onDragStart={(event) => event.preventDefault()}
-        className={cn(
-          "touch-pan-y overflow-hidden select-none",
-          isDragging ? "cursor-grabbing" : "cursor-grab",
-        )}
-      >
-        <div
-          ref={trackRef}
-          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-          style={{ transform: `translateX(-${indiceVisivel * 100}%)` }}
+      currentIndex={slideAtual}
+      onSelect={onSelect}
+      onDragStateChange={onDragStateChange}
+      showIndicators
+      indicatorsLabel="Páginas da vitrine"
+      indicatorAriaLabel={(index) =>
+        `Ir para ${mobile ? "o produto" : "o grupo de produtos"} ${index + 1}`
+      }
+      slides={slides.map((slide, slideIndex) => (
+        <ul
+          key={`slide-${slideIndex}`}
+          className={cn(
+            "grid gap-x-4 gap-y-8 p-0",
+            mobile
+              ? "grid-cols-1"
+              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6",
+          )}
         >
-          {slides.map((slide, slideIndex) => (
-            <ul
-              key={`slide-${slideIndex}`}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${slideIndex + 1} de ${slides.length}`}
-              aria-hidden={slideIndex !== indiceVisivel}
-              className={cn(
-                "grid w-full shrink-0 gap-x-4 gap-y-8 p-0",
-                mobile
-                  ? "grid-cols-1"
-                  : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-6",
-              )}
-            >
-              {slide.map((produto) => (
-                <ProductCard key={produto.id} produto={produto} />
-              ))}
-            </ul>
+          {slide.map((produto) => (
+            <ProductCard key={produto.id} produto={produto} />
           ))}
-        </div>
-      </div>
-
-      {slides.length > 1 ? (
-        <div
-          role="group"
-          aria-label="Páginas da vitrine"
-          className="mt-7 flex items-center justify-center gap-2"
-        >
-          {slides.map((_, index) => (
-            <button
-              key={`indicator-${index}`}
-              type="button"
-              aria-label={`Ir para ${mobile ? "o produto" : "o grupo de produtos"} ${index + 1}`}
-              aria-current={indiceVisivel === index ? "page" : undefined}
-              onClick={() => onSelect(index)}
-              className={cn(
-                "h-1 transition-[width,background-color] duration-300 motion-reduce:transition-none",
-                indiceVisivel === index
-                  ? "w-8 bg-[#231f1b]"
-                  : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
-              )}
-            />
-          ))}
-        </div>
-      ) : null}
-    </div>
+        </ul>
+      ))}
+    />
   );
 }
 
@@ -359,6 +296,7 @@ export function HomeVitrine() {
             slides={carouselDesktop.slides}
             slideAtual={carouselDesktop.slideAtual}
             onSelect={carouselDesktop.irParaSlide}
+            onDragStateChange={carouselDesktop.definirArrasteAtivo}
           />
         </div>
         <div className="md:hidden">
@@ -367,6 +305,7 @@ export function HomeVitrine() {
             slideAtual={carouselMobile.slideAtual}
             mobile
             onSelect={carouselMobile.irParaSlide}
+            onDragStateChange={carouselMobile.definirArrasteAtivo}
           />
         </div>
       </Container>

@@ -1,5 +1,6 @@
 export { AnimatedText } from "./animated-text";
 export { Badge } from "./badge";
+export { Carousel } from "./carousel";
 export { Container } from "./container";
 export { Crest } from "./crest";
 export { FaqSection } from "./faq-section";

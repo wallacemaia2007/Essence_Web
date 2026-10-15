@@ -64,7 +64,12 @@ export function useCarouselPointerDrag({
     const track = trackRef.current;
     const drag = dragRef.current;
 
-    if (!viewport || !track || !drag.pending) {
+    if (
+      !viewport ||
+      !track ||
+      !drag.pending ||
+      event.pointerId !== drag.pointerId
+    ) {
       return;
     }
 
@@ -101,7 +106,12 @@ export function useCarouselPointerDrag({
     const track = trackRef.current;
     const drag = dragRef.current;
 
-    if (!viewport || !track || !drag.pending) {
+    if (
+      !viewport ||
+      !track ||
+      !drag.pending ||
+      event.pointerId !== drag.pointerId
+    ) {
       return;
     }
 

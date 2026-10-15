@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 
+import { EssenceSignature } from "@/components/sections/sobre/EssenceSignature";
 import { FinalCta } from "@/components/sections/sobre/FinalCta";
 import { NossaHistoria } from "@/components/sections/sobre/NossaHistoria";
 import { ScrollStory } from "@/components/sections/sobre/ScrollStory";
@@ -75,6 +76,7 @@ export default function SobrePage() {
       />
       <main className="sobre-page flex flex-1 flex-col">
         <ScrollStory />
+        <EssenceSignature />
         <NossaHistoria />
         <ValoresMarca />
         <Testimonials />

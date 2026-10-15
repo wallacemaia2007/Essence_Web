@@ -32,6 +32,7 @@ export function CanaisContato() {
         target="_blank"
         rel="noopener noreferrer"
         className={cardClassName}
+        data-scroll-reveal
       >
         <div className="flex items-start justify-between gap-4">
           <span className="inline-flex size-11 items-center justify-center bg-black text-white">
@@ -51,7 +52,7 @@ export function CanaisContato() {
         </div>
       </a>
 
-      <a href={telefoneHref} className={cardClassName}>
+      <a href={telefoneHref} className={cardClassName} data-scroll-reveal>
         <div className="flex items-start justify-between gap-4">
           <span className="inline-flex size-11 items-center justify-center border border-[#dedede] text-black">
             <Phone className="size-5" aria-hidden="true" />
@@ -71,7 +72,11 @@ export function CanaisContato() {
       </a>
 
       {contato.email ? (
-        <a href={`mailto:${contato.email}`} className={cardClassName}>
+        <a
+          href={`mailto:${contato.email}`}
+          className={cardClassName}
+          data-scroll-reveal
+        >
           <div className="flex items-start justify-between gap-4">
             <span className="inline-flex size-11 items-center justify-center border border-[#dedede] text-black">
               <Mail className="size-5" aria-hidden="true" />
@@ -93,7 +98,10 @@ export function CanaisContato() {
         </a>
       ) : null}
 
-      <section className="border border-[#dedede] bg-white p-5 sm:col-span-2 sm:p-6">
+      <section
+        className="border border-[#dedede] bg-white p-5 sm:col-span-2 sm:p-6"
+        data-scroll-reveal
+      >
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
           <div>
             <p className="m-0 text-[0.65rem] font-semibold tracking-[0.16em] text-[#777777] uppercase">
@@ -132,7 +140,10 @@ export function CanaisContato() {
         </div>
       </section>
 
-      <address className="border border-[#dedede] bg-white p-5 not-italic sm:col-span-2 sm:p-6">
+      <address
+        className="border border-[#dedede] bg-white p-5 not-italic sm:col-span-2 sm:p-6"
+        data-scroll-reveal
+      >
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
             <div className="flex items-center gap-3">

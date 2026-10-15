@@ -126,7 +126,10 @@ export function Testimonials() {
       className="py-16 md:py-24"
     >
       <Container className="max-w-7xl">
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div
+          className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between"
+          data-scroll-reveal
+        >
           <div className="max-w-2xl">
             {ratingSummary ? (
               <p className="text-muted-foreground mb-3 text-xs font-semibold tracking-[0.2em] uppercase">
@@ -192,6 +195,7 @@ export function Testimonials() {
         role="region"
         aria-label="Depoimentos das clientes"
         aria-roledescription="carrossel"
+        data-scroll-reveal
       >
         <ul
           id="testimonials-track"

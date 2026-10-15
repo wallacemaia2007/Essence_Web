@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { Carousel } from "@/components/common";
 import { ProdutoColecaoCard } from "@/components/sections/colecao/ProdutoColecaoCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,6 @@ import {
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
-import { cn } from "@/lib/utils";
 
 export function ProdutosConjuntoCarrossel({
   conjuntoTitulo,
@@ -27,6 +27,7 @@ export function ProdutosConjuntoCarrossel({
     retomarPorHover,
     pausarPorFoco,
     retomarPorFoco,
+    definirArrasteAtivo,
   } = useCarouselSlides(
     produtos,
     VITRINE_PRODUTOS_POR_SLIDE,
@@ -35,9 +36,6 @@ export function ProdutosConjuntoCarrossel({
 
   return (
     <div
-      role="region"
-      aria-roledescription="carrossel"
-      aria-label={`Peças do conjunto ${conjuntoTitulo}`}
       onMouseEnter={pausarPorHover}
       onMouseLeave={retomarPorHover}
       onFocusCapture={pausarPorFoco}
@@ -74,61 +72,32 @@ export function ProdutosConjuntoCarrossel({
       ) : null}
 
       {slides.length > 0 ? (
-        <>
-          <div className="overflow-hidden">
-            <div
-              className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-              style={{ transform: `translateX(-${slideAtual * 100}%)` }}
+        <Carousel
+          ariaLabel={`Peças do conjunto ${conjuntoTitulo}`}
+          currentIndex={slideAtual}
+          onSelect={irParaSlide}
+          onDragStateChange={definirArrasteAtivo}
+          showIndicators
+          indicatorsLabel={`Páginas das peças de ${conjuntoTitulo}`}
+          indicatorAriaLabel={(index) =>
+            `Ir para o grupo de peças ${index + 1} de ${conjuntoTitulo}`
+          }
+          slides={slides.map((slide, slideIndex) => (
+            <ul
+              key={`slide-${slideIndex}`}
+              className="grid grid-cols-1 gap-x-5 gap-y-10 p-0 sm:grid-cols-2 lg:grid-cols-3"
             >
-              {slides.map((slide, slideIndex) => (
-                <ul
-                  key={`slide-${slideIndex}`}
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-label={`${slideIndex + 1} de ${slides.length}`}
-                  aria-hidden={slideIndex !== slideAtual}
-                  inert={slideIndex !== slideAtual ? true : undefined}
-                  className="grid w-full shrink-0 grid-cols-1 gap-x-5 gap-y-10 p-0 sm:grid-cols-2 lg:grid-cols-3"
-                >
-                  {slide.map((produto, produtoIndex) => (
-                    <li key={produto.id} className="min-w-0 before:hidden">
-                      <ProdutoColecaoCard
-                        produto={produto}
-                        priority={
-                          slideIndex === slideAtual && produtoIndex === 0
-                        }
-                      />
-                    </li>
-                  ))}
-                </ul>
+              {slide.map((produto, produtoIndex) => (
+                <li key={produto.id} className="min-w-0 before:hidden">
+                  <ProdutoColecaoCard
+                    produto={produto}
+                    priority={slideIndex === slideAtual && produtoIndex === 0}
+                  />
+                </li>
               ))}
-            </div>
-          </div>
-
-          {slides.length > 1 ? (
-            <div
-              role="group"
-              aria-label={`Páginas das peças de ${conjuntoTitulo}`}
-              className="mt-7 flex items-center justify-center gap-2"
-            >
-              {slides.map((_, index) => (
-                <button
-                  key={`indicator-${index}`}
-                  type="button"
-                  onClick={() => irParaSlide(index)}
-                  aria-label={`Ir para o grupo de peças ${index + 1} de ${conjuntoTitulo}`}
-                  aria-current={slideAtual === index ? "page" : undefined}
-                  className={cn(
-                    "h-1 transition-[width,background-color] duration-300 motion-reduce:transition-none",
-                    slideAtual === index
-                      ? "w-8 bg-[#231f1b]"
-                      : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
-                  )}
-                />
-              ))}
-            </div>
-          ) : null}
-        </>
+            </ul>
+          ))}
+        />
       ) : null}
     </div>
   );

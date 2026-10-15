@@ -1,14 +1,20 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import type { FocusEventHandler } from "react";
 
-import { Container, ImageBanner, ThemedSection } from "@/components/common";
+import {
+  Carousel,
+  Container,
+  ImageBanner,
+  ThemedSection,
+} from "@/components/common";
 import {
   type Novidade,
   NOVIDADES_MAX_ITENS,
   novidadesData,
 } from "@/data/novidades";
+import { useCarouselSlides } from "@/hooks/useCarouselSlides";
 import { cn } from "@/lib/utils";
 
 type HomeNovidadesProps = {
@@ -25,6 +31,9 @@ type NovidadesCarouselProps = {
   mobile?: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
+  onFocusCapture: () => void;
+  onBlurCapture: FocusEventHandler<HTMLDivElement>;
+  onDragStateChange: (isDragging: boolean) => void;
   onPrevious: () => void;
   onNext: () => void;
   onSelect: (index: number) => void;
@@ -33,6 +42,9 @@ type NovidadesCarouselProps = {
 function NovidadesCarousel({
   currentIndex,
   mobile = false,
+  onBlurCapture,
+  onDragStateChange,
+  onFocusCapture,
   onMouseEnter,
   onMouseLeave,
   onNext,
@@ -40,104 +52,76 @@ function NovidadesCarousel({
   onSelect,
   slides,
 }: NovidadesCarouselProps) {
-  if (slides.length === 0) {
-    return null;
-  }
-
-  const slideAtual = currentIndex % slides.length;
-
   return (
-    <div
-      role="region"
-      aria-roledescription="carrossel"
-      aria-label={
+    <Carousel
+      ariaLabel={
         mobile ? "Novidades, um item por slide" : "Novidades, pares de itens"
       }
       className="relative"
+      currentIndex={currentIndex}
+      onSelect={onSelect}
+      onDragStateChange={onDragStateChange}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-    >
-      <div className="overflow-hidden">
-        <div
-          className="flex transition-transform duration-700 ease-in-out motion-reduce:transition-none"
-          style={{ transform: `translateX(-${slideAtual * 100}%)` }}
-        >
-          {slides.map((slide, index) => (
-            <div
-              key={slide.map((item) => item.id).join("-")}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${index + 1} de ${slides.length}`}
-              aria-hidden={index !== slideAtual}
-              className="w-full shrink-0"
+      onFocusCapture={onFocusCapture}
+      onBlurCapture={onBlurCapture}
+      showIndicators
+      indicatorsLabel="Páginas de novidades"
+      indicatorAriaLabel={(index) => `Ir para o slide ${index + 1}`}
+      indicatorVariant="dot"
+      indicatorContainerClassName="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2"
+      indicatorClassName="h-2 w-2 rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
+      activeIndicatorClassName="bg-white shadow-md"
+      inactiveIndicatorClassName="bg-white/50 hover:bg-white/75"
+      trackClassName="transition-transform duration-700 ease-in-out motion-reduce:transition-none"
+      controlsOverlay={
+        slides.length > 1 ? (
+          <>
+            <button
+              type="button"
+              onClick={onPrevious}
+              className="absolute top-1/2 left-3 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:left-6"
+              aria-label="Slide anterior"
             >
-              <div className={cn("grid gap-0.5", !mobile && "md:grid-cols-2")}>
-                {slide.map((item) => (
-                  <div key={item.id} className="w-full">
-                    <ImageBanner
-                      imageSrc={item.image}
-                      imageAlt={item.alt}
-                      buttonLabel={item.buttonLabel ?? "Comprar"}
-                      buttonAriaLabel={`Comprar ${item.nome}`}
-                      href={item.href}
-                      external={item.href.startsWith("http")}
-                      buttonVariant="light"
-                      buttonPosition="bottom"
-                      buttonClassName="translate-y-[-1.5rem] md:translate-y-[-2rem]"
-                      objectPosition={item.objectPosition}
-                      sizes="(min-width: 768px) 50vw, 100vw"
-                      className="min-h-[30rem] md:min-h-[min(48rem,88svh)]"
-                    />
-                  </div>
-                ))}
-              </div>
+              <ChevronLeft className="size-5" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={onNext}
+              className="absolute top-1/2 right-3 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:right-6"
+              aria-label="Próximo slide"
+            >
+              <ChevronRight className="size-5" aria-hidden="true" />
+            </button>
+          </>
+        ) : null
+      }
+      slides={slides.map((slide) => (
+        <div
+          key={slide.map((item) => item.id).join("-")}
+          className={cn("grid w-full gap-0.5", !mobile && "md:grid-cols-2")}
+        >
+          {slide.map((item) => (
+            <div key={item.id} className="w-full">
+              <ImageBanner
+                imageSrc={item.image}
+                imageAlt={item.alt}
+                buttonLabel={item.buttonLabel ?? "Comprar"}
+                buttonAriaLabel={`Comprar ${item.nome}`}
+                href={item.href}
+                external={item.href.startsWith("http")}
+                buttonVariant="light"
+                buttonPosition="bottom"
+                buttonClassName="translate-y-[-1.5rem] md:translate-y-[-2rem]"
+                objectPosition={item.objectPosition}
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="min-h-[30rem] md:min-h-[min(48rem,88svh)]"
+              />
             </div>
           ))}
         </div>
-      </div>
-
-      {slides.length > 1 ? (
-        <>
-          <button
-            type="button"
-            onClick={onPrevious}
-            className="absolute top-1/2 left-3 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:left-6"
-            aria-label="Slide anterior"
-          >
-            <ChevronLeft className="size-5" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            className="absolute top-1/2 right-3 inline-flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-transparent text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:right-6"
-            aria-label="Próximo slide"
-          >
-            <ChevronRight className="size-5" aria-hidden="true" />
-          </button>
-          <div
-            role="group"
-            aria-label="Páginas de novidades"
-            className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2"
-          >
-            {slides.map((_, index) => (
-              <button
-                key={`indicator-${index}`}
-                type="button"
-                onClick={() => onSelect(index)}
-                className={cn(
-                  "h-2 w-2 rounded-full transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none",
-                  slideAtual === index
-                    ? "bg-white shadow-md"
-                    : "bg-white/50 hover:bg-white/75",
-                )}
-                aria-label={`Ir para o slide ${index + 1}`}
-                aria-current={slideAtual === index ? "true" : undefined}
-              />
-            ))}
-          </div>
-        </>
-      ) : null}
-    </div>
+      ))}
+    />
   );
 }
 
@@ -146,41 +130,8 @@ export function HomeNovidades({
   itens = novidadesData.itens,
 }: HomeNovidadesProps) {
   const visiveis = itens.slice(0, NOVIDADES_MAX_ITENS);
-  const pares: Novidade[][] = [];
-
-  for (let index = 0; index < visiveis.length; index += 2) {
-    pares.push(visiveis.slice(index, index + 2));
-  }
-
-  const slidesMobile: NovidadeSlide[] = visiveis.map((item) => [item]);
-  const [indiceMobile, setIndiceMobile] = useState(0);
-  const [indiceDesktop, setIndiceDesktop] = useState(0);
-  const [hoverMobile, setHoverMobile] = useState(false);
-  const [hoverDesktop, setHoverDesktop] = useState(false);
-
-  useEffect(() => {
-    if (slidesMobile.length <= 1 || hoverMobile) {
-      return;
-    }
-
-    const interval = window.setInterval(() => {
-      setIndiceMobile((index) => (index + 1) % slidesMobile.length);
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, [hoverMobile, slidesMobile.length]);
-
-  useEffect(() => {
-    if (pares.length <= 1 || hoverDesktop) {
-      return;
-    }
-
-    const interval = window.setInterval(() => {
-      setIndiceDesktop((index) => (index + 1) % pares.length);
-    }, 5000);
-
-    return () => window.clearInterval(interval);
-  }, [hoverDesktop, pares.length]);
+  const carouselMobile = useCarouselSlides(visiveis, 1, 5000);
+  const carouselDesktop = useCarouselSlides(visiveis, 2, 5000);
 
   if (visiveis.length === 0) {
     return null;
@@ -208,36 +159,53 @@ export function HomeNovidades({
 
       <div className="md:hidden">
         <NovidadesCarousel
-          slides={slidesMobile}
-          currentIndex={indiceMobile}
+          slides={carouselMobile.slides}
+          currentIndex={carouselMobile.slideAtual}
           mobile
-          onMouseEnter={() => setHoverMobile(true)}
-          onMouseLeave={() => setHoverMobile(false)}
+          onMouseEnter={carouselMobile.pausarPorHover}
+          onMouseLeave={carouselMobile.retomarPorHover}
+          onFocusCapture={carouselMobile.pausarPorFoco}
+          onBlurCapture={(event) => {
+            if (
+              !(event.relatedTarget instanceof Node) ||
+              !event.currentTarget.contains(event.relatedTarget)
+            ) {
+              carouselMobile.retomarPorFoco();
+            }
+          }}
+          onDragStateChange={carouselMobile.definirArrasteAtivo}
           onPrevious={() =>
-            setIndiceMobile(
-              (index) =>
-                (index - 1 + slidesMobile.length) % slidesMobile.length,
-            )
+            carouselMobile.irParaSlide(carouselMobile.slideAtual - 1)
           }
           onNext={() =>
-            setIndiceMobile((index) => (index + 1) % slidesMobile.length)
+            carouselMobile.irParaSlide(carouselMobile.slideAtual + 1)
           }
-          onSelect={setIndiceMobile}
+          onSelect={carouselMobile.irParaSlide}
         />
       </div>
       <div className="hidden md:block">
         <NovidadesCarousel
-          slides={pares}
-          currentIndex={indiceDesktop}
-          onMouseEnter={() => setHoverDesktop(true)}
-          onMouseLeave={() => setHoverDesktop(false)}
+          slides={carouselDesktop.slides}
+          currentIndex={carouselDesktop.slideAtual}
+          onMouseEnter={carouselDesktop.pausarPorHover}
+          onMouseLeave={carouselDesktop.retomarPorHover}
+          onFocusCapture={carouselDesktop.pausarPorFoco}
+          onBlurCapture={(event) => {
+            if (
+              !(event.relatedTarget instanceof Node) ||
+              !event.currentTarget.contains(event.relatedTarget)
+            ) {
+              carouselDesktop.retomarPorFoco();
+            }
+          }}
+          onDragStateChange={carouselDesktop.definirArrasteAtivo}
           onPrevious={() =>
-            setIndiceDesktop(
-              (index) => (index - 1 + pares.length) % pares.length,
-            )
+            carouselDesktop.irParaSlide(carouselDesktop.slideAtual - 1)
           }
-          onNext={() => setIndiceDesktop((index) => (index + 1) % pares.length)}
-          onSelect={setIndiceDesktop}
+          onNext={() =>
+            carouselDesktop.irParaSlide(carouselDesktop.slideAtual + 1)
+          }
+          onSelect={carouselDesktop.irParaSlide}
         />
       </div>
     </ThemedSection>

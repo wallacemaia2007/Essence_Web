@@ -50,7 +50,7 @@ export default function ContatoPage() {
       <section className="relative flex min-h-[100svh] items-center overflow-hidden bg-[#080808] pt-28 pb-14 text-white sm:pt-32 sm:pb-16 lg:pt-36 lg:pb-20">
         <Container className="max-w-7xl px-5 sm:px-7 lg:px-10">
           <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.72fr)] lg:gap-16">
-            <div className="max-w-3xl">
+            <div className="max-w-3xl" data-scroll-reveal>
               <nav
                 aria-label="Breadcrumb"
                 className="mb-10 flex items-center gap-2 text-xs text-white/60"
@@ -86,7 +86,11 @@ export default function ContatoPage() {
               </a>
             </div>
 
-            <aside className="relative border border-white/20 bg-white p-6 text-[#111111] sm:p-8">
+            <aside
+              className="relative border border-white/20 bg-white p-6 text-[#111111] sm:p-8"
+              data-scroll-reveal
+              data-scroll-reveal-delay="0.12"
+            >
               <div className="flex items-center justify-between gap-4">
                 <p className="m-0 text-[0.62rem] font-semibold tracking-[0.17em] text-[#666666] uppercase">
                   Atendimento direto
@@ -120,7 +124,7 @@ export default function ContatoPage() {
       >
         <Container className="max-w-7xl px-5 sm:px-7 lg:px-10">
           <div className="grid gap-8 lg:grid-cols-[minmax(14rem,0.55fr)_minmax(0,1.45fr)] lg:gap-14">
-            <div className="max-w-sm">
+            <div className="max-w-sm" data-scroll-reveal>
               <p className="m-0 text-[0.65rem] font-semibold tracking-[0.2em] text-[#777777] uppercase">
                 Canais da loja
               </p>
@@ -146,7 +150,7 @@ export default function ContatoPage() {
       >
         <Container className="max-w-7xl px-5 sm:px-7 lg:px-10">
           <div className="grid items-start gap-8 lg:grid-cols-[minmax(15rem,0.7fr)_minmax(0,1.3fr)] lg:gap-14">
-            <div className="max-w-md lg:sticky lg:top-28">
+            <div className="max-w-md lg:sticky lg:top-28" data-scroll-reveal>
               <p className="m-0 text-[0.65rem] font-semibold tracking-[0.2em] text-[#777777] uppercase">
                 Prefere escrever?
               </p>

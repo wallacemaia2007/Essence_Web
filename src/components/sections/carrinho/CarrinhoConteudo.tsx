@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useMemo, useState } from "react";
 
-import { Container, ThemedSection } from "@/components/common";
+import { Carousel, Container, ThemedSection } from "@/components/common";
 import { CarrinhoContagem } from "@/components/sections/carrinho/CarrinhoContagem";
 import { ProdutoColecaoCard } from "@/components/sections/colecao/ProdutoColecaoCard";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,6 @@ import {
   VITRINE_MAX_PRODUTOS,
   VITRINE_PRODUTOS_POR_SLIDE,
 } from "@/data/vitrine";
-import { useCarouselPointerDrag } from "@/hooks/useCarouselPointerDrag";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
 import {
   alterarQuantidade,
@@ -184,6 +183,7 @@ function CartItem({
 
 function DestaquesCarousel({
   mobile = false,
+  onDragStateChange,
   onSelect,
   slideAtual,
   slides,
@@ -192,110 +192,46 @@ function DestaquesCarousel({
   slideAtual: number;
   mobile?: boolean;
   onSelect: (index: number) => void;
+  onDragStateChange: (isDragging: boolean) => void;
 }) {
-  const {
-    handleClickCapture,
-    handlePointerCancel,
-    handlePointerDown,
-    handlePointerMove,
-    handlePointerUp,
-    isDragging,
-    trackRef,
-    viewportRef,
-  } = useCarouselPointerDrag({
-    currentSlide: slides.length > 0 ? slideAtual % slides.length : 0,
-    slideCount: slides.length,
-    onSelect,
-  });
-
-  if (slides.length === 0) {
-    return null;
-  }
-
-  const indiceVisivel = slideAtual % slides.length;
-
   return (
-    <div
-      role="region"
-      aria-roledescription="carrossel"
-      aria-label={
+    <Carousel
+      ariaLabel={
         mobile
           ? "Destaques da Essence, uma peça por slide"
           : "Destaques da Essence"
       }
-    >
-      <div
-        ref={viewportRef}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerCancel}
-        onClickCapture={handleClickCapture}
-        onDragStart={(event) => event.preventDefault()}
-        className={cn(
-          "touch-pan-y overflow-hidden select-none",
-          isDragging ? "cursor-grabbing" : "cursor-grab",
-        )}
-      >
-        <div
-          ref={trackRef}
-          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-          style={{ transform: `translateX(-${indiceVisivel * 100}%)` }}
+      currentIndex={slideAtual}
+      onSelect={onSelect}
+      onDragStateChange={onDragStateChange}
+      showIndicators
+      indicatorsLabel="Páginas dos destaques"
+      indicatorAriaLabel={(index) =>
+        `Ir para ${mobile ? "a peça" : "o grupo de destaques"} ${index + 1}`
+      }
+      slides={slides.map((slide, slideIndex) => (
+        <ul
+          key={`slide-${slideIndex}`}
+          className={cn(
+            "grid grid-cols-1 gap-x-4 gap-y-8 p-0",
+            !mobile && "sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3 lg:gap-x-6",
+          )}
         >
-          {slides.map((slide, slideIndex) => (
-            <ul
-              key={`slide-${slideIndex}`}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${slideIndex + 1} de ${slides.length}`}
-              aria-hidden={slideIndex !== indiceVisivel}
-              className={cn(
-                "grid w-full shrink-0 grid-cols-1 gap-x-4 gap-y-8 p-0",
-                !mobile &&
-                  "sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3 lg:gap-x-6",
-              )}
+          {slide.map((produto, index) => (
+            <li
+              key={produto.id}
+              className="min-w-0 list-none p-0 before:hidden"
             >
-              {slide.map((produto, index) => (
-                <li
-                  key={produto.id}
-                  className="min-w-0 list-none p-0 before:hidden"
-                >
-                  <ProdutoColecaoCard
-                    produto={produto}
-                    priority={slideIndex === 0 && index === 0}
-                    hoverConjunto
-                  />
-                </li>
-              ))}
-            </ul>
+              <ProdutoColecaoCard
+                produto={produto}
+                priority={slideIndex === 0 && index === 0}
+                hoverConjunto
+              />
+            </li>
           ))}
-        </div>
-      </div>
-
-      {slides.length > 1 ? (
-        <div
-          role="group"
-          aria-label="Páginas dos destaques"
-          className="mt-7 flex items-center justify-center gap-2"
-        >
-          {slides.map((_, index) => (
-            <button
-              key={`destaque-indicator-${index}`}
-              type="button"
-              onClick={() => onSelect(index)}
-              aria-label={`Ir para ${mobile ? "a peça" : "o grupo de destaques"} ${index + 1}`}
-              aria-current={indiceVisivel === index ? "page" : undefined}
-              className={cn(
-                "h-1 cursor-pointer transition-[width,background-color] duration-300 motion-reduce:transition-none",
-                indiceVisivel === index
-                  ? "w-8 bg-[#231f1b]"
-                  : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
-              )}
-            />
-          ))}
-        </div>
-      ) : null}
-    </div>
+        </ul>
+      ))}
+    />
   );
 }
 
@@ -418,10 +354,10 @@ export function CarrinhoConteudo({
           </div>
           {!hidratado ? null : linhas.length === 0 ? (
             <div className="border border-dashed border-[#d7d1ca] px-6 py-14 text-center sm:py-20">
-              <p className="font-heading text-2xl tracking-wide uppercase">
+              <p className="mx-auto mt-3 text-center max-w-lg font-heading text-2xl tracking-wide uppercase">
                 Sua sacola está vazia
               </p>
-              <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-[#655e57]">
+              <p className="mx-auto mt-3 text-center max-w-lg text-sm leading-6 text-[#655e57]">
                 Explore a seleção Essence e adicione as peças que deseja levar.
               </p>
               <Link
@@ -638,6 +574,7 @@ export function CarrinhoConteudo({
               slides={carouselDesktop.slides}
               slideAtual={carouselDesktop.slideAtual}
               onSelect={carouselDesktop.irParaSlide}
+              onDragStateChange={carouselDesktop.definirArrasteAtivo}
             />
           </div>
           <div className="md:hidden">
@@ -646,6 +583,7 @@ export function CarrinhoConteudo({
               slideAtual={carouselMobile.slideAtual}
               mobile
               onSelect={carouselMobile.irParaSlide}
+              onDragStateChange={carouselMobile.definirArrasteAtivo}
             />
           </div>
         </Container>

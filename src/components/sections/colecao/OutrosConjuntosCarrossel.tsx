@@ -2,7 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Container, ThemedSection } from "@/components/common";
+import { Carousel, Container, ThemedSection } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import {
   type ProdutoVitrine,
@@ -11,7 +11,6 @@ import {
 } from "@/data/vitrine";
 import { useCarouselSlides } from "@/hooks/useCarouselSlides";
 import { caminhoDaColecao } from "@/lib/colecao";
-import { cn } from "@/lib/utils";
 
 import { ProdutoColecaoCard } from "./ProdutoColecaoCard";
 
@@ -28,6 +27,7 @@ export function OutrosConjuntosCarrossel({
     retomarPorHover,
     pausarPorFoco,
     retomarPorFoco,
+    definirArrasteAtivo,
   } = useCarouselSlides(
     produtos,
     VITRINE_PRODUTOS_POR_SLIDE,
@@ -94,66 +94,33 @@ export function OutrosConjuntosCarrossel({
         </div>
 
         {slides.length > 0 ? (
-          <div
-            role="region"
-            aria-roledescription="carrossel"
-            aria-label="Peças dos outros conjuntos"
-          >
-            <div className="overflow-hidden">
-              <div
-                className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
-                style={{ transform: `translateX(-${slideAtual * 100}%)` }}
+          <Carousel
+            ariaLabel="Peças dos outros conjuntos"
+            currentIndex={slideAtual}
+            onSelect={irParaSlide}
+            onDragStateChange={definirArrasteAtivo}
+            showIndicators
+            indicatorsLabel="Páginas do carrossel de outros conjuntos"
+            indicatorAriaLabel={(index) =>
+              `Ir para o grupo de produtos ${index + 1}`
+            }
+            slides={slides.map((slide, slideIndex) => (
+              <ul
+                key={`slide-${slideIndex}`}
+                className="grid grid-cols-1 gap-x-4 gap-y-8 p-0 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3 lg:gap-x-6"
               >
-                {slides.map((slide, slideIndex) => (
-                  <ul
-                    key={`slide-${slideIndex}`}
-                    role="group"
-                    aria-roledescription="slide"
-                    aria-label={`${slideIndex + 1} de ${slides.length}`}
-                    aria-hidden={slideIndex !== slideAtual}
-                    inert={slideIndex !== slideAtual ? true : undefined}
-                    className="grid w-full shrink-0 grid-cols-1 gap-x-4 gap-y-8 p-0 sm:grid-cols-2 sm:gap-x-5 lg:grid-cols-3 lg:gap-x-6"
-                  >
-                    {slide.map((produto, itemIndex) => (
-                      <li key={produto.id} className="min-w-0 before:hidden">
-                        <ProdutoColecaoCard
-                          produto={produto}
-                          priority={
-                            slideIndex === slideAtual && itemIndex === 0
-                          }
-                          hrefColecao={caminhoDaColecao(produto.colecao)}
-                        />
-                      </li>
-                    ))}
-                  </ul>
+                {slide.map((produto, itemIndex) => (
+                  <li key={produto.id} className="min-w-0 before:hidden">
+                    <ProdutoColecaoCard
+                      produto={produto}
+                      priority={slideIndex === slideAtual && itemIndex === 0}
+                      hrefColecao={caminhoDaColecao(produto.colecao)}
+                    />
+                  </li>
                 ))}
-              </div>
-            </div>
-
-            {slides.length > 1 ? (
-              <div
-                role="group"
-                aria-label="Páginas do carrossel de outros conjuntos"
-                className="mt-7 flex items-center justify-center gap-2"
-              >
-                {slides.map((_, index) => (
-                  <button
-                    key={`indicator-${index}`}
-                    type="button"
-                    onClick={() => irParaSlide(index)}
-                    aria-label={`Ir para o grupo de produtos ${index + 1}`}
-                    aria-current={slideAtual === index ? "page" : undefined}
-                    className={cn(
-                      "h-1 transition-[width,background-color] duration-300 motion-reduce:transition-none",
-                      slideAtual === index
-                        ? "w-8 bg-[#231f1b]"
-                        : "w-4 bg-[#cfc6bc] hover:bg-[#8e8175]",
-                    )}
-                  />
-                ))}
-              </div>
-            ) : null}
-          </div>
+              </ul>
+            ))}
+          />
         ) : (
           <p className="border-y border-[#e5e1dd] py-6 text-sm leading-6 text-[#655e57]">
             Outras peças aparecerão aqui quando forem cadastradas.

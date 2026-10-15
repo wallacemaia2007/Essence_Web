@@ -5,6 +5,7 @@ import { ReactLenis, useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
 import { type ReactNode, useEffect, useRef } from "react";
 
+import { PageScrollReveals } from "@/components/common/PageScrollReveals";
 import { ScrollToHash } from "@/components/common/scroll-to-hash";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
@@ -100,6 +101,7 @@ export function SmoothScrollProvider({ children }: SmoothScrollProviderProps) {
   return (
     <ReactLenis root options={LENIS_OPTIONS}>
       <ScrollToHash />
+      <PageScrollReveals />
       <SyncLenisWithGSAP />
       <ResetScrollOnRouteChange />
       {children}

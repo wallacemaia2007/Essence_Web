@@ -61,6 +61,7 @@ export function ContatoForm() {
     <form
       aria-labelledby={`${formId}-title`}
       className="border border-[#dedede] bg-white p-5 sm:p-7 lg:p-9"
+      data-scroll-reveal
       noValidate
       onChange={() => setLinkWhatsApp("")}
       onSubmit={handleSubmit(prepararMensagem)}

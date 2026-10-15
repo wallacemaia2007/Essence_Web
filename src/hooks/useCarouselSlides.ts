@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
@@ -41,8 +41,23 @@ export function useCarouselSlides<T>(
   const slideAtual = slides.length > 0 ? slideSolicitado % slides.length : 0;
   const [hoverAtivo, setHoverAtivo] = useState(false);
   const [focoAtivo, setFocoAtivo] = useState(false);
+  const [arrasteAtivo, setArrasteAtivo] = useState(false);
+  const [interacaoManualAtiva, setInteracaoManualAtiva] = useState(false);
+  const temporizadorInteracaoRef = useRef<number | null>(null);
   const pausado =
-    (pauseOnHover && hoverAtivo) || (pauseOnFocus && focoAtivo);
+    (pauseOnHover && hoverAtivo) ||
+    (pauseOnFocus && focoAtivo) ||
+    arrasteAtivo ||
+    interacaoManualAtiva;
+
+  useEffect(
+    () => () => {
+      if (temporizadorInteracaoRef.current !== null) {
+        window.clearTimeout(temporizadorInteracaoRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (
@@ -73,16 +88,32 @@ export function useCarouselSlides<T>(
         return;
       }
 
+      setInteracaoManualAtiva(true);
+      if (temporizadorInteracaoRef.current !== null) {
+        window.clearTimeout(temporizadorInteracaoRef.current);
+      }
+      temporizadorInteracaoRef.current = window.setTimeout(
+        () => {
+          temporizadorInteracaoRef.current = null;
+          setInteracaoManualAtiva(false);
+        },
+        Math.max(1000, intervaloMs),
+      );
+
       setSlideSolicitado(
         ((destino % slides.length) + slides.length) % slides.length,
       );
     },
-    [slides.length],
+    [intervaloMs, slides.length],
   );
   const pausarPorHover = useCallback(() => setHoverAtivo(true), []);
   const retomarPorHover = useCallback(() => setHoverAtivo(false), []);
   const pausarPorFoco = useCallback(() => setFocoAtivo(true), []);
   const retomarPorFoco = useCallback(() => setFocoAtivo(false), []);
+  const definirArrasteAtivo = useCallback(
+    (ativo: boolean) => setArrasteAtivo(ativo),
+    [],
+  );
 
   return {
     slides,
@@ -92,5 +123,6 @@ export function useCarouselSlides<T>(
     retomarPorHover,
     pausarPorFoco,
     retomarPorFoco,
+    definirArrasteAtivo,
   };
 }

@@ -9,7 +9,7 @@ export function FinalCta() {
   return (
     <section aria-labelledby="sobre-cta-title" className="sobre-final-cta">
       <Container className="sobre-final-cta__inner">
-        <div>
+        <div data-scroll-reveal>
           <p className="sobre-section__eyebrow">A sua próxima descoberta</p>
           <h2 className="sobre-final-cta__title" id="sobre-cta-title">
             Encontre o que combina consigo.
@@ -17,6 +17,8 @@ export function FinalCta() {
         </div>
         <Button
           className="sobre-final-cta__button"
+          data-scroll-reveal
+          data-scroll-reveal-delay="0.12"
           nativeButton={false}
           role="link"
           render={<Link href={routes.colecao} />}

@@ -7,6 +7,7 @@ import Script from "next/script";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/Header";
+import { PageEntrance } from "@/components/layout/PageEntrance";
 import { Providers } from "@/components/providers";
 import { baseUrl, ogImage, pages, siteDescription, siteName } from "@/lib/seo";
 
@@ -100,7 +101,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           <div id="site-content" className="flex flex-1 flex-col">
-            {children}
+            <PageEntrance>{children}</PageEntrance>
           </div>
           <div id="site-footer">
             <Footer />
