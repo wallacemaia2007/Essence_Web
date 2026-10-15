@@ -7,7 +7,8 @@ import { PageHeader } from "@/components/sections/sobre/PageHeader";
 
 export const metadata: Metadata = {
   title: "Minha conta | Essence",
-  description: "Consulte seus dados pessoais e endereços salvos na Essence.",
+  description:
+    "Atualize seu perfil, gerencie endereços de entrega e acompanhe sua conta Essence.",
   robots: { index: false, follow: false },
 };
 
@@ -17,7 +18,7 @@ export default function ContaPage() {
       <PageHeader
         currentPage="Minha conta"
         title="Minha conta"
-        description="Seus dados e endereços, organizados em um só lugar."
+        description="Seus dados pessoais, endereços e atalhos da conta, organizados em um só lugar."
       />
       <ThemedSection
         aria-label="Dados da conta"

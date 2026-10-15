@@ -9,12 +9,13 @@ import {
 } from "react";
 
 import { DEMO_AUTH_SESSION_STORAGE_KEY } from "@/constants/storage";
-import type { DemoAuthUser } from "@/lib/demo-auth";
+import { type DemoAuthUser, saveDemoAccount } from "@/lib/demo-auth";
 
 type DemoAuthContextValue = {
   user: DemoAuthUser | null;
   ready: boolean;
   signIn: (user: DemoAuthUser) => void;
+  updateUser: (user: DemoAuthUser) => boolean;
   signOut: () => void;
 };
 
@@ -93,6 +94,15 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
     window.dispatchEvent(new Event(DEMO_AUTH_CHANGE_EVENT));
   }, []);
 
+  const updateUser = useCallback(
+    (nextUser: DemoAuthUser) => {
+      const saved = saveDemoAccount(nextUser, user?.email);
+      signIn(nextUser);
+      return saved;
+    },
+    [signIn, user?.email],
+  );
+
   const signOut = useCallback(() => {
     memorySession = "";
 
@@ -106,7 +116,9 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <DemoAuthContext.Provider value={{ user, ready, signIn, signOut }}>
+    <DemoAuthContext.Provider
+      value={{ user, ready, signIn, updateUser, signOut }}
+    >
       {children}
     </DemoAuthContext.Provider>
   );
