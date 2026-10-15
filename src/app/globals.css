@@ -308,7 +308,16 @@ body:has(main.sobre-page) .header-mobile-bar {
     animation: drawer-panel-from-top 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
-  dialog[data-drawer="filters"]::backdrop {
+  dialog[data-drawer="filters"][data-drawer-entered="false"] > section {
+    opacity: 0;
+    translate: 100% 0;
+  }
+
+  dialog[data-drawer="filters"][data-drawer-entered="false"]::backdrop {
+    opacity: 0;
+  }
+
+  dialog[data-drawer="filters"][data-drawer-entered="true"]::backdrop {
     animation: drawer-overlay-enter 260ms ease-out both;
   }
 
@@ -317,7 +326,7 @@ body:has(main.sobre-page) .header-mobile-bar {
     .drawer-enter-left,
     .drawer-enter-right,
     .drawer-enter-top,
-    dialog[data-drawer="filters"]::backdrop {
+    dialog[data-drawer="filters"][data-drawer-entered="true"]::backdrop {
       animation: none !important;
     }
   }

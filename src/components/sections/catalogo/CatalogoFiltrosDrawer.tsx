@@ -11,6 +11,7 @@ import {
   type CatalogoOpcaoCor,
   criarFiltrosVazios,
 } from "@/lib/catalogo-filtros";
+import { cn } from "@/lib/utils";
 
 type CategoriaFiltro = {
   nome: CategoriaProduto;
@@ -89,6 +90,7 @@ export function CatalogoFiltrosDrawer({
   onFechar,
 }: CatalogoFiltrosDrawerProps) {
   const [rascunho, setRascunho] = useState<CatalogoFiltros>(filtrosAtuais);
+  const [hasEntered, setHasEntered] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const precoMinimo = rascunho.precoMinimo
     ? Number(rascunho.precoMinimo.replace(",", "."))
@@ -111,8 +113,10 @@ export function CatalogoFiltrosDrawer({
     const overflowAnterior = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     dialog.showModal();
+    const frameId = window.requestAnimationFrame(() => setHasEntered(true));
 
     return () => {
+      window.cancelAnimationFrame(frameId);
       if (dialog.open) dialog.close();
       document.body.style.overflow = overflowAnterior;
     };
@@ -176,6 +180,7 @@ export function CatalogoFiltrosDrawer({
     <dialog
       ref={dialogRef}
       data-drawer="filters"
+      data-drawer-entered={hasEntered ? "true" : "false"}
       aria-labelledby="catalogo-filtros-title"
       className="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none border-0 bg-transparent p-0 text-left text-[#231f1b] backdrop:bg-[#231f1b]/50"
       onCancel={(event) => {
@@ -186,7 +191,12 @@ export function CatalogoFiltrosDrawer({
         if (event.target === event.currentTarget) onFechar();
       }}
     >
-      <section className="drawer-enter-right absolute inset-y-0 right-0 grid h-dvh w-full max-w-[28rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white shadow-2xl">
+      <section
+        className={cn(
+          "absolute inset-y-0 right-0 grid h-dvh w-full max-w-[28rem] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-white shadow-2xl",
+          hasEntered && "drawer-enter-right",
+        )}
+      >
         <header className="flex items-center justify-between border-b border-[#e5e5e5] px-6 py-5">
           <div>
             <p className="text-[0.65rem] font-medium tracking-[0.2em] text-[#75695e] uppercase">
